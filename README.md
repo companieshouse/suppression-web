@@ -1,5 +1,5 @@
 # Suppression Web
-Web frontend for the 'Suppress My Details' service".
+Web frontend for the 'Suppress My Details' service.
 
 ## Technologies
 

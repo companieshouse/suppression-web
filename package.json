@@ -11,10 +11,8 @@
     "lint": "tslint -p .",
     "test": "jest -c src/test/jest.config.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "del": "^5.1.0",
     "express": "^4.17.1",
     "govuk-frontend": "^3.6.0",
     "nunjucks": "^3.2.1"
@@ -28,6 +26,7 @@
     "copyfiles": "^2.2.0",
     "gulp": "^4.0.2",
     "gulp-sass": "^4.1.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "jest": "^25.4.0",
     "node-sass": "^4.14.0",
     "nodemon": "^2.0.3",
@@ -36,16 +35,5 @@
     "ts-node": "^8.9.0",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"
-  },
-  "nodemonConfig": {
-    "watch": [
-      "./src"
-    ],
-    "ext": "ts",
-    "legacyWatch": true,
-    "ignore": [
-      "**/*.spec.ts"
-    ],
-    "exec": "ts-node ./src/server.ts"
   }
 }

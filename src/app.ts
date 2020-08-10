@@ -6,6 +6,7 @@ import { routes } from './routes/routes';
 const app = express();
 
 // set some app variables from the environment
+// set some app variables from the environment
 app.set('port', process.env.PORT || '3000');
 app.set('dev', process.env.NODE_ENV === 'development');
 
@@ -23,7 +24,7 @@ const env = nunjucks.configure([
 });
 
 app.set('views', viewPath);
-app.set('view engine', 'html');
+app.set('view engine', 'njk');
 
 // add global variables to all templates
 env.addGlobal('PIWIK_URL', 'https://example.com');
