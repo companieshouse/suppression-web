@@ -14,6 +14,8 @@ To run this app, cd to the root directory, and type the following commands:
 
 ```
 npm install
+npm run-script build
+gulp static
 npm start
 ```
 
