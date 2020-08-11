@@ -5,9 +5,8 @@ import { routes } from './routes/routes';
 
 const app = express();
 
-// set some app variables from the environment
+// set up app variables from the environment
 app.set('port', process.env.PORT || '3000');
-app.set('dev', process.env.NODE_ENV === 'development');
 
 // where nunjucks templates should resolve to
 const viewPath = path.join(__dirname, 'views');
@@ -25,11 +24,10 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
-// serve static assets in development. this will not execute in production.
-if (process.env.NODE_ENV === 'development') {
-  app.use('/static', express.static('dist/static'));
-  env.addGlobal('CSS_URL', '/static/app.css');
-}
+// serve static assets
+app.use('/static', express.static('dist/static'));
+env.addGlobal('CSS_URL', '/static/app.css');
+
 // apply our default routes to /
 app.use('/', routes);
 
