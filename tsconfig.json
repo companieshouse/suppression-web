@@ -12,6 +12,11 @@
     "experimentalDecorators": true,
     "strictNullChecks": true
   },
+  "plugins": [
+    {
+      "name": "typescript-tslint-plugin"
+    }
+  ],
   "include": [
     "src/**/*.ts"
   ],
