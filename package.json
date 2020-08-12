@@ -2,7 +2,11 @@
   "name": "suppression-web",
   "version": "0.0.1",
   "description": "Web frontend for the 'Suppress My Details' service",
-  "main": "index.js",
+  "main": "dist/server.js",
+  "repository": {
+    "url": "https://github.com/companieshouse/suppression-web"
+  },
+  "license": "MIT",
   "scripts": {
     "start": "ts-node ./dist/server.js",
     "start:watch": "nodemon",
