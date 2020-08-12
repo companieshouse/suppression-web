@@ -11,15 +11,17 @@ COPY package.json package-lock.json ./
 ## Image with runtime dependencies
 FROM build-base as prod-deps-image
 
-RUN  npm install --production
+RUN npm install --production
 
 ## Build image
 FROM prod-deps-image as build-image
+
 RUN npm install
 RUN npm install gulp-cli -g
 COPY . ./
 
 RUN npm run build
+COPY . ./
 RUN gulp static
 COPY . ./
 
