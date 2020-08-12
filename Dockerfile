@@ -16,12 +16,10 @@ RUN  npm install --production
 ## Build image
 FROM prod-deps-image as build-image
 RUN npm install
-COPY . ./
 RUN npm install gulp-cli -g
 COPY . ./
 
 RUN npm run build
-COPY . ./
 RUN gulp static
 COPY . ./
 
