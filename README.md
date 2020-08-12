@@ -19,7 +19,7 @@ make
 npm start
 ```
 
-Then open your browser and go to http://localhost:3000.
+Then open your browser and go to http://localhost:3000/suppress-my-details.
 
 ## How to run it through docker
 
@@ -30,4 +30,4 @@ docker build -t tiny_rebels/suppression-web .
 docker run -p 3000:3000 -d tiny_rebels/suppression-web
 ```
 
-Then open your browser and go to http://localhost:3000.
+Then open your browser and go to http://localhost:3000/suppress-my-details.

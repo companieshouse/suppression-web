@@ -12,4 +12,4 @@ const homeController = new HomeController();
 /**
  * Route definitions
  */
-routes.get('/', homeController.sayHello);
+routes.get('/suppress-my-details', homeController.sayHello);
