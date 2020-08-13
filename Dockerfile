@@ -22,6 +22,8 @@ COPY . ./
 
 RUN npm run build
 COPY . ./
+RUN gulp static
+COPY . ./
 
 FROM node:14-alpine as runtime
 

@@ -1,11 +1,22 @@
 local_resource(
   name = 'dev:suppression-web:init',
-  cmd = 'npm --silent install'
+  cmd = 'npm --silent install & npm --silent install gulp-cli -g'
 )
 
 local_resource(
   name = 'dev:suppression-web:build',
   cmd = 'npm --silent run build',
+  deps = [
+    'src'
+  ],
+  ignore = [
+    'src/views'
+  ]
+)
+
+local_resource(
+  name = 'dev:suppression-web:build:static',
+  cmd = 'gulp static',
   deps = [
     'src'
   ],
