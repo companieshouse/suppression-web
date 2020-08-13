@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {ApplicationFactory} from './ApplicationFactory';
+import { ApplicationFactory } from './ApplicationFactory';
 import './controllers/index';
 
 export class Server {

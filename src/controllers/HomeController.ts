@@ -1,4 +1,4 @@
-import {BaseHttpController, controller, httpGet} from 'inversify-express-utils';
+import { BaseHttpController, controller, httpGet } from 'inversify-express-utils';
 
 @controller('/suppress-my-details')
 export class HomeController extends BaseHttpController {
