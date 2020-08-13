@@ -3,22 +3,19 @@ const sass = require("gulp-sass");
 
 sass.compiler = require('node-sass');
 
-// copies the fonts and images from the govuk-frontend package to the dist directory
-gulp.task("govuk-frontend-copy", function() {
-  return gulp.src([
-    "./node_modules/govuk-frontend/govuk/assets/**/*"
-  ]).pipe(gulp.dest("./dist/static"));
+const paths = {
+  build: ['../dist'],
+  pages: ['src/views'],
+  govukfrontend: ['../node_modules/govuk-frontend']
+};
+
+
+gulp.task('copy-views', function () {
+  return gulp.src(paths.pages + '/**/*').pipe(gulp.dest(paths.build + '/views'));
 });
 
-// compiles the sass down to css
-gulp.task('sass', function() {
-  return gulp.src('./src/static/sass/*.scss')
-    .pipe(sass())
-    .pipe(gulp.dest('./dist/static'));
+gulp.task('copy-govukfrontend', function () {
+  return gulp.src(paths.govukfrontend + '/**/*').pipe(gulp.dest(paths.build + '/' + paths.govukfrontend));
 });
 
-// executes all static asset tasks in parallel
-exports.static = gulp.parallel(
-  gulp.task("sass"),
-  gulp.task("govuk-frontend-copy")
-);
+gulp.task('copy-views-styles', gulp.series(gulp.parallel('copy-views', 'copy-govukfrontend')));

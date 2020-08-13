@@ -23,7 +23,7 @@ RUN --mount=type=ssh npm install gulp-cli -g
 COPY . ./
 
 RUN npm run build
-RUN npm run build:static
+RUN npm run build:views-styles
 
 FROM node:14-alpine as runtime
 

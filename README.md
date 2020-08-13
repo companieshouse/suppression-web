@@ -14,7 +14,6 @@ Web frontend for the 'Suppress My Details' service.
 cd to the root directory, and type the following commands:
 
 ```
-npm install
 make
 npm start
 ```

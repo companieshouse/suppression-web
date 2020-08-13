@@ -8,25 +8,19 @@ local_resource(
   cmd = 'npm --silent run build',
   deps = [
     'src'
-  ],
-  ignore = [
-    'src/views'
   ]
 )
 
 local_resource(
-  name = 'dev:suppression-web:build:static',
-  cmd = 'npm --silent run build:static'
+  name = 'dev:suppression-web:build:views-styles',
+  cmd = 'npm --silent run build:views-styles',
   deps = [
     'src'
-  ],
-  ignore = [
-    'src/views'
   ]
 )
 
 custom_build(
-  ref = ECR_ADDRESS,
+  ref = 'suppression-web:latest',
   command = 'DOCKER_BUILDKIT=1 docker build --ssh default -t $EXPECTED_REF .',
   live_update = [
     sync(
