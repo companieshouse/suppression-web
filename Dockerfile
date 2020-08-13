@@ -1,5 +1,4 @@
-
-# syntax=docker/dockerfile:1.0.0-experimental
+# syntax=docker/dockerfile:experimental
 
 ## Base build image
 FROM node:14-alpine as build-base
