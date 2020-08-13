@@ -11,7 +11,7 @@ clean:
 	rm -rf dist
 
 .PHONY: build-static
-build-static:
+build-views-styles:
 	npm run build:views-styles
 
 .PHONY: npm-install
@@ -19,5 +19,5 @@ npm-install:
 	npm i
 
 .PHONY: init
-init: npm-install build-static
+init: npm-install build-views-styles
 

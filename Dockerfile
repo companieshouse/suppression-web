@@ -19,7 +19,6 @@ RUN --mount=type=ssh npm install --production
 FROM prod-deps-image as build-image
 
 RUN --mount=type=ssh npm install
-RUN --mount=type=ssh npm install gulp-cli -g
 COPY . ./
 
 RUN npm run build
