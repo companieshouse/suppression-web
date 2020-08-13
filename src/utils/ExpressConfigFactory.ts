@@ -8,7 +8,7 @@ export const createExpressConfig = () => (app: express.Application): void => {
 
     // set up the template engine
     const env = nunjucks.configure([
-        viewPath,
+        'dist/views',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components',
     ], {
