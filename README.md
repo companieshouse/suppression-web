@@ -26,7 +26,7 @@ Then open your browser and go to http://localhost:3000/suppress-my-details.
 cd to the root directory, and type the following commands:
 
 ```
-docker build -t suppression-web .
+DOCKER_BUILDKIT=1 docker build --ssh default -t suppression-web .
 docker run -p 3000:3000 -d suppression-web
 ```
 
