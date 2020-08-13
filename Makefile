@@ -1,5 +1,5 @@
 .PHONY: build
-build: clean build-app build-static
+build: clean build-app
 	npm run build
 
 .PHONY: build-app
@@ -10,14 +10,10 @@ build-app:
 clean:
 	rm -rf dist
 
-.PHONY: build-static
-build-views-styles:
-	npm run build:views-styles
-
 .PHONY: npm-install
 npm-install:
 	npm i
 
 .PHONY: init
-init: npm-install build-views-styles
+init: npm-install
 

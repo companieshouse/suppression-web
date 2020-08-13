@@ -22,7 +22,6 @@ RUN --mount=type=ssh npm install
 COPY . ./
 
 RUN npm run build
-RUN npm run build:views-styles
 
 FROM node:14-alpine as runtime
 
