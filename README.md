@@ -15,7 +15,7 @@ cd to the root directory, and type the following commands:
 
 ```
 npm install
-make
+npm run build
 npm start
 ```
 

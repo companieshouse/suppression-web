@@ -1,0 +1,30 @@
+local_resource(
+  name = 'dev:suppression-web:init',
+  cmd = 'npm --silent install'
+)
+
+local_resource(
+  name = 'dev:suppression-web:build',
+  cmd = 'npm --silent run build',
+  deps = [
+    'src'
+  ],
+  ignore = [
+    'src/views'
+  ]
+)
+
+custom_build(
+  ref = ECR_ADDRESS,
+  command = 'DOCKER_BUILDKIT=1 docker build --ssh default -t $EXPECTED_REF .',
+  live_update = [
+    sync(
+      local_path = './dist',
+      remote_path = '/app/dist'
+    ),
+    restart_container()
+  ],
+  deps = [
+    './dist'
+  ]
+)
