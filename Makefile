@@ -1,27 +1,15 @@
 .PHONY: build
-build: clean build-app build-static
-	npm run build
-
-.PHONY: build-app
-build-app:
+build: clean
 	npm run build
 
 .PHONY: clean
 clean:
 	rm -rf dist
 
-.PHONY: build-static
-build-static:
-	gulp static
-
 .PHONY: npm-install
 npm-install:
 	npm i
 
-.PHONY: gulp-install
-gulp-install:
-	npm install gulp-cli -g
-
 .PHONY: init
-init: npm-install gulp-install build-static
+init: npm-install
 

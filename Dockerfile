@@ -1,8 +1,10 @@
-
-# syntax=docker/dockerfile:1.0.0-experimental
+# syntax=docker/dockerfile:experimental
 
 ## Base build image
 FROM node:14-alpine as build-base
+
+RUN apk add --update-cache git openssh-client python make g++ && rm -rf /var/cache/apk/*
+RUN mkdir -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 # Configure work directory
 WORKDIR /build
@@ -11,19 +13,15 @@ COPY package.json package-lock.json ./
 ## Image with runtime dependencies
 FROM build-base as prod-deps-image
 
-RUN npm install --production
+RUN --mount=type=ssh npm install --production
 
 ## Build image
 FROM prod-deps-image as build-image
 
-RUN npm install
-RUN npm install gulp-cli -g
+RUN --mount=type=ssh npm install
 COPY . ./
 
 RUN npm run build
-COPY . ./
-RUN gulp static
-COPY . ./
 
 FROM node:14-alpine as runtime
 
