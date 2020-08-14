@@ -2,6 +2,6 @@ version: "3.8"
 
 services:
   suppression-web:
-    image:
+    image: 'suppression-web:latest'
     expose:
       - 3000

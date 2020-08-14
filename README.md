@@ -8,7 +8,6 @@ Web frontend for the 'Suppress My Details' service.
 - [NunJucks](https://mozilla.github.io/nunjucks)
 - [gulpJS](https://gulpjs.com/)
 
-
 ## How to run it locally
 
 cd to the root directory, and type the following commands:
