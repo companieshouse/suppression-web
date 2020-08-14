@@ -9,7 +9,6 @@ const paths = {
   govukfrontend: ['../node_modules/govuk-frontend']
 };
 
-
 gulp.task('copy-views', function () {
   return gulp.src(paths.pages + '/**/*').pipe(gulp.dest(paths.build + '/views'));
 });
