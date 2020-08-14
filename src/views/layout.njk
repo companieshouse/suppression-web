@@ -1,0 +1,65 @@
+{% extends 'govuk/template.njk' %}
+
+{% from 'govuk/components/footer/macro.njk'       import govukFooter %}
+{% from 'govuk/components/header/macro.njk'       import govukHeader %}
+{% from 'govuk/components/phase-banner/macro.njk' import govukPhaseBanner %}
+
+{% set serviceName = 'Apply to remove your home address from the Companies House register' %}
+
+{% block head %}
+  <!--[if !IE 8]><!-->
+  <link href="//{{ CDN_HOST }}/stylesheets/govuk-frontend/v3.6.0/govuk-frontend-3.6.0.min.css" rel="stylesheet"/>
+  <!--<![endif]-->
+{% endblock %}
+
+{% block header %}
+  {{
+    govukHeader({
+      homepageUrl: paths.ROOT_URI,
+      serviceName: serviceName,
+      serviceUrl: paths.ROOT_URI,
+      containerClasses: 'govuk-width-container'
+    })
+  }}
+{% endblock %}
+
+{% set mainClasses = mainClasses | default('govuk-main-wrapper--auto-spacing') %}
+
+{% block beforeContent %}
+  {{
+    govukPhaseBanner({
+      tag: {
+        text: 'Beta'
+      },
+      html: 'This is a new service – your <a class="govuk-link" href="#" target="_blank">feedback</a> will help us to improve it.'
+    })
+  }}
+  {% block backLink %}{% endblock %}
+{% endblock %}
+
+{% block footer %}
+  {{
+    govukFooter({
+      meta: {
+        items: [
+          {
+            href: 'http://resources.companieshouse.gov.uk/legal/termsAndConditions.shtml',
+            text: 'Policies'
+          },
+          {
+            href: 'https://www.gov.uk/help/cookies',
+            text: 'Cookies'
+          },
+          {
+            href: 'https://www.gov.uk/contact',
+            text: 'Contact us'
+          },
+          {
+            href: 'https://developer.companieshouse.gov.uk/',
+            text: 'Developers'
+          }
+        ]
+      }
+    })
+  }}
+{% endblock %}
