@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { HomeController } from '../controllers/HomeController';
+import { ROOT_URI } from './paths';
 
 
 export const routes = Router();
@@ -12,4 +13,4 @@ const homeController = new HomeController();
 /**
  * Route definitions
  */
-routes.get('/suppress-my-details', homeController.sayHello);
+routes.get(ROOT_URI, homeController.sayHello);
