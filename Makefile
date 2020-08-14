@@ -1,9 +1,5 @@
 .PHONY: build
-build: clean build-app
-	npm run build
-
-.PHONY: build-app
-build-app:
+build: clean
 	npm run build
 
 .PHONY: clean
