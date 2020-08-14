@@ -4,10 +4,21 @@ local_resource(
 )
 
 local_resource(
-  name = 'dev:suppression-web:build',
-  cmd = 'npm --silent run build',
+  name = 'dev:suppression-web:build-views',
+  cmd = 'npm --silent run build:copy-views',
+  deps = [
+    'src/views'
+  ]
+)
+
+local_resource(
+  name = 'dev:suppression-web:build-code',
+  cmd = 'npm --silent run build:compile',
   deps = [
     'src'
+  ],
+  ignore = [
+    'src/views'
   ]
 )
 

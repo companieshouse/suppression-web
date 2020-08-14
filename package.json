@@ -11,6 +11,8 @@
     "start": "ts-node ./dist/server.js",
     "start:watch": "nodemon",
     "build": "tsc && gulp copy-views-styles",
+    "build:copy-views": "gulp copy-views",
+    "build:compile": "tsc",
     "postbuild": "copyfiles -f -V src/views/* dist/views",
     "lint": "tslint -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
