@@ -2,6 +2,6 @@ version: "3.8"
 
 services:
   suppression-web:
-    image: 'suppression-web:latest'
+    image: '169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/suppression-web:latest'
     expose:
       - 3000

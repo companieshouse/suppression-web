@@ -24,8 +24,8 @@ Then open your browser and go to http://localhost:3000/suppress-my-details.
 cd to the root directory, and type the following commands:
 
 ```
-DOCKER_BUILDKIT=1 docker build --ssh default -t suppression-web .
-docker run -p 3000:3000 -d suppression-web
+DOCKER_BUILDKIT=1 docker build --ssh default -t 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/suppression-web .
+docker run -p 3000:3000 -d 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/suppression-web
 ```
 
 Then open your browser and go to http://localhost:3000/suppress-my-details.
