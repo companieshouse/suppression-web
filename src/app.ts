@@ -24,9 +24,7 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
-// serve static assets
-app.use('/static', express.static('dist/static'));
-env.addGlobal('CSS_URL', '/static/app.css');
+env.addGlobal('CDN_HOST', 'cdn.chs.local');
 
 // apply our default routes to /
 app.use('/', routes);
