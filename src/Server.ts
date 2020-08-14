@@ -9,7 +9,7 @@ export class Server {
     public start(): void {
         ApplicationFactory.createInstance().listen(this.port, () => {
             console.log(('  App is running at http://localhost:%d'), this.port);
-            console.log('Press CTRL-C to stop\n');
+            console.log('   Press CTRL-C to stop\n');
         });
     }
 }

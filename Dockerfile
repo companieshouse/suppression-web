@@ -31,4 +31,4 @@ COPY --from=prod-deps-image /build/node_modules/ ./node_modules
 COPY --from=build-image /build/dist/ ./dist
 
 EXPOSE 3000
-CMD [ "node", "/app/dist/server.js" ]
+CMD [ "node", "/app/dist/App.js" ]
