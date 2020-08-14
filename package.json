@@ -15,7 +15,9 @@
     "build:compile": "tsc",
     "postbuild": "copyfiles -f -V src/views/* dist/views",
     "lint": "tslint -p .",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "nyc npm test",
+    "analyse-code": "sonar-scanner"
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -35,6 +37,8 @@
     "jest": "^26.4.0",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
+    "sonarqube-scanner": "^2.7.0",
     "supertest": "^4.0.2",
     "ts-jest": "^26.2.0",
     "ts-node": "^8.10.2",

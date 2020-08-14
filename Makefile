@@ -14,5 +14,12 @@ npm-install:
 init: npm-install
 
 .PHONY: test
-test:
-	npm run test
+test: test-unit
+
+.PHONY: test-unit
+test-unit:
+	npm run test:coverage
+
+.PHONY: sonar
+sonar:
+	npm run analyse-code
