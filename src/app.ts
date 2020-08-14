@@ -13,12 +13,12 @@ const viewPath = path.join(__dirname, 'views');
 
 // set up the template engine
 const env = nunjucks.configure([
-  viewPath,
-  'node_modules/govuk-frontend/',
-  'node_modules/govuk-frontend/components',
+    viewPath,
+    'node_modules/govuk-frontend/',
+    'node_modules/govuk-frontend/components',
 ], {
-  autoescape: true,
-  express: app,
+    autoescape: true,
+    express: app,
 });
 
 app.set('views', viewPath);
