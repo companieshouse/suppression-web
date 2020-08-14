@@ -19,7 +19,5 @@ export const createExpressConfig = () => (app: express.Application): void => {
     app.set('views', viewPath);
     app.set('view engine', 'njk');
 
-    // serve static assets
-    app.use('/static', express.static('dist/static'));
-    env.addGlobal('CSS_URL', '/static/app.css');
+    env.addGlobal('CDN_HOST', 'cdn.chs.local');
 };
