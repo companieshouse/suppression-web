@@ -1,6 +1,7 @@
 import { BaseHttpController, controller, httpGet } from 'inversify-express-utils';
+import { ROOT_URI } from '../routes/paths';
 
-@controller('/suppress-my-details')
+@controller(ROOT_URI)
 export class HomeController extends BaseHttpController {
 
     @httpGet('')
