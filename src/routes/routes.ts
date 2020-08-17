@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { HomeController } from '../controllers/HomeController';
+import { StartPageController } from '../controllers/StartPageController';
 import { ROOT_URI } from './paths';
 
 
@@ -8,9 +8,9 @@ export const routes = Router();
 /**
  * Controllers (route handlers).
  */
-const homeController = new HomeController();
+const startPageController = new StartPageController();
 
 /**
  * Route definitions
  */
-routes.get(ROOT_URI, homeController.sayHello);
+routes.get(ROOT_URI, startPageController.renderView);

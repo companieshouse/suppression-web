@@ -1,0 +1,82 @@
+{% extends 'layout.njk' %}
+
+{% from 'govuk/components/warning-text/macro.njk' import govukWarningText %}
+{% from 'govuk/components/button/macro.njk'       import govukButton %}
+
+{% block pageTitle %}
+  {{ serviceName }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">{{ serviceName }}</h1>
+      <p class="govuk-body-l">
+        Use this service to apply to remove your home address, or part of it, from the Companies House public register (SR01).
+      </p>
+
+      {{
+        govukWarningText({
+          text: 'You cannot ask to remove your company’s registered office address, even if it’s your home address.',
+          iconFallbackText: 'Warning'
+        })
+      }}
+
+      <p class="govuk-body">It costs £32 to remove your home address from a document. If you want to remove your home address from more than one document, you must pay this fee for each document.</p>
+      <h2 class="govuk-body govuk-!-font-weight-bold">You can use this service if you are, or were:</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>a company officer</li>
+        <li>a person with significant control (PSC)</li>
+        <li>a subscriber or member of a company, Limited Liability Partnership (LLP), Societas Europaea (SE) or eligible Scottish partnership</li>
+        <li>an officer or permanent representative of an overseas company</li>
+      </ul>
+      <h2 class="govuk-body govuk-!-font-weight-bold">You'll need to know which document contains your home address by checking the
+        <a target="_blank" href="https://beta.companieshouse.gov.uk/">Companies House register</a>, and make a note of:
+      </h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>the date it was added to the register</li>
+        <li>the document name (shown on the PDF of the document)</li>
+        <li>the document description (shown in the filing history)</li>
+      </ul>
+      <h2 class="govuk-body govuk-!-font-weight-bold">You'll also need:</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>a different address to replace your home address, unless the company is closed or you are no longer acting for the company</li>
+        <li>the company name and number</li>
+        <li>a credit or debit card</li>
+      </ul>
+
+      {{
+        govukButton({
+          text: 'Start now',
+          href: '#',
+          classes: 'govuk-!-margin-top-2 govuk-!-margin-bottom-8',
+          isStartButton: true
+        })
+      }}
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Guidance
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-body-s">
+            <li>
+              <a class="govuk-link" target="_blank" href="https://www.gov.uk/government/publications/restricting-the-disclosure-of-your-psc-information">
+                Restricting the disclosure of your information
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block bodyEnd %}
+    {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+    <script src="//{{ CDN_HOST }}/javascripts/govuk-frontend/v3.6.0/govuk-frontend-3.6.0.min.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+{% endblock %}
