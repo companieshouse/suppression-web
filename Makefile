@@ -14,7 +14,8 @@ npm-install:
 init: npm-install
 
 .PHONY: test
-test: test-unit
+test:
+	npm run test
 
 .PHONY: sonar
 sonar:
