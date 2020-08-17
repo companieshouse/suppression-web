@@ -4,6 +4,5 @@ node_modules/
 .idea/
 .DS_Store
 .vscode/
-coverage-report
-.nyc_output/
+coverage
 .scannerwork/
