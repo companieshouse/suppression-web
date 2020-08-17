@@ -8,24 +8,24 @@ Web frontend for the 'Suppress My Details' service.
 - [NunJucks](https://mozilla.github.io/nunjucks)
 - [gulpJS](https://gulpjs.com/)
 
-## How to run it locally
+## Running locally
 
-cd to the root directory, and type the following commands:
+1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
 
-```
-make
-npm start
-```
+2. Enable the `platform` module
 
-Then open your browser and go to http://localhost:3000/suppress-my-details.
+3. Enable the `suppression` module
 
-## How to run it through docker
+4. Navigate to `http://chs.local/suppress-my-details/` to see the landing page
 
-cd to the root directory, and type the following commands:
+## To make local changes
 
-```
-DOCKER_BUILDKIT=1 docker build --ssh default -t 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/suppression-web .
-docker run -p 3000:3000 -d 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/suppression-web
-```
+Development mode is available for this service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
 
-Then open your browser and go to http://localhost:3000/suppress-my-details.
+    ./bin/chs-dev development enable suppression-web
+
+## To build the Docker container
+
+    DOCKER_BUILDKIT=1 docker build --ssh default -t 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/suppression-web .
+
+
