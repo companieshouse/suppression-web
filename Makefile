@@ -16,3 +16,7 @@ init: npm-install
 .PHONY: test
 test:
 	npm run test
+
+.PHONY: sonar
+sonar:
+	npm run analyse-code
