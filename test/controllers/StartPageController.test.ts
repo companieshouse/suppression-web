@@ -1,4 +1,3 @@
-
 import { OK } from 'http-status-codes';
 import * as request from 'supertest';
 
@@ -17,7 +16,7 @@ describe('StartPageController', () => {
                 /<a.* href="https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information">.*<\/a>/s,
                 /<a.*>\s*Companies House register\s*<\/a>/,
                 /<a.* href="https:\/\/beta.companieshouse.gov.uk\/">.*<\/a>/s,
-            ]
+            ];
 
             await request(app).get(ROOT_URI).expect(response => {
                 expect(response.status).toEqual(OK);
