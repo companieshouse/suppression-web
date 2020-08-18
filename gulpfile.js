@@ -4,7 +4,7 @@ const sass = require("gulp-sass");
 sass.compiler = require('node-sass');
 
 const paths = {
-  build: ['../dist'],
+  build: ['dist'],
   pages: ['src/views'],
   govukfrontend: ['../node_modules/govuk-frontend']
 };
