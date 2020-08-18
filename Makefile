@@ -26,7 +26,7 @@ test: test-unit
 
 .PHONY: test-unit
 test-unit:
-	npm run test:coverage
+	npm run test
 
 .PHONY: package
 package: build
