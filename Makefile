@@ -1,21 +1,49 @@
-.PHONY: build
-build: clean
-	npm run build
+artifact_name       := suppression-web
+
+.PHONY: all
+all: build
 
 .PHONY: clean
 clean:
-	rm -rf dist
+	rm -f ./$(artifact_name)-*.zip
+	rm -rf ./dist
+	rm -rf ./build-*
+	rm -f ./build.log
 
-.PHONY: npm-install
-npm-install:
-	npm i
+package-install:
+	npm install
 
-.PHONY: init
-init: npm-install
+.PHONY: build
+build:	package-install lint
+	npm run build
+
+.PHONY: lint
+lint:
+	npm run lint
 
 .PHONY: test
-test:
-	npm run test
+test: test-unit
+
+.PHONY: test-unit
+test-unit:
+	npm run test:coverage
+
+.PHONY: package
+package: build
+ifndef version
+	$(error No version given. Aborting)
+endif
+	$(info Packaging version: $(version))
+	$(eval tmpdir := $(shell mktemp -d build-XXXXXXXXXX))
+	cp -r ./dist $(tmpdir)
+	cp -r ./package.json $(tmpdir)
+	cp -r ./package-lock.json $(tmpdir)
+	cp ./start.sh $(tmpdir)
+	cp ./routes.yaml $(tmpdir)
+	cd $(tmpdir) && npm install --production
+	rm $(tmpdir)/package.json $(tmpdir)/package-lock.json
+	cd $(tmpdir) && zip -r ../$(artifact_name)-$(version).zip .
+	rm -rf $(tmpdir)
 
 .PHONY: sonar
 sonar:
