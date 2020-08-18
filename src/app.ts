@@ -24,7 +24,9 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
-env.addGlobal('CDN_HOST', 'cdn.chs.local');
+app.locals.cdn = {
+  host: process.env.CDN_HOST
+};
 
 // apply our default routes to /
 app.use('/', routes);
