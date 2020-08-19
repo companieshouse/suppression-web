@@ -1,12 +1,15 @@
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
+import { get, getOrDefault, loadEnvironmentVariables } from './modules/config-loader/ConfigLoader';
 import { routes } from './routes/routes';
 
 const app = express();
 
+loadEnvironmentVariables();
+
 // set up app variables from the environment
-app.set('port', process.env.PORT || '3000');
+app.set('port', getOrDefault('PORT', '3000'));
 
 // where nunjucks templates should resolve to
 const viewPath = path.join(__dirname, 'views');
@@ -25,7 +28,7 @@ app.set('views', viewPath);
 app.set('view engine', 'njk');
 
 app.locals.cdn = {
-  host: process.env.CDN_HOST
+  host: get('CDN_HOST')
 };
 
 // apply our default routes to /
