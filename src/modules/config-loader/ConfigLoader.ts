@@ -1,16 +1,15 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as Joi from 'joi';
-import { resolve } from 'path';
 
 import { ConfigOptions } from './ConfigOptions';
 
 export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
 
-  const envVarFilePath: string = configOptions?.filePath || resolve(process.cwd(), `.env.${get('NODE_ENV')}`);
+  const envVarFilePath = configOptions?.filePath ? configOptions.filePath : getNodeEnvFilePath();
 
   let config: Record<string, any> = {};
-  if (fs.existsSync(envVarFilePath)) {
+  if (envVarFilePath && fs.existsSync(envVarFilePath)) {
     config = dotenv.parse(fs.readFileSync(envVarFilePath));
   }
 
@@ -21,6 +20,16 @@ export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
   }
 
   saveToProcessEnv(config);
+}
+
+function getNodeEnvFilePath(): string | undefined {
+  const env: string | undefined = get('NODE_ENV');
+  if (!env) {
+    return;
+  }
+  const envFilePath = `${__dirname}/../../../.env.${env}`;
+  dotenv.config({path: envFilePath});
+  return envFilePath;
 }
 
 function validate(config: Record<string, any>, schema: Joi.ObjectSchema): Record<string, any> {

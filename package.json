@@ -8,14 +8,14 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./dist/server.js",
+    "start": "NODE_ENV=test ts-node ./dist/server.js",
     "start:watch": "nodemon",
     "build": "tsc && gulp copy-views-styles",
     "build:copy-views": "gulp copy-views",
     "build:compile": "tsc",
     "postbuild": "copyfiles -f -V src/views/* dist/views",
     "lint": "tslint -p .",
-    "test": "jest --coverage",
+    "test": "NODE_ENV=test jest --coverage",
     "analyse-code": "sonar-scanner"
   },
   "dependencies": {

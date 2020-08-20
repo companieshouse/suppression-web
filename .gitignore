@@ -6,3 +6,5 @@ node_modules/
 .vscode/
 coverage
 .scannerwork/
+.env.*
+!.env.test
