@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
 export interface ConfigOptions {
-  filePath?: string;
+  customFilePath?: string;
   validationSchema?: Joi.ObjectSchema;
 }

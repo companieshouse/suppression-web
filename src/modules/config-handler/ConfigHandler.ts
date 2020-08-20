@@ -3,10 +3,9 @@ import * as fs from 'fs';
 import * as Joi from 'joi';
 
 import { ConfigOptions } from './ConfigOptions';
-
 export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
 
-  const envVarFilePath = configOptions?.filePath ? configOptions.filePath : getNodeEnvFilePath();
+  const envVarFilePath = configOptions?.customFilePath ? configOptions.customFilePath : getNodeEnvFilePath();
 
   let config: Record<string, any> = {};
   if (envVarFilePath && fs.existsSync(envVarFilePath)) {
@@ -23,7 +22,7 @@ export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
 }
 
 function getNodeEnvFilePath(): string | undefined {
-  const env: string | undefined = get('NODE_ENV');
+  const env: string | undefined = getConfigValue('NODE_ENV');
   if (!env) {
     return;
   }
@@ -47,14 +46,18 @@ function saveToProcessEnv(config: Record<string, any>): void {
     .forEach(key => (process.env[key] = config[key]));
 }
 
-export function get(key: string): string | undefined {
-  return process.env[key];
+export function getConfigValue(key: string): string {
+  const value = process.env[key];
+  if (value === undefined) {
+    throw new Error(`Variable ${key} was not found`);
+  }
+  return value;
 }
 
-export function getOrDefault(key: string, defaultValue: string): string {
-  const value = get(key);
-  if (value) {
-    return value;
+export function getConfigValueOrDefault(key: string, defaultValue: string): string {
+  const value = process.env[key];
+  if (value === undefined) {
+    return defaultValue;
   }
-  return defaultValue;
+  return value;
 }
