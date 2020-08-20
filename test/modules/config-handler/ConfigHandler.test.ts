@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 
 import {
   getConfigValue,
-  getConfigValueOrDefault,
+  getConfigValueOrDefault, getConfigValueOrThrow,
   loadEnvironmentVariables
 } from '../../../src/modules/config-handler/ConfigHandler';
 
@@ -105,33 +105,51 @@ describe('ConfigHandler', () => {
         expect(value).toEqual(testValue);
       });
 
-      it('should throw exception for invalid key', () => {
+      it('should undefined for invalid key', () => {
 
-        try {
-          getConfigValue(testVariable);
-        } catch (err) {
-          expect(err).toEqual(new Error('Variable VAR_1 was not found'));
-        }
-      });
-    });
+        const value = getConfigValue(testVariable);
 
-    describe('get config value or default', () => {
-
-      it('should return config value for valid key', () => {
-        process.env[testVariable] = testValue;
-
-        const value = getConfigValueOrDefault(testVariable, 'default');
-
-        expect(value).toEqual(testValue);
+        expect(value).toBeUndefined();
       });
 
-      it('should return default value for invalid key', () => {
+      describe('get config value or throw exception', () => {
 
-        const value = getConfigValueOrDefault(testVariable, 'default');
+        it('should return config value for valid key', () => {
+          process.env[testVariable] = testValue;
 
-        expect(value).toEqual('default');
+          const value = getConfigValueOrThrow(testVariable);
+
+          expect(value).toEqual(testValue);
+        });
+
+        it('should throw exception for invalid key', () => {
+
+          try {
+            getConfigValueOrThrow(testVariable);
+          } catch (err) {
+            expect(err).toEqual(new Error('Variable VAR_1 was not found'));
+          }
+        });
       });
 
+      describe('get config value or return default value', () => {
+
+        it('should return config value for valid key', () => {
+          process.env[testVariable] = testValue;
+
+          const value = getConfigValueOrDefault(testVariable, 'default');
+
+          expect(value).toEqual(testValue);
+        });
+
+        it('should return default value for invalid key', () => {
+
+          const value = getConfigValueOrDefault(testVariable, 'default');
+
+          expect(value).toEqual('default');
+        });
+
+      });
     });
   });
 });

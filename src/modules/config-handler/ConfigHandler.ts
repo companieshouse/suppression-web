@@ -23,7 +23,7 @@ export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
 
 function getNodeEnvFilePath(): string | undefined {
   const env: string | undefined = getConfigValue('NODE_ENV');
-  if (!env) {
+  if (env === undefined) {
     return;
   }
   const envFilePath = `${__dirname}/../../../.env.${env}`;
@@ -46,7 +46,11 @@ function saveToProcessEnv(config: Record<string, any>): void {
     .forEach(key => (process.env[key] = config[key]));
 }
 
-export function getConfigValue(key: string): string {
+export function getConfigValue(key: string): string | undefined {
+  return process.env[key];
+}
+
+export function getConfigValueOrThrow(key: string): string {
   const value = process.env[key];
   if (value === undefined) {
     throw new Error(`Variable ${key} was not found`);

@@ -1,9 +1,12 @@
-import * as dotenv from 'dotenv';
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
-import { getConfigValue, getConfigValueOrDefault, loadEnvironmentVariables } from './modules/config-handler/ConfigHandler';
+import {
+  getConfigValueOrDefault,
+  getConfigValueOrThrow,
+  loadEnvironmentVariables
+} from './modules/config-handler/ConfigHandler';
 import { routes } from './routes/routes';
 
 const app = express();
@@ -30,7 +33,7 @@ app.set('views', viewPath);
 app.set('view engine', 'njk');
 
 app.locals.cdn = {
-  host: getConfigValue('CDN_HOST')
+  host: getConfigValueOrThrow('CDN_HOST')
 };
 
 // apply our default routes to /
