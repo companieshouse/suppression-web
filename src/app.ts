@@ -1,14 +1,20 @@
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
+// @ts-ignore
+import IORedis from 'ioredis';
 import { routes } from './routes/routes';
+import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
+
+import cookieParser = require('cookie-parser');
 
 const app = express();
 
-// set up app variables from the environment
+// env
 app.set('port', process.env.PORT || '3000');
+app.locals.cdn = { host: process.env.CDN_HOST };
 
-// where nunjucks templates should resolve to
+// nunjucks templates should resolve to
 const viewPath = path.join(__dirname, 'views');
 
 // set up the template engine
@@ -24,9 +30,17 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
-app.locals.cdn = {
-  host: process.env.CDN_HOST
-};
+//Session
+const sessionStore = new SessionStore(new IORedis(process.env.CACHE_SERVER));
+
+const sessionMiddleware = SessionMiddleware({
+  cookieName: process.env.COOKIE_NAME as string,
+  cookieDomain: process.env.COOKIE_DOMAIN as string,
+  cookieSecret: process.env.COOKIE_SECRET as string
+}, sessionStore);
+
+app.use(cookieParser());
+app.use(sessionMiddleware);
 
 // apply our default routes to /
 app.use('/', routes);
