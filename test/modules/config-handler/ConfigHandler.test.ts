@@ -44,21 +44,10 @@ describe('ConfigHandler', () => {
       });
     });
 
-    it('should load and parse environment variables from custom file', () => {
-
-      const testEnvFilePath = 'test/modules/config-handler/.testenv';
-
-      loadEnvironmentVariables({customFilePath: testEnvFilePath});
-
-      expect(process.env).toEqual(expect.objectContaining({VAR_1: '123', VAR_2: 'abc', VAR_3: ''}));
-    });
-
     it('should ignore file that does not exist and default to runtime environment variables', () => {
       process.env.VAR_1 = '123';
 
-      const testEnvFilePath = 'invalid';
-
-      loadEnvironmentVariables({customFilePath: testEnvFilePath});
+      loadEnvironmentVariables();
 
       expect(process.env.VAR_1).toBe('123');
     });

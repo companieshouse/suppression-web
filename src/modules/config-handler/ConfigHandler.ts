@@ -3,13 +3,18 @@ import * as fs from 'fs';
 import * as Joi from 'joi';
 
 import { ConfigOptions } from './ConfigOptions';
+
 export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
 
-  const envVarFilePath = configOptions?.customFilePath ? configOptions.customFilePath : getNodeEnvFilePath();
+  const env = getConfigValue('NODE_ENV');
 
   let config: Record<string, any> = {};
-  if (envVarFilePath && fs.existsSync(envVarFilePath)) {
-    config = dotenv.parse(fs.readFileSync(envVarFilePath));
+
+  if (env) {
+    const envVarFilePath = `${__dirname}/../../../.env.${env}`;
+    if (fs.existsSync(envVarFilePath)) {
+      config = dotenv.parse(fs.readFileSync(envVarFilePath));
+    }
   }
 
   config = {...config, ...process.env};
@@ -21,18 +26,8 @@ export function loadEnvironmentVariables(configOptions?: ConfigOptions): void {
   saveToProcessEnv(config);
 }
 
-function getNodeEnvFilePath(): string | undefined {
-  const env: string | undefined = getConfigValue('NODE_ENV');
-  if (env === undefined) {
-    return;
-  }
-  const envFilePath = `${__dirname}/../../../.env.${env}`;
-  dotenv.config({path: envFilePath});
-  return envFilePath;
-}
-
 function validate(config: Record<string, any>, schema: Joi.ObjectSchema): Record<string, any> {
-  const { error, value } = schema.validate(config);
+  const {error, value} = schema.validate(config);
 
   if (error) {
     throw new Error(`Config validation error: ${error}`);
