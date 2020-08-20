@@ -9,11 +9,11 @@ import cookieParser = require('cookie-parser');
 
 const app = express();
 
-// env
+// set up app variables from the environment
 app.set('port', process.env.PORT || '3000');
 app.locals.cdn = { host: process.env.CDN_HOST };
 
-// nunjucks templates should resolve to
+// where nunjucks templates should resolve to
 const viewPath = path.join(__dirname, 'views');
 
 // set up the template engine
