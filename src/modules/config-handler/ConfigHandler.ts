@@ -51,7 +51,7 @@ export function getConfigValue(key: string): string | undefined {
 }
 
 export function getConfigValueOrThrow(key: string): string {
-  const value = process.env[key];
+  const value = getConfigValue(key);
   if (value === undefined) {
     throw new Error(`Variable ${key} was not found`);
   }
@@ -59,7 +59,7 @@ export function getConfigValueOrThrow(key: string): string {
 }
 
 export function getConfigValueOrDefault(key: string, defaultValue: string): string {
-  const value = process.env[key];
+  const value = getConfigValue(key);
   if (value === undefined) {
     return defaultValue;
   }
