@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
-// @ts-ignore
 import IORedis from 'ioredis';
 import { routes } from './routes/routes';
 import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
