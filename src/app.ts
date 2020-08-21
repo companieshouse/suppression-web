@@ -1,11 +1,12 @@
+import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
 import * as express from 'express';
+import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
-import IORedis from 'ioredis';
 import { routes } from './routes/routes';
-import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
 
 import cookieParser = require('cookie-parser');
+import { ROOT_URI } from './routes/paths';
 
 const app = express();
 
@@ -29,7 +30,7 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
-//Session
+// Session
 const sessionStore = new SessionStore(new IORedis(process.env.CACHE_SERVER));
 
 const sessionMiddleware = SessionMiddleware({
@@ -39,7 +40,12 @@ const sessionMiddleware = SessionMiddleware({
 }, sessionStore);
 
 app.use(cookieParser());
-app.use(sessionMiddleware);
+app.use(`${ROOT_URI}/*`, sessionMiddleware);
+
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+});
 
 // apply our default routes to /
 app.use('/', routes);

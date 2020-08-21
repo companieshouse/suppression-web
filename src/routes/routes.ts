@@ -15,3 +15,6 @@ const startPageController = new StartPageController();
  */
 routes.get(ROOT_URI, startPageController.renderView);
 routes.post(ROOT_URI, startPageController.route);
+
+routes.get('/suppress-my-details/test', startPageController.renderView);
+routes.post('/suppress-my-details/test', startPageController.route);
