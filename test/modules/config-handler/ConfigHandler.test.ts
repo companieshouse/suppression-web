@@ -19,7 +19,7 @@ afterAll(() => {
 
 describe('ConfigHandler', () => {
 
-  function withTemporaryProfileFile(profile: string, content: string, fn: () => void): void {
+  function createTemporaryNodeEnvProfile(profile: string, content: string, fn: () => void): void {
     const path = `${__dirname}/../../../.env.${profile}`;
 
     fs.writeFileSync(path, content);
@@ -32,12 +32,12 @@ describe('ConfigHandler', () => {
     }
   }
 
-  describe('load and merge config', () => {
+  describe('load environment variables', () => {
 
     it('should load and parse environment variables from existing env file', () => {
       process.env.NODE_ENV = 'fake';
 
-      withTemporaryProfileFile(process.env.NODE_ENV!, 'ENABLED=1', () => {
+      createTemporaryNodeEnvProfile(process.env.NODE_ENV!, 'ENABLED=1', () => {
         loadEnvironmentVariables();
         expect(process.env.ENABLED).toBe('1');
       });
@@ -55,7 +55,7 @@ describe('ConfigHandler', () => {
       process.env.NODE_ENV = 'fake';
       process.env.ENABLED = '0';
 
-      withTemporaryProfileFile(process.env.NODE_ENV!, 'ENABLED=1', () => {
+      createTemporaryNodeEnvProfile(process.env.NODE_ENV!, 'ENABLED=1', () => {
         loadEnvironmentVariables();
         expect(process.env.ENABLED).toBe('0');
       });
@@ -68,7 +68,7 @@ describe('ConfigHandler', () => {
         ENABLED: Joi.string().required()
       }).options({allowUnknown: true});
 
-      withTemporaryProfileFile(process.env.NODE_ENV!, '', () => {
+      createTemporaryNodeEnvProfile(process.env.NODE_ENV!, '', () => {
         try {
           loadEnvironmentVariables({validationSchema: testValidationSchema});
         } catch (err) {
@@ -84,7 +84,7 @@ describe('ConfigHandler', () => {
         ENABLED: Joi.string().default('1')
       }).options({allowUnknown: true});
 
-      withTemporaryProfileFile(process.env.NODE_ENV!, '', () => {
+      createTemporaryNodeEnvProfile(process.env.NODE_ENV!, '', () => {
         loadEnvironmentVariables({validationSchema: testValidationSchema});
         expect(process.env.ENABLED).toBe('1');
       });
@@ -104,7 +104,7 @@ describe('ConfigHandler', () => {
       expect(value).toEqual(testValue);
     });
 
-    it('should undefined for invalid key', () => {
+    it('should return undefined for invalid key', () => {
 
       const value = getConfigValue(testVariable);
 
