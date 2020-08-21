@@ -3,7 +3,6 @@ import * as Joi from 'joi';
 
 import {
   getConfigValue,
-  getConfigValueOrDefault, getConfigValueOrThrow,
   loadEnvironmentVariables
 } from '../../../src/modules/config-handler/ConfigHandler';
 
@@ -67,7 +66,7 @@ describe('ConfigHandler', () => {
 
       const testValidationSchema = Joi.object({
         ENABLED: Joi.string().required()
-      });
+      }).options({allowUnknown: true});
 
       withTemporaryProfileFile(process.env.NODE_ENV!, '', () => {
         try {
@@ -78,67 +77,38 @@ describe('ConfigHandler', () => {
       });
     });
 
-  });
-  describe('retrieve config', () => {
+    it('should accept default value when variable defined in validation schema is missing', () => {
+      process.env.NODE_ENV = 'fake';
 
+      const testValidationSchema = Joi.object({
+        ENABLED: Joi.string().default('1')
+      }).options({allowUnknown: true});
+
+      withTemporaryProfileFile(process.env.NODE_ENV!, '', () => {
+        loadEnvironmentVariables({validationSchema: testValidationSchema});
+        expect(process.env.ENABLED).toBe('1');
+      });
+    });
+
+  });
+
+  describe('get config value', () => {
     const testVariable = 'VAR_1'
     const testValue = '123'
 
-    describe('get config value', () => {
+    it('should return config value for valid key', () => {
+      process.env[testVariable] = testValue;
 
-      it('should return config value for valid key', () => {
-        process.env[testVariable] = testValue;
+      const value = getConfigValue(testVariable);
 
-        const value = getConfigValue(testVariable);
+      expect(value).toEqual(testValue);
+    });
 
-        expect(value).toEqual(testValue);
-      });
+    it('should undefined for invalid key', () => {
 
-      it('should undefined for invalid key', () => {
+      const value = getConfigValue(testVariable);
 
-        const value = getConfigValue(testVariable);
-
-        expect(value).toBeUndefined();
-      });
-
-      describe('get config value or throw exception', () => {
-
-        it('should return config value for valid key', () => {
-          process.env[testVariable] = testValue;
-
-          const value = getConfigValueOrThrow(testVariable);
-
-          expect(value).toEqual(testValue);
-        });
-
-        it('should throw exception for invalid key', () => {
-
-          try {
-            getConfigValueOrThrow(testVariable);
-          } catch (err) {
-            expect(err).toEqual(new Error('Variable VAR_1 was not found'));
-          }
-        });
-      });
-
-      describe('get config value or return default value', () => {
-
-        it('should return config value for valid key', () => {
-          process.env[testVariable] = testValue;
-
-          const value = getConfigValueOrDefault(testVariable, 'default');
-
-          expect(value).toEqual(testValue);
-        });
-
-        it('should return default value for invalid key', () => {
-
-          const value = getConfigValueOrDefault(testVariable, 'default');
-
-          expect(value).toEqual('default');
-        });
-
-      });
+      expect(value).toBeUndefined();
     });
   });
 });

@@ -44,19 +44,3 @@ function saveToProcessEnv(config: Record<string, any>): void {
 export function getConfigValue(key: string): string | undefined {
   return process.env[key];
 }
-
-export function getConfigValueOrThrow(key: string): string {
-  const value = getConfigValue(key);
-  if (value === undefined) {
-    throw new Error(`Variable ${key} was not found`);
-  }
-  return value;
-}
-
-export function getConfigValueOrDefault(key: string, defaultValue: string): string {
-  const value = getConfigValue(key);
-  if (value === undefined) {
-    return defaultValue;
-  }
-  return value;
-}
