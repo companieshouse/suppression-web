@@ -34,16 +34,20 @@ describe('ConfigHandler', () => {
 
   describe('load environment variables', () => {
 
-    it('should load and parse environment variables from existing env file', () => {
+    it('should load environment variables from env file and retain runtime variables', () => {
       process.env.NODE_ENV = 'fake';
+      process.env.VAR_1 = '123';
+      process.env.VAR_2 = 'a';
 
       createTemporaryNodeEnvProfile(process.env.NODE_ENV!, 'ENABLED=1', () => {
         loadEnvironmentVariables();
         expect(process.env.ENABLED).toBe('1');
+        expect(process.env.VAR_1).toBe('123');
+        expect(process.env.VAR_2).toBe('a');
       });
     });
 
-    it('should ignore file that does not exist and default to runtime environment variables', () => {
+    it('should ignore env file that does not exist and default to runtime environment variables', () => {
       process.env.VAR_1 = '123';
 
       loadEnvironmentVariables();
@@ -74,6 +78,24 @@ describe('ConfigHandler', () => {
         } catch (err) {
           expect(err).toEqual(new Error('Config validation error: ValidationError: "ENABLED" is required'));
         }
+        expect(process.env.ENABLED).toBeUndefined();
+      });
+    });
+
+    it('should throw exception when required variable defined in validation schema has empty value', () => {
+      process.env.NODE_ENV = 'fake';
+
+      const testValidationSchema = Joi.object({
+        ENABLED: Joi.string().required()
+      }).options({allowUnknown: true});
+
+      createTemporaryNodeEnvProfile(process.env.NODE_ENV!, 'ENABLED=', () => {
+        try {
+          loadEnvironmentVariables({validationSchema: testValidationSchema});
+        } catch (err) {
+          expect(err).toEqual(new Error('Config validation error: ValidationError: "ENABLED" is not allowed to be empty'));
+        }
+        expect(process.env.ENABLED).toBeUndefined();
       });
     });
 
