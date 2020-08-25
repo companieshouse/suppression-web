@@ -21,7 +21,9 @@
   "dependencies": {
     "ch-node-session-handler": "git+ssh://git@github.com/companieshouse/node-session-handler.git#3.0.3",
     "cookie-parser": "^1.4.5",
+    "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
     "govuk-frontend": "^3.8.0",
     "nunjucks": "^3.2.2"
   },
@@ -40,6 +42,7 @@
     "jest": "^26.4.0",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.4",
+    "on-headers": "^1.0.2",
     "sonarqube-scanner": "^2.7.0",
     "supertest": "^4.0.2",
     "ts-jest": "^26.2.0",

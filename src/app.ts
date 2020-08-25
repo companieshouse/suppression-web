@@ -1,4 +1,4 @@
-import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
+import { SessionStore } from 'ch-node-session-handler';
 import * as express from 'express';
 import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
@@ -7,6 +7,7 @@ import { routes } from './routes/routes';
 
 import cookieParser = require('cookie-parser');
 import { ROOT_URI } from './routes/paths';
+import { SessionMiddleware } from './middlewares/SessionMiddleware';
 
 const app = express();
 
@@ -32,15 +33,16 @@ app.set('view engine', 'njk');
 
 // Session
 const sessionStore = new SessionStore(new IORedis(process.env.CACHE_SERVER));
+const verifyFlag: boolean = false;
 
 const sessionMiddleware = SessionMiddleware({
   cookieName: process.env.COOKIE_NAME as string,
   cookieDomain: process.env.COOKIE_DOMAIN as string,
   cookieSecret: process.env.COOKIE_SECRET as string
-}, sessionStore);
+}, sessionStore, verifyFlag);
 
 app.use(cookieParser());
-app.use(`${ROOT_URI}/*`, sessionMiddleware);
+app.use('*', sessionMiddleware);
 
 app.use((req, res, next) => {
   console.log(req.session);
