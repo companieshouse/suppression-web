@@ -1,4 +1,4 @@
-import { CookieConfig, SessionStore } from 'ch-node-session-handler';
+import { CookieConfig, SessionMiddleware, SessionStore } from 'ch-node-session-handler';
 import * as express from 'express';
 import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
@@ -12,7 +12,6 @@ import { configValidationSchema } from './modules/config-handler/ConfigValidatio
 import { routes } from './routes/routes';
 
 import cookieParser = require('cookie-parser');
-import { SessionMiddleware } from './middlewares/SessionMiddleware';
 
 const app = express();
 
@@ -40,15 +39,15 @@ app.set('view engine', 'njk');
 app.locals.cdn = {
   host: getConfigValue('CDN_HOST')
 };
+
 // Session
 const sessionStore = new SessionStore(new IORedis(process.env.CACHE_SERVER));
-const verifyFlag: boolean = false;
 
 const sessionMiddleware = SessionMiddleware({
   cookieName: getConfigValue('COOKIE_NAME'),
   cookieDomain: getConfigValue('COOKIE_DOMAIN'),
   cookieSecret: getConfigValue('COOKIE_SECRET')
-} as CookieConfig, sessionStore, verifyFlag);
+} as CookieConfig, sessionStore);
 
 app.use(cookieParser());
 app.use('*', sessionMiddleware);

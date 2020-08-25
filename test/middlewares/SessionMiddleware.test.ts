@@ -23,21 +23,21 @@ describe('SessionMiddleware', () => {
 
     it('should fail when cookie name is missing', () => {
       [''].forEach(cookieName => {
-        expect(() => SessionMiddleware({ ...config, cookieName }, sessionStore, false))
+        expect(() => SessionMiddleware({ ...config, cookieName }, sessionStore))
           .toThrow('Cookie name must be defined')
       });
     });
 
     it('should fail when cookie domain is missing', () => {
       [''].forEach(cookieDomain => {
-        expect(() => SessionMiddleware({ ...config, cookieDomain }, sessionStore, false))
+        expect(() => SessionMiddleware({ ...config, cookieDomain }, sessionStore))
           .toThrow('Cookie domain must be defined')
       });
     });
 
     it('should fail when cookie secret is missing or too short', () => {
       ['', '12345678901234567890123'].forEach(cookieSecret => {
-        expect(() => SessionMiddleware({ ...config, cookieSecret }, sessionStore, false))
+        expect(() => SessionMiddleware({ ...config, cookieSecret }, sessionStore))
           .toThrow('Cookie secret must be at least 24 chars long')
       });
     });
@@ -51,9 +51,9 @@ describe('SessionMiddleware', () => {
 
     it('should create a session and store on redis', async () => {
       const sessionStore = Substitute.for<SessionStore>();
-      const response = Substitute.for<Response>()
+      const response = Substitute.for<Response>();
 
-      await SessionMiddleware(config, sessionStore, false)(request, response, nextFunction);
+      await SessionMiddleware(config, sessionStore)(request, response, nextFunction);
 
       sessionStore.received(1).store(Arg.all());
     });
@@ -73,7 +73,7 @@ describe('SessionMiddleware', () => {
       const sessionStore = Substitute.for<SessionStore>();
       sessionStore.load(cookieArg()).returns(Promise.resolve(session.data));
 
-      await SessionMiddleware(config, sessionStore, false)(request, Substitute.for<Response>(), nextFunction);
+      await SessionMiddleware(config, sessionStore)(request, Substitute.for<Response>(), nextFunction);
 
       expect(request.session!.data).toEqual(session.data);
     });
@@ -84,7 +84,7 @@ describe('SessionMiddleware', () => {
       sessionStore.delete(cookieArg()).returns(Promise.resolve());
 
       const response: SubstituteOf<Response> = Substitute.for<Response>();
-      await SessionMiddleware(config, sessionStore, false)(request, response, nextFunction);
+      await SessionMiddleware(config, sessionStore)(request, response, nextFunction);
 
       expect(request.session).toBeUndefined();
       sessionStore.received().delete(cookieArg() as any);
@@ -97,7 +97,7 @@ describe('SessionMiddleware', () => {
 
       const response: SubstituteOf<Response> = Substitute.for<Response>();
       try {
-        await SessionMiddleware(config, sessionStore, false)(request, response, nextFunction);
+        await SessionMiddleware(config, sessionStore)(request, response, nextFunction);
       } catch (e) {
         expect(fail('Test should not have thrown error'))
       }

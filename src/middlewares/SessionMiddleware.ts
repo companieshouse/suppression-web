@@ -11,7 +11,7 @@ import * as crypto from "crypto";
 const DEFAULT_COOKIE_SECURE_FLAG = false;
 const DEFAULT_COOKIE_TIME_TO_LIVE_IN_SECONDS = 3600;
 
-export function SessionMiddleware (config: CookieConfig, sessionStore: SessionStore, signinFlag: boolean): RequestHandler {
+export function SessionMiddleware (config: CookieConfig, sessionStore: SessionStore): RequestHandler {
 
   if (!config.cookieName) {
     throw Error('Cookie name must be defined');
@@ -23,10 +23,10 @@ export function SessionMiddleware (config: CookieConfig, sessionStore: SessionSt
     throw Error('Cookie secret must be at least 24 chars long');
   }
 
-  return expressAsyncHandler(sessionRequestHandler(config, sessionStore,  signinFlag));
+  return expressAsyncHandler(sessionRequestHandler(config, sessionStore));
 }
 
-const sessionRequestHandler = (config: CookieConfig, sessionStore: SessionStore,  signinFlag: boolean): RequestHandler => {
+const sessionRequestHandler = (config: CookieConfig, sessionStore: SessionStore): RequestHandler => {
 
   return async (request: Request, response: Response, next: NextFunction): Promise<any> => {
 
@@ -75,7 +75,7 @@ const sessionRequestHandler = (config: CookieConfig, sessionStore: SessionStore,
 
       loggerInstance().infoRequest(request, `Session cookie ${sessionCookie} found in request: ${request.url}`);
 
-      request.session = await loadSession(sessionCookie, config, sessionStore,  signinFlag);
+      request.session = await loadSession(sessionCookie, config, sessionStore);
 
       if (request.session != null) {
         originalSessionHash = hash(request.session)
@@ -109,16 +109,15 @@ const hash = (session: Session): string => {
     .digest('hex')
 };
 
-async function loadSession (sessionCookie: string, config: CookieConfig, sessionStore: SessionStore,  signinFlag: boolean): Promise<Session | undefined> {
+async function loadSession (sessionCookie: string, config: CookieConfig, sessionStore: SessionStore): Promise<Session | undefined> {
   let cookie: Cookie;
   try {
     validateCookieSignature(sessionCookie, config.cookieSecret);
     cookie = Cookie.createFrom(sessionCookie);
     const sessionData = await sessionStore.load(cookie);
     const session = new Session(sessionData);
-    if (signinFlag) {
-      session.verify();
-    }
+
+    // session.verify();
 
     loggerInstance().debug(`Session successfully loaded from cookie ${sessionCookie}`);
     return session;

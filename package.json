@@ -15,11 +15,11 @@
     "build:compile": "tsc",
     "postbuild": "copyfiles -f -V src/views/* dist/views",
     "lint": "tslint -p .",
-    "test": "jest --coverage",
+    "test": "NODE_ENV=test jest --coverage",
     "analyse-code": "sonar-scanner"
   },
   "dependencies": {
-    "ch-node-session-handler": "git+ssh://git@github.com/companieshouse/node-session-handler.git#3.0.3",
+    "ch-node-session-handler": "git+ssh://git@github.com:companieshouse/node-session-handler.git#feature/create_cookie",
     "cookie-parser": "^1.4.5",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
