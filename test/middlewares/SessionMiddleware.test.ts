@@ -19,23 +19,25 @@ describe('SessionMiddleware', () => {
 
   describe('middleware initialisation', () => {
 
+    const sessionStore = Substitute.for<SessionStore>();
+
     it('should fail when cookie name is missing', () => {
-      [undefined, null, ''].forEach(cookieName => {
-        expect(() => SessionMiddleware({ ...config, cookieName }, undefined, false))
+      [''].forEach(cookieName => {
+        expect(() => SessionMiddleware({ ...config, cookieName }, sessionStore, false))
           .toThrow('Cookie name must be defined')
       });
     });
 
     it('should fail when cookie domain is missing', () => {
-      [undefined, null, ''].forEach(cookieDomain => {
-        expect(() => SessionMiddleware({ ...config, cookieDomain }, undefined, false))
+      [''].forEach(cookieDomain => {
+        expect(() => SessionMiddleware({ ...config, cookieDomain }, sessionStore, false))
           .toThrow('Cookie domain must be defined')
       });
     });
 
     it('should fail when cookie secret is missing or too short', () => {
-      [undefined, null, '', '12345678901234567890123'].forEach(cookieSecret => {
-        expect(() => SessionMiddleware({ ...config, cookieSecret }, undefined, false))
+      ['', '12345678901234567890123'].forEach(cookieSecret => {
+        expect(() => SessionMiddleware({ ...config, cookieSecret }, sessionStore, false))
           .toThrow('Cookie secret must be at least 24 chars long')
       });
     });
@@ -73,7 +75,7 @@ describe('SessionMiddleware', () => {
 
       await SessionMiddleware(config, sessionStore, false)(request, Substitute.for<Response>(), nextFunction);
 
-      expect(request.session.data).toEqual(session.data);
+      expect(request.session!.data).toEqual(session.data);
     });
 
     it('should delete session and delete session object from the request if session load fails', async () => {
