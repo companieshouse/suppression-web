@@ -41,7 +41,7 @@ app.locals.cdn = {
 };
 
 // Session
-const sessionStore = new SessionStore(new IORedis(process.env.CACHE_SERVER));
+const sessionStore = new SessionStore(new IORedis(getConfigValue('CACHE_SERVER')));
 
 const sessionMiddleware = SessionMiddleware({
   cookieName: getConfigValue('COOKIE_NAME'),
@@ -50,12 +50,7 @@ const sessionMiddleware = SessionMiddleware({
 } as CookieConfig, sessionStore);
 
 app.use(cookieParser());
-app.use('*', sessionMiddleware);
-
-app.use((req, res, next) => {
-  console.log(req.session);
-  next();
-});
+app.use(sessionMiddleware);
 
 // apply our default routes to /
 app.use('/', routes);
