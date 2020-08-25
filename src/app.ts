@@ -1,3 +1,4 @@
+import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
@@ -35,6 +36,9 @@ app.set('view engine', 'njk');
 app.locals.cdn = {
   host: getConfigValue('CDN_HOST')
 };
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // apply our default routes to /
 app.use('/', routes);
