@@ -3,6 +3,12 @@ import * as express from 'express';
 import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
+
+import {
+  getConfigValue,
+  loadEnvironmentVariables
+} from './modules/config-handler/ConfigHandler';
+import { configValidationSchema } from './modules/config-handler/ConfigValidation.schema';
 import { routes } from './routes/routes';
 
 import cookieParser = require('cookie-parser');
@@ -10,9 +16,10 @@ import { SessionMiddleware } from './middlewares/SessionMiddleware';
 
 const app = express();
 
+loadEnvironmentVariables({validationSchema: configValidationSchema});
+
 // set up app variables from the environment
-app.set('port', process.env.PORT || '3000');
-app.locals.cdn = { host: process.env.CDN_HOST };
+app.set('port', getConfigValue('PORT'));
 
 // where nunjucks templates should resolve to
 const viewPath = path.join(__dirname, 'views');
@@ -30,6 +37,9 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
+app.locals.cdn = {
+  host: getConfigValue('CDN_HOST')
+};
 // Session
 const sessionStore = new SessionStore(new IORedis(process.env.CACHE_SERVER));
 const verifyFlag: boolean = false;
