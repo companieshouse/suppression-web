@@ -6,7 +6,6 @@ import * as path from 'path';
 import { routes } from './routes/routes';
 
 import cookieParser = require('cookie-parser');
-import { ROOT_URI } from './routes/paths';
 import { SessionMiddleware } from './middlewares/SessionMiddleware';
 
 const app = express();
