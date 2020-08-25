@@ -3,11 +3,8 @@ import * as request from 'supertest';
 
 import app from '../../src/app';
 import { ROOT_URI } from '../../src/routes/paths';
-import { Substitute } from '@fluffy-spoon/substitute';
-import { Response } from 'express';
 
 describe('StartPageController', () => {
-  const response = Substitute.for<Response>()
 
     describe('on GET', () => {
 

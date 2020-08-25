@@ -123,6 +123,7 @@ async function loadSession (sessionCookie: string, config: CookieConfig, session
     loggerInstance().debug(`Session successfully loaded from cookie ${sessionCookie}`);
     return session;
   } catch (sessionLoadingError) {
+    // @ts-ignore
     if (cookie) {
       try {
         await sessionStore.delete(cookie);
