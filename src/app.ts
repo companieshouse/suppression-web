@@ -1,5 +1,5 @@
-import * as bodyParser from 'body-parser';
-import * as express from 'express';
+import bodyParser from 'body-parser';
+import express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
@@ -37,6 +37,7 @@ app.locals.cdn = {
   host: getConfigValue('CDN_HOST')
 };
 
+// set up ability to parse POST data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
