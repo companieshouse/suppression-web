@@ -14,7 +14,6 @@ describe('StartPageController', () => {
 
       await request(app).get(ROOT_URI).expect(response => {
         expect(response.status).toEqual(OK);
-        expect(response.text).toContain(expectedTitle);
         expectToHaveTitle(response.text, expectedTitle)
         expectToHaveLink(response.text,
           'https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information',
