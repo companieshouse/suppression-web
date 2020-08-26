@@ -1,5 +1,5 @@
-import { OK } from 'http-status-codes';
-import * as request from 'supertest';
+import { StatusCodes } from 'http-status-codes';
+import request from 'supertest';
 
 import app from '../../src/app';
 import { ROOT_URI } from '../../src/routes/paths';
@@ -13,7 +13,7 @@ describe('StartPageController', () => {
       const expectedTitle = 'Apply to remove your home address from the Companies House register';
 
       await request(app).get(ROOT_URI).expect(response => {
-        expect(response.status).toEqual(OK);
+        expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, expectedTitle)
         expectToHaveLink(response.text,
           'https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information',
