@@ -1,8 +1,8 @@
 import { Request } from 'express';
 import { AnySchema } from 'joi';
 
-import { SchemaValidator } from './utils/SchemaValidator';
-import { ValidationResult } from './utils/ValidationResult';
+import { SchemaValidator } from '../utils/validation/SchemaValidator';
+import { ValidationResult } from '../utils/validation/ValidationResult';
 import { Validator } from './Validator';
 
 export class FormValidator implements Validator {

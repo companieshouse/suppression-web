@@ -1,5 +1,5 @@
-import { ValidationError } from '../../../src/validators/utils/ValidationError';
-import { ValidationResult } from '../../../src/validators/utils/ValidationResult';
+import { ValidationError } from '../../../src/utils/validation/ValidationError';
+import { ValidationResult } from '../../../src/utils/validation/ValidationResult';
 
 const error = new ValidationError('field', 'Unexpected error');
 

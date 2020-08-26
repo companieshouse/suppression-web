@@ -1,4 +1,4 @@
-import { ValidationError } from '../../../src/validators/utils/ValidationError';
+import { ValidationError } from '../../../src/utils/validation/ValidationError';
 
 describe('ValidationError', () => {
   describe('instantiation', () => {

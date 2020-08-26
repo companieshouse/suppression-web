@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
-import { SchemaValidator } from '../../../src/validators/utils/SchemaValidator';
-import { ValidationError } from '../../../src/validators/utils/ValidationError';
+import { SchemaValidator } from '../../../src/utils/validation/SchemaValidator';
+import { ValidationError } from '../../../src/utils/validation/ValidationError';
 
 describe('SchemaValidator', () => {
   describe('instance creation', () => {
