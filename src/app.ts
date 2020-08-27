@@ -12,6 +12,8 @@ import {
 import { configValidationSchema } from './modules/config-handler/ConfigValidation.schema';
 import { routes } from './routes/routes';
 
+loadEnvironmentVariables({validationSchema: configValidationSchema});
+
 const app = express();
 
 const RedisStore = require('connect-redis')(session);
@@ -28,10 +30,6 @@ app.use(session({
   },
   store: new RedisStore({ client: new IORedis(getConfigValue('CACHE_SERVER')) })
 }));
-
-
-
-loadEnvironmentVariables({validationSchema: configValidationSchema});
 
 // set up app variables from the environment
 app.set('port', getConfigValue('PORT'));
