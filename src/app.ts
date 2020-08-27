@@ -19,7 +19,7 @@ const RedisStore = require('connect-redis')(session);
 app.use(session({
   secret: getConfigValue('COOKIE_SECRET') as string,
   name: getConfigValue('COOKIE_NAME'),
-  resave: false,
+  resave: true,
   saveUninitialized: true,
   cookie: {
     secure: false,
