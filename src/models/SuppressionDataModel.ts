@@ -1,4 +1,4 @@
-export interface SuppressionSession {
+export interface SuppressionData {
   applicantDetails: ApplicantDetails
 }
 

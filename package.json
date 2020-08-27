@@ -15,7 +15,7 @@
     "build:compile": "tsc",
     "postbuild": "copyfiles -f -V src/views/* dist/views",
     "lint": "tslint -p .",
-    "test": "jest --runInBand --coverage",
+    "test": "NODE_ENV=test jest --runInBand --coverage",
     "analyse-code": "sonar-scanner"
   },
   "dependencies": {
@@ -28,8 +28,7 @@
     "http-status-codes": "^2.1.1",
     "ioredis": "^4.17.3",
     "joi": "^17.2.1",
-    "nunjucks": "^3.2.2",
-    "redis": "^3.0.2"
+    "nunjucks": "^3.2.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.7",

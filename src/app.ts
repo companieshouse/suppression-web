@@ -16,12 +16,16 @@ const app = express();
 
 const RedisStore = require('connect-redis')(session);
 
-app.use(session({    // add cookie/session expiry
-  secret: getConfigValue('COOKIE_SECRET') as string,  // may need to generate our own
+app.use(session({
+  secret: getConfigValue('COOKIE_SECRET') as string,
   name: getConfigValue('COOKIE_NAME'),
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, domain: getConfigValue('COOKIE_DOMAIN')},
+  cookie: {
+    secure: false,
+    maxAge: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string,10) * 1000,
+    domain: getConfigValue('COOKIE_DOMAIN')
+  },
   store: new RedisStore({ client: new IORedis(getConfigValue('CACHE_SERVER')) })
 }));
 

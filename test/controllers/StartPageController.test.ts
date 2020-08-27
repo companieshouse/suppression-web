@@ -12,16 +12,18 @@ describe('StartPageController', () => {
     it('should return 200 and render the Service Start Page', async () => {
       const expectedTitle = 'Apply to remove your home address from the Companies House register';
 
-      await request(app).get(ROOT_URI).expect(response => {
-        expect(response.status).toEqual(StatusCodes.OK);
-        expectToHaveTitle(response.text, expectedTitle)
-        expectToHaveLink(response.text,
-          'https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information',
-          'Restricting the disclosure of your information');
-        expectToHaveLink(response.text,
+      await request(app)
+        .get(ROOT_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.OK);
+          expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveLink(response.text,
+            'https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information',
+            'Restricting the disclosure of your information');
+         expectToHaveLink(response.text,
           'https:\/\/beta.companieshouse.gov.uk\/',
           'Companies House register');
-      });
+        });
     });
   });
 });
