@@ -18,3 +18,4 @@ const documentDetailsController = new DocumentDetailsController();
 routes.get(ROOT_URI, startPageController.renderView);
 
 routes.get(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.renderView);
+routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);

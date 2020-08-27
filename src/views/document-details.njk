@@ -111,12 +111,12 @@
             hint: {
               text: 'Tell us the name and description of the document you want to remove your home address from. For example, CH01 - Director\'s details changed for Mr John Smith on 2 January 2020'
             },
-            errorMessage: validationResult.getErrorForField('documentDescription') if validationResult,
+            errorMessage: validationResult.getErrorForField('description') if validationResult,
             classes: 'govuk-input--width-20',
             id: 'document-description',
-            name: 'documentDescription',
-            value: documentDescription,
-            autocomplete: 'documentDescription'
+            name: 'description',
+            value: description,
+            autocomplete: 'description'
           })
         }}
         {{
