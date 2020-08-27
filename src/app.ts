@@ -16,8 +16,8 @@ const app = express();
 
 const RedisStore = require('connect-redis')(session);
 
-app.use(session({
-  secret: getConfigValue('COOKIE_SECRET') as string,
+app.use(session({    // add cookie/session expiry
+  secret: getConfigValue('COOKIE_SECRET') as string,  // may need to generate our own
   name: getConfigValue('COOKIE_NAME'),
   resave: false,
   saveUninitialized: true,
