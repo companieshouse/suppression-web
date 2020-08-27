@@ -1,7 +1,9 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import session from 'express-session';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
+import IORedis from 'ioredis';
 
 import {
   getConfigValue,
@@ -11,6 +13,19 @@ import { configValidationSchema } from './modules/config-handler/ConfigValidatio
 import { routes } from './routes/routes';
 
 const app = express();
+
+const RedisStore = require('connect-redis')(session);
+
+app.use(session({
+  secret: getConfigValue('COOKIE_SECRET') as string,
+  name: getConfigValue('COOKIE_NAME'),
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, domain: getConfigValue('COOKIE_DOMAIN')},
+  store: new RedisStore({ client: new IORedis(getConfigValue('CACHE_SERVER')) })
+}));
+
+
 
 loadEnvironmentVariables({validationSchema: configValidationSchema});
 
