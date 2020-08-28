@@ -14,3 +14,4 @@ const startPageController = new StartPageController();
  * Route definitions
  */
 routes.get(ROOT_URI, startPageController.renderView);
+routes.post(ROOT_URI, startPageController.start);
