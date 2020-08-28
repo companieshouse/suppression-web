@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AddressToRemoveController } from '../controllers/AddressToRemoveController';
-import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController'
+import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
 import { StartPageController } from '../controllers/StartPageController';
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
