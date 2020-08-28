@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel'
-import { APPLICANT_DETAILS_PAGE_URI } from '../routes/paths';
+import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import SessionService from '../services/SessionService'
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchema'
 
 const template = 'applicant-details';
+const previousURL = ROOT_URI;
 
 export class ApplicantDetailsController {
 
@@ -16,8 +17,8 @@ export class ApplicantDetailsController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const session = SessionService.getSuppressionSession(req);
-    res.render(template, { ...session?.applicantDetails });
-  }
+    res.render(template, { ...session?.applicantDetails, backNavigation: previousURL });
+  };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
     const validationResult: ValidationResult = await this.validator.validate(req);
