@@ -4,7 +4,7 @@ import { ROOT_URI } from '../routes/paths';
 export class StartPageController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
-    res.render('start-page');
+    res.render('start');
   };
 
   public start = (req: Request, res: Response) => {

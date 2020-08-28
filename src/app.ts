@@ -11,6 +11,7 @@ import {
   loadEnvironmentVariables
 } from './modules/config-handler/ConfigHandler';
 import { configValidationSchema } from './modules/config-handler/ConfigValidation.schema';
+import * as Paths from './routes/paths';
 import { routes } from './routes/routes';
 
 loadEnvironmentVariables({validationSchema: configValidationSchema});
@@ -52,6 +53,7 @@ const env = nunjucks.configure([
 app.set('views', viewPath);
 app.set('view engine', 'njk');
 
+app.locals.paths = Paths;
 app.locals.cdn = {
   host: getConfigValue('CDN_HOST')
 };
