@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import app from '../../src/app';
 import { ROOT_URI } from '../../src/routes/paths';
 import { expectToHaveLink, expectToHaveTitle } from '../HtmlPatternAssertions'
+import { createApp } from '../ApplicationFactory';
 
 describe('StartPageController', () => {
 
@@ -12,9 +12,12 @@ describe('StartPageController', () => {
     it('should return 200 and render the Service Start Page', async () => {
       const expectedTitle = 'Apply to remove your home address from the Companies House register';
 
+      const app = createApp();
+
       await request(app)
         .get(ROOT_URI)
         .expect(response => {
+          console.log(response.text);
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveLink(response.text,
