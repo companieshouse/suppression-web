@@ -20,6 +20,6 @@ export default class SessionService {
       req.session!.extra_data = {};
     }
 
-    req.session!.extra_data = {SUPPRESSION_DATA_KEY: updatedSession};
+    req.session!.extra_data[SUPPRESSION_DATA_KEY] =  updatedSession;
   }
 }

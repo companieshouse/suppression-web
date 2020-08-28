@@ -1,5 +1,5 @@
 import SessionService from '../../src/services/SessionService';
-import { SuppressionData } from '../../src/models/SuppressionDataModel';
+import { SUPPRESSION_DATA_KEY, SuppressionData } from '../../src/models/SuppressionDataModel';
 
 describe('SessionService', () => {
 
@@ -38,7 +38,7 @@ describe('SessionService', () => {
     };
 
     SessionService.setSuppressionSession(mockRequest, suppressionData);
-    expect(mockRequest.session.extra_data.SUPPRESSION_DATA_KEY).toEqual(suppressionData)
+    expect(mockRequest.session.extra_data[SUPPRESSION_DATA_KEY]).toEqual(suppressionData)
   })
 
 });
