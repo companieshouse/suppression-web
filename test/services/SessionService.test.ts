@@ -3,7 +3,7 @@ import { SuppressionData } from '../../src/models/SuppressionDataModel';
 
 describe('SessionService', () => {
 
-  it('should retrieve information from session if present', async () => {
+  it('should retrieve suppression data from the session', async () => {
 
     const suppressionData: SuppressionData = {
       applicantDetails: { fullName: 'test-name', emailAddress: 'test-email' }
@@ -17,7 +17,7 @@ describe('SessionService', () => {
 
   });
 
-  it('should retrieve undefined from session if no data set', async () => {
+  it('should return undefined when no suppression data exists in the session', async () => {
 
     const mockRequest: any = {
       session: {}
@@ -27,7 +27,7 @@ describe('SessionService', () => {
 
   });
 
-  it('should set information in session', async () => {
+  it('should set the suppression data in the session', async () => {
 
     const suppressionData: SuppressionData = {
       applicantDetails: { fullName: 'test-name', emailAddress: 'test-email'}
