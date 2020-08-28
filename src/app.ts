@@ -1,10 +1,10 @@
 import bodyParser from 'body-parser';
+import connectRedis from 'connect-redis';
 import express from 'express';
 import session from 'express-session';
-import connectRedis from 'connect-redis';
+import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
-import IORedis from 'ioredis';
 
 import {
   getConfigValue,

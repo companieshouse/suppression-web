@@ -1,5 +1,6 @@
-import { SUPPRESSION_DATA_KEY, SuppressionData } from '../models/SuppressionDataModel';
 import { Request } from 'express';
+import { SuppressionData, SUPPRESSION_DATA_KEY } from '../models/SuppressionDataModel';
+
 
 export default class SessionService {
 
