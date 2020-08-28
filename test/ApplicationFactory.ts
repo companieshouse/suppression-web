@@ -1,11 +1,11 @@
-import { routes } from '../src/routes/routes';
-import * as path from "path";
-import * as nunjucks from 'nunjucks';
+import bodyParser from 'body-parser';
+import express from 'express';
 import session from 'express-session';
+import * as nunjucks from 'nunjucks';
+import * as path from 'path';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
-
-var express = require('express');
+import { routes } from '../src/routes/routes';
 
 export function createApp() {
 
@@ -15,7 +15,7 @@ export function createApp() {
   // where nunjucks templates should resolve to
   const viewPath = path.join('src/', 'views');
 
-// set up the template engine
+  // set up the template engine
   const env = nunjucks.configure([
     viewPath,
     'node_modules/govuk-frontend/',
@@ -30,7 +30,7 @@ export function createApp() {
 
   const RedisStore = require('connect-redis')(session);
 
-  const redis = require("redis-mock");
+  const redis = require('redis-mock');
 
   app.use(session({
     secret: getConfigValue('COOKIE_SECRET') as string,
@@ -45,6 +45,8 @@ export function createApp() {
     store: new RedisStore({ client: redis.createClient() })
   }));
 
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use('/', routes);
   return app;
 }
