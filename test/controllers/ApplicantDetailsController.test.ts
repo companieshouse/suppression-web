@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import app from '../../src/app';
 import { APPLICANT_DETAILS_PAGE_URI } from '../../src/routes/paths';
+import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
@@ -13,6 +13,7 @@ import {
 describe('ApplicantDetailsController', () => {
 
   const pageTitle = 'Applicant’s Details';
+  const app = createApp();
 
   describe('on GET', () => {
 

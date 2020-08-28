@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
+import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel'
 import { APPLICANT_DETAILS_PAGE_URI } from '../routes/paths';
+import SessionService from '../services/SessionService'
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchema'
@@ -12,7 +14,10 @@ export class ApplicantDetailsController {
 
   constructor(private validator: FormValidator = new FormValidator(formSchema)) {}
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => res.render(template);
+  public renderView = (req: Request, res: Response, next: NextFunction) => {
+    const session = SessionService.getSuppressionSession(req);
+    res.render(template, { ...session?.applicantDetails });
+  }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
     const validationResult: ValidationResult = await this.validator.validate(req);
@@ -23,6 +28,15 @@ export class ApplicantDetailsController {
         validationResult
       });
     } else {
+      const session = SessionService.getSuppressionSession(req);
+      if (!session) {
+        const newSession = { applicantDetails: req.body as ApplicantDetails } as SuppressionData;
+        SessionService.setSuppressionSession(req, newSession);
+      } else {
+        session.applicantDetails = req.body as ApplicantDetails;
+        SessionService.setSuppressionSession(req, session);
+      }
+
       res.redirect(APPLICANT_DETAILS_PAGE_URI);
     }
   };
