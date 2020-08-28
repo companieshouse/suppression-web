@@ -25,6 +25,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
+    path: '/suppress-my-details',
     secure: false,
     maxAge: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string,10) * 1000,
     domain: getConfigValue('COOKIE_DOMAIN')
