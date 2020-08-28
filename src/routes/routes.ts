@@ -16,6 +16,7 @@ const documentDetailsController = new DocumentDetailsController();
  * Route definitions
  */
 routes.get(ROOT_URI, startPageController.renderView);
+routes.post(ROOT_URI, startPageController.start);
 
 routes.get(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.renderView);
 routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);
