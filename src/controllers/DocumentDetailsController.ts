@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { schema } from '../models/schemas/DocumentDetails.schema';
+import { SuppressionData } from '../models/SuppressionDataModel';
 import { DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
+import SessionService from '../services/SessionService';
 import { FormValidator } from '../validators/FormValidator';
 
 const template = 'document-details';
@@ -11,7 +13,10 @@ export class DocumentDetailsController {
   constructor(private validator: FormValidator = new FormValidator(schema)) {
   }
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => res.render(template);
+  public renderView = (req: Request, res: Response, next: NextFunction) => {
+    const suppression = SessionService.getSuppressionSession(req);
+    res.render(template, suppression);
+  }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -27,6 +32,15 @@ export class DocumentDetailsController {
         validationResult
       });
     }
+
+    const suppression: SuppressionData = SessionService.getSuppressionSession(req)!
+
+    const updatedSession: SuppressionData = {
+      ...suppression,
+      documentDetails: req.body
+    }
+
+    SessionService.setSuppressionSession(req, updatedSession)
     res.redirect(DOCUMENT_DETAILS_PAGE_URI);
   }
 }
