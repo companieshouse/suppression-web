@@ -28,4 +28,20 @@ describe('StartPageController', () => {
         });
     });
   });
+
+  describe('on POST', () => {
+
+    it('should return status code 302 and redirect to start page', async () => {
+      const expectedTitle = 'Apply to remove your home address from the Companies House register';
+
+      const app = createApp();
+
+      await request(app)
+        .post(ROOT_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
+          expect(response.header.location).toEqual(ROOT_URI)
+        });
+    });
+  });
 });
