@@ -10,7 +10,7 @@ describe('SessionService', () => {
     };
 
     const mockRequest: any = {
-      session: { ExtraData: suppressionData }
+      session: { extra_data: { suppression:  suppressionData  } }
     };
 
     expect(SessionService.getSuppressionSession(mockRequest)).toEqual(suppressionData)
@@ -34,11 +34,11 @@ describe('SessionService', () => {
     };
 
     const mockRequest: any = {
-      session: { ExtraData: {} }
+      session: {}
     };
 
     SessionService.setSuppressionSession(mockRequest, suppressionData);
-    expect(mockRequest.session.ExtraData).toEqual(suppressionData)
+    expect(mockRequest.session.extra_data.SUPPRESSION_DATA_KEY).toEqual(suppressionData)
   })
 
 });

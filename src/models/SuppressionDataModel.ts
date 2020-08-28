@@ -1,3 +1,5 @@
+export const SUPPRESSION_DATA_KEY: string = 'suppression';
+
 export interface SuppressionData {
   applicantDetails: ApplicantDetails
 }

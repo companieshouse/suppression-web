@@ -17,7 +17,6 @@ describe('StartPageController', () => {
       await request(app)
         .get(ROOT_URI)
         .expect(response => {
-          console.log(response.text);
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveLink(response.text,
