@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import session from 'express-session';
+import connectRedis from 'connect-redis';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 import IORedis from 'ioredis';
@@ -16,7 +17,7 @@ loadEnvironmentVariables({validationSchema: configValidationSchema});
 
 const app = express();
 
-const RedisStore = require('connect-redis')(session);
+const RedisStore = connectRedis(session);
 
 app.use(session({
   secret: getConfigValue('COOKIE_SECRET') as string,
