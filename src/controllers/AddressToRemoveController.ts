@@ -20,22 +20,22 @@ export class AddressToRemoveController {
   }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const validationResult: ValidationResult = await this.validator.validate(req);
-    if (validationResult.errors.length > 0) {
-      res.status(StatusCodes.UNPROCESSABLE_ENTITY);
-      return res.render(template, {
-        ...req.body,
-        validationResult
-      });
+    const session = SessionService.getSuppressionSession(req);
+    if (!session) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
     } else {
-      const session = SessionService.getSuppressionSession(req);
-      if (!session) {
-        throw new Error('Expected session but none found');
+      const validationResult: ValidationResult = await this.validator.validate(req);
+      if (validationResult.errors.length > 0) {
+        res.status(StatusCodes.UNPROCESSABLE_ENTITY);
+        return res.render(template, {
+          ...req.body,
+          validationResult
+        });
       } else {
         session.addressToRemove = req.body as Address;
         SessionService.setSuppressionSession(req, session);
+        res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
       }
-      res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
     }
   };
 }

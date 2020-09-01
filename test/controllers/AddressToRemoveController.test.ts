@@ -1,10 +1,9 @@
-import { Request } from 'express'
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
+import { Address } from '../../src/models/SuppressionDataModel'
 import { ADDRESS_TO_REMOVE_PAGE_URI } from '../../src/routes/paths';
-import * as SessionService from '../../src/services/SessionService'
+import SessionService from '../../src/services/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveErrorMessages,
@@ -14,6 +13,10 @@ import {
 } from '../HtmlPatternAssertions'
 
 jest.mock('../../src/services/SessionService')
+
+afterEach(() => {
+  jest.restoreAllMocks();
+})
 
 describe('AddressToRemoveController', () => {
 
@@ -60,6 +63,15 @@ describe('AddressToRemoveController', () => {
       }
     }
 
+    it('should throw an error if the session doesn’t exist', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+      const testData = generateTestData();
+
+      await request(app)
+        .post(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
     it('should show four validation errors if no information is entered', async () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
@@ -74,7 +86,7 @@ describe('AddressToRemoveController', () => {
       });
     });
 
-    it('should show an error message if Address Line 1 is not provided', async () => {
+    it('should show a validation error message if Address Line 1 is not provided', async () => {
 
       const testData = generateTestData();
       testData.line1 = '';
@@ -87,7 +99,7 @@ describe('AddressToRemoveController', () => {
       })
     });
 
-    it('should show an error message if Town or City is not provided', async () => {
+    it('should show a validation error message if Town or City is not provided', async () => {
 
       const testData = generateTestData();
       testData.town = '';
@@ -100,7 +112,7 @@ describe('AddressToRemoveController', () => {
       })
     });
 
-    it('should show an error message if County is not provided', async () => {
+    it('should show a validation error message if County is not provided', async () => {
 
       const testData = generateTestData();
       testData.county = '';
@@ -113,7 +125,7 @@ describe('AddressToRemoveController', () => {
       })
     });
 
-    it('should show an error message if Postcode is not provided', async () => {
+    it('should show a validation error message if Postcode is not provided', async () => {
 
       const testData = generateTestData();
       testData.postcode = '';
