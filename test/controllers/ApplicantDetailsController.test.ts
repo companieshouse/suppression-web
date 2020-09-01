@@ -42,6 +42,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage, emailMissingErrorMessage]);
         expectToHaveErrorMessages(response.text, [fullNameErrorMessage, emailMissingErrorMessage]);
       });
@@ -52,6 +53,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).send({ emailAddress: 'test@example.com' }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage]);
         expectToHaveErrorMessages(response.text, [fullNameErrorMessage]);
       });
@@ -62,6 +64,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).send({ fullName: 'John Doe' }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [emailMissingErrorMessage]);
         expectToHaveErrorMessages(response.text, [emailMissingErrorMessage]);
       });
@@ -75,6 +78,7 @@ describe('ApplicantDetailsController', () => {
       }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [emailInvalidErrorMessage]);
         expectToHaveErrorMessages(response.text, [emailInvalidErrorMessage]);
       });
