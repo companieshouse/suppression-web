@@ -9,9 +9,7 @@ import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { routes } from '../src/routes/routes';
 
-export function createApp(data?: Partial<SuppressionData>) {
-
-  // TODO: Work out how to prepopulate session.
+export function createApp() {
 
   loadEnvironmentVariables({validationSchema: configValidationSchema});
   const app = express();
