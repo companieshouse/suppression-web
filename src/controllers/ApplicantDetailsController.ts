@@ -26,7 +26,8 @@ export class ApplicantDetailsController {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);
       return res.render(template, {
         ...req.body,
-        validationResult
+        validationResult,
+        backNavigation: previousURL
       });
     } else {
       const session = SessionService.getSuppressionSession(req);
