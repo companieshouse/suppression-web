@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { Address } from '../../src/models/SuppressionDataModel'
+import { Address, ApplicantDetails, SuppressionData } from '../../src/models/SuppressionDataModel'
 import { ADDRESS_TO_REMOVE_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/SessionService'
 import { createApp } from '../ApplicationFactory';
@@ -9,6 +9,7 @@ import {
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
   expectToHaveInput,
+  expectToHavePopulatedInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
@@ -26,6 +27,14 @@ describe('AddressToRemoveController', () => {
   describe('on GET', () => {
 
     it('should return 200 and render the Address to Remove Page', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+        return {
+          applicantDetails: {
+            fullName: 'test-name',
+            emailAddress: 'test-email'
+          }
+        } as SuppressionData
+      });
 
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
@@ -41,6 +50,17 @@ describe('AddressToRemoveController', () => {
         expectToHaveInput(response.text, 'town', 'Town or city');
         expectToHaveInput(response.text, 'county', 'County');
         expectToHaveInput(response.text, 'postcode', 'Postcode');
+      });
+    });
+
+    it('should prepopulate fields when relevent data is found in the session', async () => {
+      await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
+        expect(response.status).toEqual(StatusCodes.OK);
+        expectToHaveTitle(response.text, pageTitle);
+        expectToHavePopulatedInput(response.text, 'line1', '1 Test Street');
+        expectToHavePopulatedInput(response.text, 'town', 'Test Town');
+        expectToHavePopulatedInput(response.text, 'county', 'Test Midlands');
+        expectToHavePopulatedInput(response.text, 'postcode', 'TE10 6ST');
       });
     });
 

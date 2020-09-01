@@ -80,5 +80,12 @@ describe('Applicant Details schema', () => {
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, []);
     });
+
+    it('should allow null for Address Line 2', () => {
+      const testData = generateTestData();
+      delete testData.line2;
+      const validationResult = validator.validate(testData);
+      assertValidationErrors(validationResult, []);
+    });
   });
 });
