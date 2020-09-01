@@ -1,12 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { APPLICANT_DETAILS_PAGE_URI } from '../../src/routes/paths';
+import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
-  expectToHaveInput,
+  expectToHaveInput, expectToHaveLink,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
@@ -22,6 +23,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).get(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveInput(response.text, 'fullName', 'Full name');
         expectToHaveInput(response.text, 'emailAddress', 'Email address');
       });

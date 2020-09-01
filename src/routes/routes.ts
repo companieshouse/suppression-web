@@ -17,5 +17,6 @@ const applicantDetailsController = new ApplicantDetailsController();
  */
 routes.get(ROOT_URI, startPageController.renderView);
 routes.post(ROOT_URI, startPageController.start);
+
 routes.get(APPLICANT_DETAILS_PAGE_URI, applicantDetailsController.renderView);
 routes.post(APPLICANT_DETAILS_PAGE_URI, applicantDetailsController.processForm);
