@@ -1,9 +1,11 @@
+import { Request } from 'express'
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import app from '../../src/app';
-import { Address } from '../../src/models/Address'
+import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
 import { ADDRESS_TO_REMOVE_PAGE_URI } from '../../src/routes/paths';
+import * as SessionService from '../../src/services/SessionService'
+import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
@@ -11,9 +13,12 @@ import {
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
+jest.mock('../../src/services/SessionService')
+
 describe('AddressToRemoveController', () => {
 
   const pageTitle = 'Address details';
+  const app = createApp();
 
   describe('on GET', () => {
 
@@ -24,15 +29,15 @@ describe('AddressToRemoveController', () => {
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveInput(
           response.text,
-          'addressLine1',
+          'line1',
           'Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>');
         expectToHaveInput(
           response.text,
-          'addressLine2',
+          'line2',
           '<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>');
-        expectToHaveInput(response.text, 'addressTown', 'Town or city');
-        expectToHaveInput(response.text, 'addressCounty', 'County');
-        expectToHaveInput(response.text, 'addressPostcode', 'Postcode');
+        expectToHaveInput(response.text, 'town', 'Town or city');
+        expectToHaveInput(response.text, 'county', 'County');
+        expectToHaveInput(response.text, 'postcode', 'Postcode');
       });
     });
 
@@ -47,11 +52,11 @@ describe('AddressToRemoveController', () => {
 
     function generateTestData(): Address {
       return {
-        addressLine1: '1 Main Street',
-        addressLine2: 'Selly Oak',
-        addressTown: 'Cardiff',
-        addressCounty: 'Cardiff',
-        addressPostcode: 'CF14 3UZ'
+        line1: '1 Main Street',
+        line2: 'Selly Oak',
+        town: 'Cardiff',
+        county: 'Cardiff',
+        postcode: 'CF14 3UZ'
       }
     }
 
@@ -72,7 +77,7 @@ describe('AddressToRemoveController', () => {
     it('should show an error message if Address Line 1 is not provided', async () => {
 
       const testData = generateTestData();
-      testData.addressLine1 = '';
+      testData.line1 = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
@@ -85,7 +90,7 @@ describe('AddressToRemoveController', () => {
     it('should show an error message if Town or City is not provided', async () => {
 
       const testData = generateTestData();
-      testData.addressTown = '';
+      testData.town = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
@@ -98,7 +103,7 @@ describe('AddressToRemoveController', () => {
     it('should show an error message if County is not provided', async () => {
 
       const testData = generateTestData();
-      testData.addressCounty = '';
+      testData.county = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
@@ -111,7 +116,7 @@ describe('AddressToRemoveController', () => {
     it('should show an error message if Postcode is not provided', async () => {
 
       const testData = generateTestData();
-      testData.addressPostcode = '';
+      testData.postcode = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
@@ -124,7 +129,7 @@ describe('AddressToRemoveController', () => {
     it('should accept address details without data for Address Line 2', async () => {
 
       const testData = generateTestData();
-      testData.addressLine2 = '';
+      testData.line2 = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);

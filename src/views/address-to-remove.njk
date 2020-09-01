@@ -9,10 +9,6 @@
   Address details
 {% endblock %}
 
-{% set legendText %}
-
-{% endset %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -40,10 +36,10 @@
               label: {
                 html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
               },
-              errorMessage: validationResult.getErrorForField('addressLine1') if validationResult,
+              errorMessage: validationResult.getErrorForField('line1') if validationResult,
               id: 'address-line-1',
-              name: 'addressLine1',
-              value: addressLine1,
+              name: 'line1',
+              value: line1,
               autocomplete: 'address-line1'
             })
           }}
@@ -53,8 +49,8 @@
                 html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
               },
               id: 'address-line-2',
-              name: 'addressLine2',
-              value: addressLine2,
+              name: 'line2',
+              value: line2,
               autocomplete: 'address-line2'
             })
           }}
@@ -63,11 +59,11 @@
               label: {
                 text: 'Town or city'
               },
-              errorMessage: validationResult.getErrorForField('addressTown') if validationResult,
+              errorMessage: validationResult.getErrorForField('town') if validationResult,
               classes: 'govuk-!-width-two-thirds',
               id: 'address-town',
-              name: 'addressTown',
-              value: addressTown,
+              name: 'town',
+              value: town,
               autocomplete: 'address-level2'
             })
           }}
@@ -76,11 +72,11 @@
               label: {
                 text: 'County'
               },
-              errorMessage: validationResult.getErrorForField('addressCounty') if validationResult,
+              errorMessage: validationResult.getErrorForField('county') if validationResult,
               classes: 'govuk-!-width-two-thirds',
               id: 'address-County',
-              name: 'addressCounty',
-              value: addressCounty
+              name: 'county',
+              value: county
             })
           }}
           {{
@@ -88,11 +84,11 @@
               label: {
                 text: 'Postcode'
               },
-              errorMessage: validationResult.getErrorForField('addressPostcode') if validationResult,
+              errorMessage: validationResult.getErrorForField('postcode') if validationResult,
               classes: 'govuk-input--width-10',
               id: 'address-postcode',
-              name: 'addressPostcode',
-              value: addressPostcode,
+              name: 'postcode',
+              value: postcode,
               autocomplete: 'postal-code'
             })
           }}

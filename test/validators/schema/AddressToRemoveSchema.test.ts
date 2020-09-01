@@ -1,4 +1,4 @@
-import { Address } from '../../../src/models/Address'
+import { Address } from '../../../src/models/SuppressionDataModel'
 import { SchemaValidator } from '../../../src/utils/validation/SchemaValidator';
 import { ValidationError } from '../../../src/utils/validation/ValidationError';
 import { schema } from '../../../src/validators/schema/AddressToRemoveSchema';
@@ -11,19 +11,19 @@ describe('Applicant Details schema', () => {
   describe('invalid values', () => {
 
     const expectedErrors = [
-      new ValidationError('addressLine1', 'Building and street is required'),
-      new ValidationError('addressTown', 'Town or city is required'),
-      new ValidationError('addressCounty', 'County is required'),
-      new ValidationError('addressPostcode', 'Postcode is required'),
+      new ValidationError('line1', 'Building and street is required'),
+      new ValidationError('town', 'Town or city is required'),
+      new ValidationError('county', 'County is required'),
+      new ValidationError('postcode', 'Postcode is required'),
     ];
 
     function generateTestData(value: any): Address {
       return {
-        addressLine1: value,
-        addressLine2: value,
-        addressTown: value,
-        addressCounty: value,
-        addressPostcode: value
+        line1: value,
+        line2: value,
+        town: value,
+        county: value,
+        postcode: value
       };
     }
 
@@ -61,11 +61,11 @@ describe('Applicant Details schema', () => {
 
     function generateTestData(): Address {
       return {
-        addressLine1: '1 Main Street',
-        addressLine2: 'Selly Oak',
-        addressTown: 'Cardiff',
-        addressCounty: 'Cardiff',
-        addressPostcode: 'CF14 3UZ'
+        line1: '1 Main Street',
+        line2: 'Selly Oak',
+        town: 'Cardiff',
+        county: 'Cardiff',
+        postcode: 'CF14 3UZ'
       }
     }
 
@@ -76,7 +76,7 @@ describe('Applicant Details schema', () => {
 
     it('should allow empty value for Address Line 2', () => {
       const testData = generateTestData();
-      testData.addressLine2 = '';
+      testData.line2 = '';
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, []);
     });

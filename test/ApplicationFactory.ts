@@ -3,11 +3,15 @@ import express from 'express';
 import session from 'express-session';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
+
+import { SuppressionData } from '../src/models/SuppressionDataModel'
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { routes } from '../src/routes/routes';
 
-export function createApp() {
+export function createApp(data?: Partial<SuppressionData>) {
+
+  // TODO: Work out how to prepopulate session.
 
   loadEnvironmentVariables({validationSchema: configValidationSchema});
   const app = express();
