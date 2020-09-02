@@ -45,17 +45,21 @@
         {% set errorMessages %}
           <ul style="padding: 0;list-style-type: none;">
             {% for error in validationResult.errors %}
-              <li>
-                {{ error.text }}
-              </li>
+              {% if error.field === 'day' or error.field === 'month' or error.field === 'year' or error.field === 'date' %}
+                <li>
+                  {{ error.text }}
+                </li>
+              {% endif %}
             {% endfor %}
           </ul>
         {% endset %}
 
-        {% set documentDateErrorMessage = {
-          html: errorMessages
-          }
-        %}
+        {% if errorMessages %}
+          {% set documentDateErrorMessage = {
+            html: errorMessages
+            }
+          %}
+        {% endif %}
       {% endif %}
 
       <h1 class="govuk-heading-l">
