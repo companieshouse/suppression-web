@@ -4,10 +4,12 @@ import request from 'supertest';
 import {DOCUMENT_DETAILS_PAGE_URI} from '../../src/routes/paths';
 import {
   expectToHaveErrorMessages,
-  expectToHaveErrorSummaryContaining, expectToHaveInput,
+  expectToHaveErrorSummaryContaining, expectToHaveInput, expectToHavePopulatedInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 import { createApp } from '../ApplicationFactory';
+import SessionService from '../../src/services/SessionService';
+import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
 
 const expectedTitle: string = 'Document details';
 const missingCompanyNameErrorMessage: string = 'Company name is required';
@@ -36,6 +38,40 @@ describe('DocumentDetailsController', () => {
           expectToHaveInput(response.text, 'day', 'Day');
           expectToHaveInput(response.text, 'month', 'Month');
           expectToHaveInput(response.text, 'year', 'Year');
+        });
+    });
+
+    it('should return 200 when accessing page with a session', async () => {
+
+      const app = createApp();
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+        return {
+          documentDetails: documentDetails
+        } as SuppressionData
+      });
+
+      const documentDetails = {
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        date: '2020-01-01',
+        day: '01',
+        month: '01',
+        year: '2020'
+      } as DocumentDetails
+
+      await request(app)
+        .get(DOCUMENT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.OK);
+          expectToHaveTitle(response.text, expectedTitle);
+          expectToHavePopulatedInput(response.text, 'companyName', documentDetails.companyName);
+          expectToHavePopulatedInput(response.text, 'companyNumber', documentDetails.companyNumber);
+          expectToHavePopulatedInput(response.text, 'description', documentDetails.description);
+          expectToHavePopulatedInput(response.text, 'day', '01');
+          expectToHavePopulatedInput(response.text, 'month', '01');
+          expectToHavePopulatedInput(response.text, 'year', '2020');
         });
     });
   });
