@@ -7,7 +7,8 @@ export const configValidationSchema = Joi.object({
   COOKIE_DOMAIN: Joi.string().required(),
   COOKIE_SECRET: Joi.string().required(),
   CACHE_SERVER: Joi.string().required(),
-  COOKIE_EXPIRATION_IN_SECONDS: Joi.string().required()
+  COOKIE_EXPIRATION_IN_SECONDS: Joi.string().required(),
+  DOCUMENT_AMENDMENT_FEE: Joi.number()
 }).options({
   allowUnknown: true
 });
