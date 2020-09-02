@@ -32,17 +32,17 @@ export class DocumentDetailsController {
       });
     }
 
-    const suppression: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    let suppression: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    if (suppression === undefined) {
+      suppression = {} as SuppressionData;
+    }
 
-    const updatedSession: SuppressionData = {
-      ...suppression,
-      documentDetails: {
-        ...req.body,
-        date: moment(req.body.date).format('YYYY-MM-DD')
-      } as DocumentDetails
-    } as SuppressionData
+    suppression.documentDetails = {
+      ...req.body,
+      date: moment(req.body.date).format('YYYY-MM-DD')
+    } as DocumentDetails
 
-    SessionService.setSuppressionSession(req, updatedSession)
+    SessionService.setSuppressionSession(req, suppression)
     res.redirect(DOCUMENT_DETAILS_PAGE_URI);
   }
 

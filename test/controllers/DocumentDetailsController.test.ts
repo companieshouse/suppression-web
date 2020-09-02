@@ -41,7 +41,7 @@ describe('DocumentDetailsController', () => {
         });
     });
 
-    it('should return 200 when accessing page with a session', async () => {
+    it('should return 200 with pre-populated data when accessing page with a session', async () => {
 
       const app = createApp();
 
