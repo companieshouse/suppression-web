@@ -23,7 +23,9 @@ const addressToRemoveController = new AddressToRemoveController();
  */
 routes.get(ROOT_URI, startPageController.renderView);
 routes.post(ROOT_URI, startPageController.start);
+
 routes.get(APPLICANT_DETAILS_PAGE_URI, applicantDetailsController.renderView);
 routes.post(APPLICANT_DETAILS_PAGE_URI, applicantDetailsController.processForm);
+
 routes.get(ADDRESS_TO_REMOVE_PAGE_URI, addressToRemoveController.renderView);
 routes.post(ADDRESS_TO_REMOVE_PAGE_URI, addressToRemoveController.processForm);

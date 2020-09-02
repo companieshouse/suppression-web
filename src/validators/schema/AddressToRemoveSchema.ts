@@ -9,5 +9,3 @@ export const schema = Joi.object({
   county: basicString('County is required'),
   postcode: basicString('Postcode is required')
 });
-
-
