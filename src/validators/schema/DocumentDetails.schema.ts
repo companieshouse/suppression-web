@@ -1,16 +1,19 @@
 import * as Joi from 'joi';
 
-import { dateSchema } from './Date.schema';
+const companyNameErrorMessage: string = 'Company name is required';
+const companyNumberErrorMessage: string = 'Company number is required';
+const descriptionErrorMessage: string = 'Document description is required';
 
-const companyNameErrorMessage = 'Company name is required';
-const companyNumberErrorMessage = 'Company number is required';
-const documentDescriptionErrorMessage = 'Document description is required';
 const invalidDayErrorMessage: string = 'You must enter a day';
 const invalidMonthErrorMessage: string = 'You must enter a month';
 const invalidYearErrorMessage: string = 'You must enter a year';
 
+const missingDateErrorMessage: string = 'Document date is required';
+const invalidDateErrorMessage: string = 'Enter a real date';
+
 const dayMonthRegex: RegExp = /^[0-9]{1,2}$/;
 const yearRegex: RegExp = /^[0-9]{4}$/;
+
 
 export const schema = Joi.object({
   companyName: Joi.string()
@@ -35,10 +38,10 @@ export const schema = Joi.object({
     .required()
     .pattern(/\w+/)
     .messages({
-      'any.required': documentDescriptionErrorMessage,
-      'string.base': documentDescriptionErrorMessage,
-      'string.empty': documentDescriptionErrorMessage,
-      'string.pattern.base': documentDescriptionErrorMessage
+      'any.required': descriptionErrorMessage,
+      'string.base': descriptionErrorMessage,
+      'string.empty': descriptionErrorMessage,
+      'string.pattern.base': descriptionErrorMessage
     }),
   day: Joi.string()
     .required()
@@ -67,11 +70,12 @@ export const schema = Joi.object({
       'string.empty': invalidYearErrorMessage,
       'string.pattern.base': invalidYearErrorMessage
     }),
-}).unknown(true)
-  .when(Joi.object({
-    day: Joi.exist(),
-    month: Joi.exist(),
-    year: Joi.exist()
-  }).unknown(), {
-    then: dateSchema
-  });
+  date: Joi.date()
+    .required()
+    .iso()
+    .messages({
+      'any.required': missingDateErrorMessage,
+      'date.base': invalidDateErrorMessage,
+      'date.format': invalidDateErrorMessage,
+    })
+});
