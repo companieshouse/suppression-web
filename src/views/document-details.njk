@@ -45,7 +45,7 @@
         {% set errorMessages %}
           <ul style="padding: 0;list-style-type: none;">
             {% for error in validationResult.errors %}
-              {% if error.field === 'day' or error.field === 'month' or error.field === 'year' or error.field === 'date' %}
+              {% if error.field in ['day', 'month', 'year', 'date'] %}
                 <li>
                   {{ error.text }}
                 </li>

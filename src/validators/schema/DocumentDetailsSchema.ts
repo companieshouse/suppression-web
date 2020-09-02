@@ -1,5 +1,7 @@
 import * as Joi from 'joi';
 
+import { basicString } from './BasicStringSchemaItem';
+
 const companyNameErrorMessage: string = 'Company name is required';
 const companyNumberErrorMessage: string = 'Company number is required';
 const descriptionErrorMessage: string = 'Document description is required';
@@ -15,33 +17,9 @@ const dayMonthRegex: RegExp = /^[0-9]{1,2}$/;
 const yearRegex: RegExp = /^[0-9]{4}$/;
 
 export const schema = Joi.object({
-  companyName: Joi.string()
-    .required()
-    .pattern(/\w+/)
-    .messages({
-      'any.required': companyNameErrorMessage,
-      'string.base': companyNameErrorMessage,
-      'string.empty': companyNameErrorMessage,
-      'string.pattern.base': companyNameErrorMessage
-    }),
-  companyNumber: Joi.string()
-    .required()
-    .pattern(/\w+/)
-    .messages({
-      'any.required': companyNumberErrorMessage,
-      'string.base': companyNumberErrorMessage,
-      'string.empty': companyNumberErrorMessage,
-      'string.pattern.base': companyNumberErrorMessage
-    }),
-  description: Joi.string()
-    .required()
-    .pattern(/\w+/)
-    .messages({
-      'any.required': descriptionErrorMessage,
-      'string.base': descriptionErrorMessage,
-      'string.empty': descriptionErrorMessage,
-      'string.pattern.base': descriptionErrorMessage
-    }),
+  companyName: basicString(companyNameErrorMessage),
+  companyNumber: basicString(companyNumberErrorMessage),
+  description: basicString(descriptionErrorMessage),
   day: Joi.string()
     .required()
     .pattern(dayMonthRegex)

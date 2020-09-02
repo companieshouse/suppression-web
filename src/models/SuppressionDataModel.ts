@@ -3,7 +3,7 @@ export const SUPPRESSION_DATA_KEY: string = 'suppression';
 export interface SuppressionData {
   applicantDetails: ApplicantDetails,
   addressToRemove: Address,
-  documentDetails?: DocumentDetails
+  documentDetails: DocumentDetails
 }
 
 export interface ApplicantDetails {

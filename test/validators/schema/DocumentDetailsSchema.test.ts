@@ -20,17 +20,19 @@ describe('Document Details schema', () => {
     const missingDateErrorMessage: string = 'Document date is required';
     const invalidDateErrorMessage: string = 'Enter a real date';
 
+    const expectedValidationErrors = [
+      new ValidationError('companyName', companyNameErrorMessage),
+      new ValidationError('companyNumber', companyNumberErrorMessage),
+      new ValidationError('description', descriptionErrorMessage),
+      new ValidationError('day', invalidDayErrorMessage),
+      new ValidationError('month', invalidMonthErrorMessage),
+      new ValidationError('year', invalidYearErrorMessage)
+    ];
+
     it('should reject empty object', () => {
       const validationResult = validator.validate({});
-      assertValidationErrors(validationResult, [
-        new ValidationError('companyName', companyNameErrorMessage),
-        new ValidationError('companyNumber', companyNumberErrorMessage),
-        new ValidationError('description', descriptionErrorMessage),
-        new ValidationError('day', invalidDayErrorMessage),
-        new ValidationError('month', invalidMonthErrorMessage),
-        new ValidationError('year', invalidYearErrorMessage),
-        new ValidationError('date', missingDateErrorMessage)
-      ]);
+      assertValidationErrors(validationResult, expectedValidationErrors
+        .concat(new ValidationError('date', missingDateErrorMessage)));
     });
 
     it('should reject undefined values', () => {
@@ -43,15 +45,8 @@ describe('Document Details schema', () => {
         year: undefined,
         date: undefined
       });
-      assertValidationErrors(validationResult, [
-        new ValidationError('companyName', companyNameErrorMessage),
-        new ValidationError('companyNumber', companyNumberErrorMessage),
-        new ValidationError('description', descriptionErrorMessage),
-        new ValidationError('day', invalidDayErrorMessage),
-        new ValidationError('month', invalidMonthErrorMessage),
-        new ValidationError('year', invalidYearErrorMessage),
-        new ValidationError('date', missingDateErrorMessage)
-      ]);
+      assertValidationErrors(validationResult, expectedValidationErrors
+        .concat(new ValidationError('date', missingDateErrorMessage)));
     });
 
     it('should reject null values', () => {
@@ -64,15 +59,8 @@ describe('Document Details schema', () => {
         year: null,
         date: null
       });
-      assertValidationErrors(validationResult, [
-        new ValidationError('companyName', companyNameErrorMessage),
-        new ValidationError('companyNumber', companyNumberErrorMessage),
-        new ValidationError('description', descriptionErrorMessage),
-        new ValidationError('day', invalidDayErrorMessage),
-        new ValidationError('month', invalidMonthErrorMessage),
-        new ValidationError('year', invalidYearErrorMessage),
-        new ValidationError('date', invalidDateErrorMessage)
-      ]);
+      assertValidationErrors(validationResult, expectedValidationErrors
+        .concat(new ValidationError('date', invalidDateErrorMessage)));
     });
 
     it('should reject empty values', () => {
@@ -85,15 +73,8 @@ describe('Document Details schema', () => {
         year: '',
         date: new Date('')
       });
-      assertValidationErrors(validationResult, [
-        new ValidationError('companyName', companyNameErrorMessage),
-        new ValidationError('companyNumber', companyNumberErrorMessage),
-        new ValidationError('description', descriptionErrorMessage),
-        new ValidationError('day', invalidDayErrorMessage),
-        new ValidationError('month', invalidMonthErrorMessage),
-        new ValidationError('year', invalidYearErrorMessage),
-        new ValidationError('date', invalidDateErrorMessage)
-      ]);
+      assertValidationErrors(validationResult, expectedValidationErrors
+        .concat(new ValidationError('date', invalidDateErrorMessage)));
     });
 
     it('should reject blank values', () => {
@@ -106,15 +87,8 @@ describe('Document Details schema', () => {
         year: ' ',
         date: new Date(' ')
       });
-      assertValidationErrors(validationResult, [
-        new ValidationError('companyName', companyNameErrorMessage),
-        new ValidationError('companyNumber', companyNumberErrorMessage),
-        new ValidationError('description', descriptionErrorMessage),
-        new ValidationError('day', invalidDayErrorMessage),
-        new ValidationError('month', invalidMonthErrorMessage),
-        new ValidationError('year', invalidYearErrorMessage),
-        new ValidationError('date', invalidDateErrorMessage)
-      ]);
+      assertValidationErrors(validationResult, expectedValidationErrors
+        .concat(new ValidationError('date', invalidDateErrorMessage)));
     });
 
     it('should reject invalid date patterns', () => {

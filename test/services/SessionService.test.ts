@@ -13,6 +13,12 @@ describe('SessionService', () => {
         town: 'Test Town',
         county: 'Test Midlands',
         postcode: 'TE10 6ST'
+      },
+      documentDetails: {
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        date: '2020-01-01'
       }
     };
 
@@ -44,6 +50,12 @@ describe('SessionService', () => {
         town: 'Test Town',
         county: 'Test Midlands',
         postcode: 'TE10 6ST'
+      },
+      documentDetails: {
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        date: '2020-01-01'
       }
     };
 

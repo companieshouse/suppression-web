@@ -17,12 +17,7 @@ export class DocumentDetailsController {
 
     const suppressionData = SessionService.getSuppressionSession(req);
 
-    let documentDetails = {};
-    if (suppressionData) {
-      documentDetails = this.getDocumentDetails(suppressionData);
-    }
-
-    res.render(template, {...documentDetails});
+    res.render(template, { ...this.getDocumentDetails(suppressionData) });
   }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -51,9 +46,9 @@ export class DocumentDetailsController {
     res.redirect(DOCUMENT_DETAILS_PAGE_URI);
   }
 
-  private getDocumentDetails(suppression: SuppressionData): any {
+  private getDocumentDetails(suppression: SuppressionData | undefined): any {
 
-    const documentDetails: DocumentDetails | undefined = suppression.documentDetails;
+    const documentDetails: DocumentDetails | undefined = suppression?.documentDetails;
     if (!documentDetails) {
       return {};
     }
