@@ -3,6 +3,8 @@ import express from 'express';
 import session from 'express-session';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
+
+import { SuppressionData } from '../src/models/SuppressionDataModel'
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { routes } from '../src/routes/routes';

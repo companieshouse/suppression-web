@@ -4,8 +4,20 @@ export function expectToHaveLink(body: string, href: string, linkText: string) {
   expect(body).toMatch(pattern);
 }
 
+export function expectToHaveBackButton(body: string, href: string) {
+  const patternStr = `<a.* href="${href}" class="govuk-back-link">Back<\/a>`;
+  const pattern = new RegExp(patternStr, 's');
+  expect(body).toMatch(pattern);
+}
+
 export function expectToHaveInput(body: string, field: string, label: string) {
   const patternStr = `<label.*>\\s*${label}\\s*<\/label>.*<input.*name="${field}".*>`;
+  const pattern = new RegExp(patternStr, 's');
+  expect(body).toMatch(pattern);
+}
+
+export function expectToHavePopulatedInput(body: string, field: string, value: string) {
+  const patternStr = `<input.*name="${field}".*value="${value}".*>`;
   const pattern = new RegExp(patternStr, 's');
   expect(body).toMatch(pattern);
 }

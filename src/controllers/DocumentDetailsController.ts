@@ -44,8 +44,8 @@ export class DocumentDetailsController {
       documentDetails: {
         ...req.body,
         date: moment(req.body.date).format('YYYY-MM-DD')
-      }
-    }
+      } as DocumentDetails
+    } as SuppressionData
 
     SessionService.setSuppressionSession(req, updatedSession)
     res.redirect(DOCUMENT_DETAILS_PAGE_URI);

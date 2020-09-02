@@ -1,12 +1,19 @@
+import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../src/models/SuppressionDataModel';
 import SessionService from '../../src/services/SessionService';
-import { SUPPRESSION_DATA_KEY, SuppressionData } from '../../src/models/SuppressionDataModel';
 
 describe('SessionService', () => {
 
-  it('should retrieve suppression data from the session', async () => {
+  it('should retrieve suppression data from the session', () => {
 
     const suppressionData: SuppressionData = {
-      applicantDetails: { fullName: 'test-name', emailAddress: 'test-email' }
+      applicantDetails: { fullName: 'test-name', emailAddress: 'test-email' },
+      addressToRemove: {
+        line1: '1 Test Street',
+        line2: '',
+        town: 'Test Town',
+        county: 'Test Midlands',
+        postcode: 'TE10 6ST'
+      }
     };
 
     const mockRequest: any = {
@@ -17,7 +24,7 @@ describe('SessionService', () => {
 
   });
 
-  it('should return undefined when no suppression data exists in the session', async () => {
+  it('should return undefined when no suppression data exists in the session', () => {
 
     const mockRequest: any = {
       session: {}
@@ -27,10 +34,17 @@ describe('SessionService', () => {
 
   });
 
-  it('should set the suppression data in the session', async () => {
+  it('should set the suppression data in the session', () => {
 
     const suppressionData: SuppressionData = {
-      applicantDetails: { fullName: 'test-name', emailAddress: 'test-email'}
+      applicantDetails: { fullName: 'test-name', emailAddress: 'test-email'},
+      addressToRemove: {
+        line1: '1 Test Street',
+        line2: '',
+        town: 'Test Town',
+        county: 'Test Midlands',
+        postcode: 'TE10 6ST'
+      }
     };
 
     const mockRequest: any = {

@@ -1,12 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { APPLICANT_DETAILS_PAGE_URI } from '../../src/routes/paths';
+import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
-  expectToHaveInput,
+  expectToHaveInput, expectToHaveLink,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
@@ -22,6 +23,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).get(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveInput(response.text, 'fullName', 'Full name');
         expectToHaveInput(response.text, 'emailAddress', 'Email address');
       });
@@ -40,6 +42,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage, emailMissingErrorMessage]);
         expectToHaveErrorMessages(response.text, [fullNameErrorMessage, emailMissingErrorMessage]);
       });
@@ -50,6 +53,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).send({ emailAddress: 'test@example.com' }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage]);
         expectToHaveErrorMessages(response.text, [fullNameErrorMessage]);
       });
@@ -60,6 +64,7 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).send({ fullName: 'John Doe' }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [emailMissingErrorMessage]);
         expectToHaveErrorMessages(response.text, [emailMissingErrorMessage]);
       });
@@ -73,6 +78,7 @@ describe('ApplicantDetailsController', () => {
       }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [emailInvalidErrorMessage]);
         expectToHaveErrorMessages(response.text, [emailInvalidErrorMessage]);
       });

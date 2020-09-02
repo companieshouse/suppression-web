@@ -1,11 +1,21 @@
 {% extends 'layout.njk' %}
 
+{% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
 {% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
 
 {% block pageTitle %}
   Applicant’s Details
+{% endblock %}
+
+{% block backLink %}
+  {{
+    govukBackLink({
+      text: 'Back',
+      href: backNavigation
+    })
+  }}
 {% endblock %}
 
 {% block content %}
@@ -51,13 +61,13 @@
             autocomplete: 'email'
           })
         }}
-        {{ 
+        {{
           govukButton({
             text: 'Continue',
             attributes: {
               id: 'submit'
             }
-          }) 
+          })
         }}
       </form>
     </div>

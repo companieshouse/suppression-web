@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ROOT_URI } from '../routes/paths';
+import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 
 export class StartPageController {
 
@@ -8,6 +8,6 @@ export class StartPageController {
   };
 
   public start = (req: Request, res: Response) => {
-    res.redirect(ROOT_URI);
+    res.redirect(APPLICANT_DETAILS_PAGE_URI);
   };
 }
