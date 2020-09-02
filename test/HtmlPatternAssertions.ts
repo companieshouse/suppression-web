@@ -16,6 +16,12 @@ export function expectToHaveInput(body: string, field: string, label: string) {
   expect(body).toMatch(pattern);
 }
 
+export function expectToHavePopulatedInput(body: string, field: string, value: string) {
+  const patternStr = `<input.*name="${field}".*value="${value}".*>`;
+  const pattern = new RegExp(patternStr, 's');
+  expect(body).toMatch(pattern);
+}
+
 export function expectToHaveErrorMessages(body: string, expectedErrors: string[]) {
   expectedErrors.forEach(error => {
     const patternStr = `<span.*class="govuk-error-message">.*${error}.*<\/span>`
