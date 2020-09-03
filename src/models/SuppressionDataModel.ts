@@ -2,7 +2,8 @@ export const SUPPRESSION_DATA_KEY: string = 'suppression';
 
 export interface SuppressionData {
   applicantDetails: ApplicantDetails,
-  addressToRemove: Address
+  addressToRemove: Address,
+  documentDetails: DocumentDetails
 }
 
 export interface ApplicantDetails {
@@ -16,4 +17,11 @@ export interface Address {
   town: string,
   county: string,
   postcode: string
+}
+
+export interface DocumentDetails {
+  companyName: string;
+  companyNumber: string;
+  description: string;
+  date: string;
 }

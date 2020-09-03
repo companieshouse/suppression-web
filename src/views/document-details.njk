@@ -1,0 +1,180 @@
+{% extends 'layout.njk' %}
+
+{% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
+{% from 'govuk/components/input/macro.njk'         import govukInput %}
+{% from 'govuk/components/date-input/macro.njk'    import govukDateInput %}
+{% from 'govuk/components/button/macro.njk'        import govukButton %}
+
+{% block pageTitle %}
+  Document details
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {{
+        govukErrorSummary ({
+          titleText: 'There is a problem with the details you gave us',
+          errorList: validationResult.errors
+        }) if validationResult and validationResult.errors.length > 0
+      }}
+
+      {% set classes_day = 'govuk-input--width-2' %}
+      {% set classes_month = 'govuk-input--width-2' %}
+      {% set classes_year = 'govuk-input--width-4' %}
+      {% set documentDateErrorMessage = false %}
+
+      {% if validationResult and validationResult.errors.length > 0 %}
+
+        {% if validationResult.getErrorForField('day') %}
+          {% set classes_day = classes_day + ' govuk-input--error' %}
+        {% endif %}
+        {% if validationResult.getErrorForField('month') %}
+          {% set classes_month = classes_month + ' govuk-input--error' %}
+        {% endif %}
+         {% if validationResult.getErrorForField('year') %}
+          {% set classes_year = classes_year + ' govuk-input--error' %}
+        {% endif %}
+        {% if validationResult.getErrorForField('date') %}
+          {% set classes_day = classes_day + ' govuk-input--error' %}
+          {% set classes_month = classes_month + ' govuk-input--error' %}
+          {% set classes_year = classes_year + ' govuk-input--error' %}
+        {% endif %}
+
+        {% set errorMessages %}
+          <ul style="padding: 0;list-style-type: none;">
+            {% for error in validationResult.errors %}
+              {% if error.field in ['day', 'month', 'year', 'date'] %}
+                <li>
+                  {{ error.text }}
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endset %}
+
+        {% if errorMessages %}
+          {% set documentDateErrorMessage = {
+            html: errorMessages
+            }
+          %}
+        {% endif %}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">
+        What are the document details?
+      </h1>
+
+      <p class="govuk-body">You can check which documents contain your home address on the <a href="https://beta.companieshouse.gov.uk" class="govuk-link" rel="noreferrer noopener" target="_blank">Companies House Register</a></p>
+      <p class="govuk-body">You'll need:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>the name of the document (shown on the PDF of the document)</li>
+        <li>the document description as it appears on the company filing history</li>
+        <li>the date the document was added to the register</li>
+      </ul>
+
+      <form method="post">
+        {{
+          govukInput({
+            label: {
+              text: 'Company name',
+              classes: 'govuk-label--s',
+              isPageHeading: false
+            },
+            errorMessage: validationResult.getErrorForField('companyName') if validationResult,
+            classes: 'govuk-input--width-20',
+            id: 'company-name',
+            name: 'companyName',
+            value: companyName,
+            autocomplete: 'companyName'
+          })
+        }}
+        {{
+          govukInput({
+            label: {
+              text: 'Company number',
+              classes: 'govuk-label--s',
+              isPageHeading: false
+            },
+            errorMessage: validationResult.getErrorForField('companyNumber') if validationResult,
+            classes: 'govuk-input--width-20',
+            id: 'company-number',
+            name: 'companyNumber',
+            value: companyNumber,
+            autocomplete: 'companyNumber'
+          })
+        }}
+        {{
+          govukInput({
+            label: {
+              text: 'Document description',
+              classes: 'govuk-label--s',
+              isPageHeading: false
+            },
+            hint: {
+              text: 'Tell us the name and description of the document you want to remove your home address from. For example, CH01 - Director\'s details changed for Mr John Smith on 2 January 2020'
+            },
+            errorMessage: validationResult.getErrorForField('description') if validationResult,
+            classes: 'govuk-input--width-20',
+            id: 'document-description',
+            name: 'description',
+            value: description,
+            autocomplete: 'description'
+          })
+        }}
+        {{
+          govukDateInput ({
+            id: 'document-date',
+            fieldset: {
+              legend: {
+                text: 'Document date',
+                isPageHeading: false,
+                classes: 'govuk-fieldset__legend--s'
+              }
+            },
+            hint: {
+              text: 'For example, 12 11 2007'
+            },
+            errorMessage: documentDateErrorMessage,
+            items: [
+              {
+                classes: classes_day,
+                id: 'doc-day',
+                label: 'Day',
+                name: 'day',
+                value: day,
+                autocomplete: 'off'
+              },
+              {
+                classes: classes_month,
+                id: 'doc-month',
+                label: 'Month',
+                name: 'month',
+                value: month,
+                autocomplete: 'off'
+              },
+              {
+                classes: classes_year,
+                id: 'doc-year',
+                label: 'Year',
+                name: 'year',
+                value: year,
+                autocomplete: 'off'
+              }
+            ]
+          })
+        }}
+        {{
+          govukButton({
+            text: 'Continue',
+            attributes: {
+              id: 'submit'
+            }
+          })
+        }}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

@@ -16,7 +16,7 @@ export default class SessionService {
 
   static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
 
-    if (!req.session!.extra_data) {
+    if (req.session!.extra_data === undefined) {
       req.session!.extra_data = {};
     }
 
