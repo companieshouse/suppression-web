@@ -1,6 +1,8 @@
-import { Request } from 'express';import { FormValidator } from './FormValidator';
+import { Request } from 'express'
+
 import { ValidationError } from '../utils/validation/ValidationError';
 import { ValidationResult } from '../utils/validation/ValidationResult';
+import { FormValidator } from './FormValidator';
 import { schema } from './schema/DocumentDetailsSchema';
 
 const missingDateErrorMessage: string = 'Document date is required';
