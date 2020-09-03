@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import moment from 'moment';
 
 import { ValidationError } from '../utils/validation/ValidationError';
 import { ValidationResult } from '../utils/validation/ValidationResult';
@@ -24,7 +25,7 @@ export class DocumentDetailsValidator extends FormValidator {
     const dayValue = request.body[dayField];
 
     if (yearValue && monthValue && dayValue) {
-      request.body.date = new Date(`${yearValue}-${monthValue}-${dayValue}`);
+      request.body.date = moment(`${yearValue}-${monthValue}-${dayValue}`, 'YYYY-MM-DD').toDate();
     }
 
     const validationResult: ValidationResult = await super.validate(request);
