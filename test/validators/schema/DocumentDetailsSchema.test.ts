@@ -1,3 +1,5 @@
+import moment = require('moment');
+
 import { SchemaValidator } from '../../../src/utils/validation/SchemaValidator';
 import { ValidationError } from '../../../src/utils/validation/ValidationError';
 import { assertValidationErrors } from '../ValidationAssertions';
@@ -71,7 +73,7 @@ describe('Document Details schema', () => {
         day: '',
         month: '',
         year: '',
-        date: new Date('')
+        date: moment('', 'YYYY-MM-DD').toDate()
       });
       assertValidationErrors(validationResult, expectedValidationErrors
         .concat(new ValidationError('date', invalidDateErrorMessage)));
@@ -85,7 +87,7 @@ describe('Document Details schema', () => {
         day: ' ',
         month: ' ',
         year: ' ',
-        date: new Date(' ')
+        date: moment(' ', 'YYYY-MM-DD').toDate()
       });
       assertValidationErrors(validationResult, expectedValidationErrors
         .concat(new ValidationError('date', invalidDateErrorMessage)));
@@ -117,10 +119,55 @@ describe('Document Details schema', () => {
         day: '33',
         month: '01',
         year: '2020',
-        date: new Date('2020-01-33')
+        date: moment('2020-01-33', 'YYYY-MM-DD').toDate()
       });
       assertValidationErrors(validationResult, [
         new ValidationError('date', invalidDateErrorMessage)
+      ]);
+    });
+
+    it('should reject invalid calendar dates - feb 30th does not exist', () => {
+      const validationResult = validator.validate({
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        day: '30',
+        month: '02',
+        year: '2015',
+        date: moment('2015-02-30', 'YYYY-MM-DD').toDate()
+      });
+      assertValidationErrors(validationResult, [
+        new ValidationError('date', 'Enter a real date')
+      ]);
+    });
+
+    it('should reject invalid calendar dates - april 31st does not exist', () => {
+      const validationResult = validator.validate({
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        day: '31',
+        month: '04',
+        year: '2015',
+        date: moment('2015-04-31', 'YYYY-MM-DD').toDate()
+      });
+      assertValidationErrors(validationResult, [
+        new ValidationError('date', 'Enter a real date')
+      ]);
+    });
+
+    it('should reject 29th of feb during a non-leap year', () => {
+      const validationResult = validator.validate({
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        day: '29',
+        month: '02',
+        year: '1997',
+        date: moment('1997-02-29', 'YYYY-MM-DD').toDate()
+      });
+      assertValidationErrors(validationResult, [
+        new ValidationError('date', 'Enter a real date')
       ]);
     });
   });
@@ -135,7 +182,20 @@ describe('Document Details schema', () => {
         day: '01',
         month: '01',
         year: '2020',
-        date: new Date('2020-01-01')
+        date: moment('2020-01-01', 'YYYY-MM-DD').toDate()
+      });
+      assertValidationErrors(validationResult, []);
+    });
+
+    it('should allow 29th of feb during a leap year', () => {
+      const validationResult = validator.validate({
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        day: '29',
+        month: '02',
+        year: '1996',
+        date: moment('1996-02-29', 'YYYY-MM-DD').toDate()
       });
       assertValidationErrors(validationResult, []);
     });
