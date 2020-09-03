@@ -2,8 +2,15 @@ import { Router } from 'express';
 import { AddressToRemoveController } from '../controllers/AddressToRemoveController';
 import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
+import { PaymentReviewController } from '../controllers/PaymentReviewController';
 import { StartPageController } from '../controllers/StartPageController';
-import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, ROOT_URI } from './paths';
+import {
+  ADDRESS_TO_REMOVE_PAGE_URI,
+  APPLICANT_DETAILS_PAGE_URI,
+  DOCUMENT_DETAILS_PAGE_URI,
+  PAYMENT_REVIEW_PAGE_URI,
+  ROOT_URI
+} from './paths';
 
 
 export const routes = Router();
@@ -15,6 +22,7 @@ const startPageController = new StartPageController();
 const applicantDetailsController = new ApplicantDetailsController();
 const addressToRemoveController = new AddressToRemoveController();
 const documentDetailsController = new DocumentDetailsController();
+const paymentReviewController = new PaymentReviewController();
 
 /**
  * Route definitions
@@ -30,3 +38,6 @@ routes.post(ADDRESS_TO_REMOVE_PAGE_URI, addressToRemoveController.processForm);
 
 routes.get(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.renderView);
 routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);
+
+routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
+routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
