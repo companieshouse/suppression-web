@@ -41,5 +41,3 @@ routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);
 
 routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
 routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
-
-
