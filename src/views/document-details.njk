@@ -24,35 +24,42 @@
       {% set classes_month = 'govuk-input--width-2' %}
       {% set classes_year = 'govuk-input--width-4' %}
       {% set documentDateErrorMessage = false %}
+      {% set hasDateError = false %}
 
       {% if validationResult and validationResult.errors.length > 0 %}
 
         {% if validationResult.getErrorForField('day') %}
           {% set classes_day = classes_day + ' govuk-input--error' %}
+          {% set hasDateError = true %}
         {% endif %}
         {% if validationResult.getErrorForField('month') %}
           {% set classes_month = classes_month + ' govuk-input--error' %}
+          {% set hasDateError = true %}
         {% endif %}
          {% if validationResult.getErrorForField('year') %}
           {% set classes_year = classes_year + ' govuk-input--error' %}
+          {% set hasDateError = true %}
         {% endif %}
         {% if validationResult.getErrorForField('date') %}
           {% set classes_day = classes_day + ' govuk-input--error' %}
           {% set classes_month = classes_month + ' govuk-input--error' %}
           {% set classes_year = classes_year + ' govuk-input--error' %}
+          {% set hasDateError = true %}
         {% endif %}
 
-        {% set errorMessages %}
-          <ul style="padding: 0;list-style-type: none;">
-            {% for error in validationResult.errors %}
-              {% if error.field in ['day', 'month', 'year', 'date'] %}
-                <li>
-                  {{ error.text }}
-                </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        {% endset %}
+        {% if hasDateError %}
+          {% set errorMessages %}
+            <ul style="padding: 0;list-style-type: none;">
+              {% for error in validationResult.errors %}
+                {% if error.field in ['day', 'month', 'year', 'date'] %}
+                  <li>
+                    {{ error.text }}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endset %}
+        {% endif %}
 
         {% if errorMessages %}
           {% set documentDateErrorMessage = {
