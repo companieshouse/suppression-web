@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { Address, ApplicantDetails, SuppressionData } from '../../src/models/SuppressionDataModel'
-import { ADDRESS_TO_REMOVE_PAGE_URI } from '../../src/routes/paths';
+import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
+import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
@@ -85,7 +85,6 @@ describe('AddressToRemoveController', () => {
 
     it('should throw an error if the session doesn’t exist', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
-      const testData = generateTestData();
 
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
@@ -158,24 +157,24 @@ describe('AddressToRemoveController', () => {
       })
     });
 
-    it('should accept address details without data for Address Line 2', async () => {
+    it('should accept address details without data for Address Line 2, and redirect to the Document Details page', async () => {
 
       const testData = generateTestData();
       testData.line2 = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-        expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
+        expect(response.header.location).toContain(DOCUMENT_DETAILS_PAGE_URI);
       });
     });
 
-    it('should redirect to the next page if the information provided by the user is valid', async () => {
+    it('should redirect to the Document Details page if the information provided by the user is valid', async () => {
 
       const testData = generateTestData();
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-        expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
+        expect(response.header.location).toContain(DOCUMENT_DETAILS_PAGE_URI);
       });
     });
 
