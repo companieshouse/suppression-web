@@ -4,9 +4,19 @@
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
 {% from 'govuk/components/date-input/macro.njk'    import govukDateInput %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
+{% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
 
 {% block pageTitle %}
   Document details
+{% endblock %}
+
+{% block backLink %}
+  {{
+    govukBackLink({
+      text: 'Back',
+      href: backNavigation
+    })
+  }}
 {% endblock %}
 
 {% block content %}

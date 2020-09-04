@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 
 import { DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
-import { DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
+import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/SessionService';
 import { DocumentDetailsValidator } from '../validators/DocumentDetailsValidator';
 
@@ -17,7 +17,10 @@ export class DocumentDetailsController {
 
     const suppressionData = SessionService.getSuppressionSession(req);
 
-    res.render(template, { ...this.getDocumentDetails(suppressionData) });
+    res.render(template, {
+      ...this.getDocumentDetails(suppressionData),
+      backNavigation: ADDRESS_TO_REMOVE_PAGE_URI
+    });
   }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,7 +31,8 @@ export class DocumentDetailsController {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);
       return res.render(template, {
         ...req.body,
-        validationResult
+        validationResult,
+        backNavigation: ADDRESS_TO_REMOVE_PAGE_URI
       });
     }
 
