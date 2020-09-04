@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { Address } from '../models/SuppressionDataModel'
-import { ADDRESS_TO_REMOVE_PAGE_URI } from '../routes/paths';
+import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/SessionService'
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
@@ -35,7 +35,7 @@ export class AddressToRemoveController {
     } else {
       session.addressToRemove = req.body as Address;
       SessionService.setSuppressionSession(req, session);
-      res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
+      res.redirect(DOCUMENT_DETAILS_PAGE_URI);
     }
   };
 }

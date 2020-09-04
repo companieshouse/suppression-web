@@ -1,15 +1,15 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import {DOCUMENT_DETAILS_PAGE_URI} from '../../src/routes/paths';
-import {
-  expectToHaveErrorMessages,
-  expectToHaveErrorSummaryContaining, expectToHaveInput, expectToHavePopulatedInput,
-  expectToHaveTitle
-} from '../HtmlPatternAssertions'
-import { createApp } from '../ApplicationFactory';
-import SessionService from '../../src/services/SessionService';
 import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
+import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI} from '../../src/routes/paths';
+import SessionService from '../../src/services/SessionService';
+import { createApp } from '../ApplicationFactory';
+import {
+  expectToHaveBackButton,
+  expectToHaveErrorMessages, expectToHaveErrorSummaryContaining, expectToHaveInput,
+  expectToHavePopulatedInput, expectToHaveTitle
+} from '../HtmlPatternAssertions'
 
 const expectedTitle: string = 'Document details';
 const missingCompanyNameErrorMessage: string = 'Company name is required';
@@ -32,6 +32,7 @@ describe('DocumentDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveBackButton(response.text, ADDRESS_TO_REMOVE_PAGE_URI);
           expectToHaveInput(response.text, 'companyName', 'Company name');
           expectToHaveInput(response.text, 'companyNumber', 'Company number');
           expectToHaveInput(response.text, 'description', 'Document description');
@@ -47,7 +48,7 @@ describe('DocumentDetailsController', () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
         return {
-          documentDetails: documentDetails
+          documentDetails
         } as SuppressionData
       });
 
