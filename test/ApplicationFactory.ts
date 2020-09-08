@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
+import {SessionMiddleware, SessionStore} from 'ch-node-session-handler';
+import cookieParser from 'cookie-parser';
 import express from 'express';
-import session from 'express-session';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
@@ -30,22 +31,17 @@ export function createApp() {
   app.set('views', viewPath);
   app.set('view engine', 'njk');
 
-  const RedisStore = require('connect-redis')(session);
-
   const redis = require('redis-mock');
+  const sessionStore = new SessionStore(redis.createClient())
 
-  app.use(session({
-    secret: getConfigValue('COOKIE_SECRET') as string,
-    name: getConfigValue('COOKIE_NAME'),
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      secure: false,
-      maxAge: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string,10) * 1000,
-      domain: getConfigValue('COOKIE_DOMAIN')
-    },
-    store: new RedisStore({ client: redis.createClient() })
-  }));
+  app.use(cookieParser())
+  app.use(SessionMiddleware({
+    cookieName: getConfigValue('COOKIE_NAME') as string,
+    cookieDomain: getConfigValue('COOKIE_DOMAIN') as string,
+    cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === '1',
+    cookieTimeToLiveInSeconds: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string, 10),
+    cookieSecret: getConfigValue('COOKIE_SECRET') as string
+  }, sessionStore, true))
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
-import connectRedis from 'connect-redis';
+import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
+import cookieParser from 'cookie-parser';
 import express from 'express';
-import session from 'express-session';
 import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
@@ -18,21 +18,16 @@ loadEnvironmentVariables({validationSchema: configValidationSchema});
 
 const app = express();
 
-const RedisStore = connectRedis(session);
+const sessionStore = new SessionStore(new IORedis(`redis://${process.env.CACHE_SERVER}`))
 
-app.use(session({
-  secret: getConfigValue('COOKIE_SECRET') as string,
-  name: getConfigValue('COOKIE_NAME'),
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    path: '/suppress-my-details',
-    secure: false,
-    maxAge: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string,10) * 1000,
-    domain: getConfigValue('COOKIE_DOMAIN')
-  },
-  store: new RedisStore({ client: new IORedis(getConfigValue('CACHE_SERVER')) })
-}));
+app.use(cookieParser())
+app.use(SessionMiddleware({
+  cookieName: getConfigValue('COOKIE_NAME') as string,
+  cookieDomain: getConfigValue('COOKIE_DOMAIN') as string,
+  cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === '1',
+  cookieTimeToLiveInSeconds: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string, 10),
+  cookieSecret: getConfigValue('COOKIE_SECRET') as string
+}, sessionStore, true))
 
 // set up app variables from the environment
 app.set('port', getConfigValue('PORT'));
