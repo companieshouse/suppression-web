@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "ch-node-session-handler": "git+ssh://git@github.com/companieshouse/node-session-handler.git#5b8eb960cf439cf185b13a4a0a8d624886766bed",
+    "ch-node-session-handler": "git+ssh://git@github.com/companieshouse/node-session-handler.git#4.0.0",
     "connect-redis": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
