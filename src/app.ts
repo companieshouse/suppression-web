@@ -18,7 +18,7 @@ loadEnvironmentVariables({validationSchema: configValidationSchema});
 
 const app = express();
 
-const sessionStore = new SessionStore(new IORedis(`redis://${process.env.CACHE_SERVER}`))
+const sessionStore = new SessionStore(new IORedis(`redis://${getConfigValue('CACHE_SERVER')}`))
 
 app.use(cookieParser())
 app.use(SessionMiddleware({
