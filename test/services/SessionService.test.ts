@@ -23,7 +23,7 @@ describe('SessionService', () => {
     };
 
     const mockRequest: any = {
-      session: { extra_data: { suppression:  suppressionData  } }
+      session: { data: { extra_data: { suppression:  suppressionData  } } }
     };
 
     expect(SessionService.getSuppressionSession(mockRequest)).toEqual(suppressionData)
@@ -33,7 +33,7 @@ describe('SessionService', () => {
   it('should return undefined when no suppression data exists in the session', () => {
 
     const mockRequest: any = {
-      session: {}
+      session: { data: { extra_data: {} } }
     };
 
     expect(SessionService.getSuppressionSession(mockRequest)).toBeUndefined();
@@ -60,11 +60,11 @@ describe('SessionService', () => {
     };
 
     const mockRequest: any = {
-      session: {}
+      session: { data: { extra_data: {} }}
     };
 
     SessionService.setSuppressionSession(mockRequest, suppressionData);
-    expect(mockRequest.session.extra_data[SUPPRESSION_DATA_KEY]).toEqual(suppressionData)
+    expect(mockRequest.session.data.extra_data[SUPPRESSION_DATA_KEY]).toEqual(suppressionData)
   })
 
 });

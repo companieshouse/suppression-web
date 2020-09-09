@@ -5,21 +5,10 @@ import { SuppressionData, SUPPRESSION_DATA_KEY } from '../models/SuppressionData
 export default class SessionService {
 
   static getSuppressionSession(req: Request): SuppressionData | undefined {
-
-    const extraData: Record<any, any> = req.session!.extra_data;
-
-    if (extraData) {
-      return extraData[SUPPRESSION_DATA_KEY];
-    }
-    return undefined
+    return req.session!.data.extra_data[SUPPRESSION_DATA_KEY];
   }
 
   static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
-
-    if (req.session!.extra_data === undefined) {
-      req.session!.extra_data = {};
-    }
-
-    req.session!.extra_data[SUPPRESSION_DATA_KEY] =  updatedSession;
+    req.session!.data.extra_data[SUPPRESSION_DATA_KEY] = updatedSession;
   }
 }
