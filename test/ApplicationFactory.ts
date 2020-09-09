@@ -38,7 +38,7 @@ export function createApp() {
   app.use(SessionMiddleware({
     cookieName: getConfigValue('COOKIE_NAME') as string,
     cookieDomain: getConfigValue('COOKIE_DOMAIN') as string,
-    cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === '1',
+    cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === 'true',
     cookieTimeToLiveInSeconds: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string, 10),
     cookieSecret: getConfigValue('COOKIE_SECRET') as string
   }, sessionStore, true))
