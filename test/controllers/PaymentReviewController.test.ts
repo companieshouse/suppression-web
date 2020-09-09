@@ -2,11 +2,13 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
+import { PaymentService } from '../../src/services/PaymentService';
 import { createApp } from '../ApplicationFactory';
 import { expectToHaveTitle } from '../HtmlPatternAssertions'
 
 jest.mock('../../src/middleware/AuthMiddleware')
 jest.mock('../../src/services/SessionService')
+jest.mock('../../src/services/PaymentService')
 
 describe('PaymentReviewController', () => {
 
@@ -30,13 +32,19 @@ describe('PaymentReviewController', () => {
 
   describe('on POST', () => {
 
-    it('should return status code 302 and redirect', async () => {
+    it('should return status code 302 and redirect to GOV Pay', async () => {
+
+      const mockGovPayUrl = 'https://mock.payments.service.gov.uk/v1/payments/123456';
+
+      jest.spyOn(PaymentService.prototype, 'initPayment').mockImplementationOnce(async () => {
+        return Promise.resolve(mockGovPayUrl);
+      });
 
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toEqual(PAYMENT_REVIEW_PAGE_URI)
+          expect(response.header.location).toEqual(mockGovPayUrl)
         });
     });
   });

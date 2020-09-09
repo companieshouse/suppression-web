@@ -1,9 +1,11 @@
 import { Session } from 'ch-node-session-handler';
+import { ISignInInfo } from 'ch-node-session-handler/lib/session/model/SessionInterfaces';
 import { Request } from 'express';
+
 import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../src/models/SuppressionDataModel';
 import SessionService from '../../src/services/SessionService';
 
-const mockSuppressionData: SuppressionData = {
+const mockSuppressionData = {
   applicantDetails: {
     fullName: 'test-name',
     emailAddress: 'test-email'
@@ -21,7 +23,7 @@ const mockSuppressionData: SuppressionData = {
     description: 'This is a document',
     date: '2020-01-01'
   }
-};
+} as SuppressionData;
 
 const mockRequestData = {
   session: {
@@ -63,6 +65,28 @@ describe('SessionService', () => {
     SessionService.setSuppressionSession(mockRequest, mockSuppressionData);
 
     expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionData);
+  })
+
+
+  it('should retrieve the access token from the session', () => {
+
+    const testToken = 'test-token';
+    const mockRequest: Request = mockRequestData;
+
+    const mockGetSignInInfo: jest.Mock = jest.fn(() => {
+      return {
+        access_token: {
+          access_token: testToken
+        },
+        user_profile: {
+          email: 'test@example.com'
+        }
+      }
+    });
+    mockRequest.session!.get = mockGetSignInInfo;
+
+    const result = SessionService.getAccessToken(mockRequest)
+    expect(result).toEqual(testToken)
   })
 
 });
