@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
 import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI} from '../../src/routes/paths';
-import SessionService from '../../src/services/SessionService';
+import SessionService from '../../src/services/Session/SessionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
