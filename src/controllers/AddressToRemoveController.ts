@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { Address } from '../models/SuppressionDataModel'
-import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
+import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/SessionService'
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema'
 
 const template = 'address-to-remove';
+const backNavigation = APPLICANT_DETAILS_PAGE_URI;
 
 export class AddressToRemoveController {
 
@@ -16,7 +17,10 @@ export class AddressToRemoveController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const session = SessionService.getSuppressionSession(req);
-    res.render(template, { ...session?.addressToRemove });
+    res.render(template, {
+      ...session?.addressToRemove,
+      backNavigation
+    });
   }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,7 +34,8 @@ export class AddressToRemoveController {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);
       return res.render(template, {
         ...req.body,
-        validationResult
+        validationResult,
+        backNavigation
       });
     } else {
       session.addressToRemove = req.body as Address;

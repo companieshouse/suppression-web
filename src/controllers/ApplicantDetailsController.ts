@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel'
-import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
+import { ADDRESS_TO_REMOVE_PAGE_URI, ROOT_URI } from '../routes/paths';
 import SessionService from '../services/SessionService'
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
@@ -39,7 +39,7 @@ export class ApplicantDetailsController {
         SessionService.setSuppressionSession(req, session);
       }
 
-      res.redirect(APPLICANT_DETAILS_PAGE_URI);
+      res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
     }
   };
 }
