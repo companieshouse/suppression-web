@@ -5,6 +5,9 @@ import { PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { createApp } from '../ApplicationFactory';
 import { expectToHaveTitle } from '../HtmlPatternAssertions'
 
+jest.mock('../../src/middleware/AuthMiddleware')
+jest.mock('../../src/services/SessionService')
+
 describe('PaymentReviewController', () => {
 
   const app = createApp();

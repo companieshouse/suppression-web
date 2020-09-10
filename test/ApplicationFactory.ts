@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import {SessionMiddleware, SessionStore} from 'ch-node-session-handler';
+import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import * as nunjucks from 'nunjucks';
@@ -41,7 +41,7 @@ export function createApp() {
     cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === 'true',
     cookieTimeToLiveInSeconds: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string, 10),
     cookieSecret: getConfigValue('COOKIE_SECRET') as string
-  }, sessionStore, true))
+  }, sessionStore))
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));

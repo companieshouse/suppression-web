@@ -13,6 +13,7 @@ import {
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
+jest.mock('../../src/middleware/AuthMiddleware')
 jest.mock('../../src/services/SessionService')
 
 afterEach(() => {
