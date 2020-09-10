@@ -1,3 +1,5 @@
+import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
+import { ISignInInfo } from 'ch-node-session-handler/lib/session/model/SessionInterfaces';
 import { NextFunction, Request, Response } from 'express';
 import { SuppressionData } from '../models/SuppressionDataModel';
 
@@ -23,10 +25,15 @@ export class PaymentReviewController {
       throw new Error('Session is undefined')
     }
 
+    const signInInfo: ISignInInfo | undefined = req.session!.get(SessionKey.SignInInfo);
+    const accessToken: string | undefined = signInInfo?.access_token?.access_token;
+    const refreshToken: string | undefined = signInInfo?.access_token?.refresh_token;
+
+
     const refreshTokenService = new RefreshTokenService(
-      getConfigValue(`OAUTH2_TOKEN_URI`) as string,
-      getConfigValue(`OAUTH2_CLIENT_ID`) as string,
-      getConfigValue(`OAUTH2_CLIENT_SECRET`) as string
+      getConfigValue('OAUTH2_TOKEN_URI') as string,
+      getConfigValue('OAUTH2_CLIENT_ID') as string,
+      getConfigValue('OAUTH2_CLIENT_SECRET') as string
     );
 
     const suppressionService: SuppressionService = new SuppressionService(
@@ -35,7 +42,7 @@ export class PaymentReviewController {
     );
 
     const suppression: SuppressionData = SessionService.getSuppressionSession(req)!;
-    suppression.applicationReference = await suppressionService.saveSuppression(suppression);
+    suppression.applicationReference = await suppressionService.saveSuppression(suppression, accessToken!, refreshToken!);
     SessionService.setSuppressionSession(req, suppression);
 
     res.redirect(PAYMENT_REVIEW_PAGE_URI);
