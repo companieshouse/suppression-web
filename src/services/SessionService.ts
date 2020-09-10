@@ -4,11 +4,11 @@ import { SuppressionData, SUPPRESSION_DATA_KEY } from '../models/SuppressionData
 
 export default class SessionService {
 
-  static getSuppressionSession(req: Request): SuppressionData | undefined {
-    return req.session!.data.extra_data[SUPPRESSION_DATA_KEY];
+  static getSuppressionSession(req: Request): SuppressionData {
+    return req.session!.getExtraData(SUPPRESSION_DATA_KEY) || {} as SuppressionData;
   }
 
   static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
-    req.session!.data.extra_data[SUPPRESSION_DATA_KEY] = updatedSession;
+    req.session!.setExtraData(SUPPRESSION_DATA_KEY, updatedSession);
   }
 }
