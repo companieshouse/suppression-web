@@ -13,17 +13,17 @@ export class SuppressionService {
     this.axiosInstance = axios.create();
   }
 
-  public async save(suppression: SuppressionData, accessToken: string): Promise<string> {
+  public async save(suppression: SuppressionData, key: string): Promise<string> {
 
     this.checkArgumentOrThrow(suppression, 'Suppression data is missing');
-    this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(key, 'Key is missing');
 
     const uri: string = `${this.uri}/suppressions`;
 
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
     this.axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
-      config.headers = this.getHeaders(accessToken);
+      config.headers = this.getHeaders(key);
       return config
     }, async (error: AxiosError) => {
       return Promise.reject(error)
@@ -65,11 +65,11 @@ export class SuppressionService {
     }
   }
 
-  private getHeaders(accessToken: string): AxiosRequestConfig['headers'] {
+  private getHeaders(key: string): AxiosRequestConfig['headers'] {
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + accessToken
+      'Authorization': key
     };
   }
 }

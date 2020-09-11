@@ -1,5 +1,3 @@
-import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
-import { ISignInInfo } from 'ch-node-session-handler/lib/session/model/SessionInterfaces';
 import { NextFunction, Request, Response } from 'express';
 import { SuppressionData } from '../models/SuppressionDataModel';
 
@@ -20,17 +18,10 @@ export class PaymentReviewController {
 
   public continue = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!req.session) {
-      throw new Error('Session is undefined')
-    }
-
     const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSION_API_URL') as string);
 
-    const signInInfo: ISignInInfo | undefined = req.session!.get(SessionKey.SignInInfo);
-    const accessToken: string | undefined = signInInfo?.access_token?.access_token;
-
     const suppression: SuppressionData = SessionService.getSuppressionSession(req)!;
-    suppression.applicationReference = await suppressionService.save(suppression, accessToken!);
+    suppression.applicationReference = await suppressionService.save(suppression, getConfigValue('ACCOUNTS_API_KEY') as string);
     SessionService.setSuppressionSession(req, suppression);
 
     res.redirect(PAYMENT_REVIEW_PAGE_URI);
