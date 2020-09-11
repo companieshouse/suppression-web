@@ -1,13 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
+import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
-  expectToHaveInput, expectToHaveLink,
+  expectToHaveInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
@@ -94,7 +94,7 @@ describe('ApplicantDetailsController', () => {
         emailAddress: 'test@example.com'
       }).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-        expect(response.header.location).toContain(APPLICANT_DETAILS_PAGE_URI);
+        expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
       });
     });
   });
