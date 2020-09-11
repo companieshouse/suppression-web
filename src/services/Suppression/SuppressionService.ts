@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes/build';
 import { SuppressionData } from '../../models/SuppressionDataModel';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
@@ -6,11 +6,8 @@ import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnpro
 
 export class SuppressionService {
 
-  private readonly axiosInstance: AxiosInstance;
-
   constructor(private readonly uri: string) {
     this.uri = uri;
-    this.axiosInstance = axios.create();
   }
 
   public async save(suppression: SuppressionData, key: string): Promise<string> {
@@ -22,16 +19,12 @@ export class SuppressionService {
 
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
-    this.axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
-      config.headers = this.getHeaders(key);
-      return config
-    }, async (error: AxiosError) => {
-      return Promise.reject(error)
-    });
-
-    return await this.axiosInstance
-      .post(uri, suppression)
+    return await axios
+      .post(uri, suppression, {
+        headers: this.getHeaders(key)
+      })
       .then((response: AxiosResponse<string>) => {
+        console.log(response.headers.location);
         if (response.status === StatusCodes.CREATED && response.headers.location) {
           console.log(`${SuppressionService.name} - save: created resource ${response.data} - ${response.headers.location}`);
           return response.data.toString()
@@ -44,6 +37,7 @@ export class SuppressionService {
 
   private handleResponseError(operation: 'save'): (_: AxiosError) => never {
     return (err: AxiosError) => {
+      console.log(err);
       if (err.isAxiosError && err.response != null) {
 
         switch (err.response.status) {

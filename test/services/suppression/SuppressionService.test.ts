@@ -1,37 +1,28 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
+import { StatusCodes } from 'http-status-codes/build';
 import { SuppressionData } from '../../../src/models/SuppressionDataModel';
+import { SuppressionUnprocessableEntityError } from '../../../src/services/Suppression/errors';
 import { SuppressionService } from '../../../src/services/Suppression/SuppressionService';
-
+import exp = require('constants');
 jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('SuppressionService', () => {
 
   const mockApiKey: string = 'key';
-
+  const mockGeneratedReference: string = '123123';
   const mockSuppressionsUri: string = '/suppressions';
 
-  const suppression: SuppressionData = {
-    applicationReference: '',
-    applicantDetails: {
-      fullName: 'Andy',
-      emailAddress: 'andy@gmail.com'
-    },
-    addressToRemove: {
-      line1: 'Handy Street',
-      line2: '',
-      town: 'Cardiff',
-      county: 'Greater Cardiff',
-      postcode: 'CC123'
-    },
-    documentDetails: {
-      companyName: 'A Company',
-      companyNumber: 'NI123123',
-      description: 'a document',
-      date: '10/12/2010'
-    }
-  };
-
   describe('saving suppression', () => {
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+      jest.resetAllMocks();
+    });
 
     it('should throw an error when suppression not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
@@ -44,21 +35,38 @@ describe('SuppressionService', () => {
     it('should throw an error when API Key not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save(suppression, undefined as any).catch((err) => {
+      await suppressionService.save({} as SuppressionData, undefined as any).catch((err) => {
         expect(err).toEqual(Error('Key is missing'))
       });
     });
 
-    it('should save appeal and return location header', async() => {
+    it('should save appeal and return application reference', async() => {
 
-      const mockGeneratedReference: string = '123123';
+      mockedAxios.post.mockResolvedValue({
+        status: StatusCodes.CREATED,
+        headers: {
+          location: true
+        },
+        data: mockGeneratedReference
+      });
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save(suppression, mockApiKey)
-        .then((response: string) => {
-          expect(response).toEqual({applicationReference: mockGeneratedReference})
-        });
+      await suppressionService.save({} as SuppressionData, mockApiKey).then((response: string) => {
+        expect(response).toEqual(mockGeneratedReference)
+      });
+
+    });
+
+    it('should return status 422 when invalid suppression data', async() => {
+
+      mockedAxios.post.mockRejectedValue(StatusCodes.UNPROCESSABLE_ENTITY);
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+        expect(err).toEqual(SuppressionUnprocessableEntityError);
+      })
 
     });
 
