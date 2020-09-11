@@ -12,7 +12,7 @@ import {
 } from '../HtmlPatternAssertions'
 
 jest.mock('../../src/middleware/AuthMiddleware')
-jest.mock('../../src/services/SessionService')
+jest.mock('../../src/services/Session/SessionService')
 
 describe('ApplicantDetailsController', () => {
 
