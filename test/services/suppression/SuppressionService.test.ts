@@ -2,15 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 import { SuppressionData } from '../../../src/models/SuppressionDataModel';
 import { SuppressionService } from '../../../src/services/Suppression/SuppressionService';
 
-jest.mock('axios', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      post: () => {
-        return {applicationReference: '123123'}
-      }
-    }
-  })
-});
+jest.mock('axios');
 
 describe('SuppressionService', () => {
 
@@ -64,7 +56,7 @@ describe('SuppressionService', () => {
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
           expect(err).toHaveProperty('message');
-          expect(err).toContain('API Key is missing');
+          expect(err).toContain('Access token is missing');
         }
       });
     });

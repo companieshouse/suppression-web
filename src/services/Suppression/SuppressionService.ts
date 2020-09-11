@@ -45,11 +45,13 @@ export class SuppressionService {
   private handleResponseError(operation: 'save'): (_: AxiosError) => never {
     return (err: AxiosError) => {
       if (err.isAxiosError && err.response != null) {
+
         switch (err.response.status) {
           case StatusCodes.UNAUTHORIZED:
-            throw new SuppressionUnauthorisedError(`${operation} appeal unauthorised`);
+            throw new SuppressionUnauthorisedError(`${operation} suppression unauthorised`);
           case StatusCodes.UNPROCESSABLE_ENTITY:
-            throw new SuppressionUnprocessableEntityError(`${operation} appeal on invalid appeal data`);
+            throw new SuppressionUnprocessableEntityError(`${operation} suppression on invalid appeal data`);
+
         }
       }
 
