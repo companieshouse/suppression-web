@@ -14,6 +14,6 @@ export function AuthMiddleware(): RequestHandler {
       accountWebUrl: getConfigValue('CHS_URL') as string
     }
 
-    return authMiddleware(authOptions);
+    return authMiddleware(authOptions)(req, res, next);
   }
 }
