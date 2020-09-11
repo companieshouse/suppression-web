@@ -33,31 +33,19 @@ describe('SuppressionService', () => {
 
   describe('saving suppression', () => {
 
-    it('should throw an error when suppression not defined', () => {
+    it('should throw an error when suppression not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      [undefined, null].forEach(async suppressionData => {
-        try {
-          await suppressionService.save(suppressionData as any, mockApiKey);
-        } catch (err) {
-          expect(err).toBeInstanceOf(Error);
-          expect(err).toHaveProperty('message');
-          expect(err).toContain('Suppression data is missing');
-        }
-      });
+      await suppressionService.save(undefined as any, mockApiKey).catch((err) => {
+        expect(err).toEqual(Error('Suppression data is missing'))
+      })
     });
 
-    it('should throw an error when API Key not defined', () => {
+    it('should throw an error when API Key not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      [undefined, null].forEach(async invalidApiKey => {
-        try {
-          await suppressionService.save(suppression, invalidApiKey as any);
-        } catch (err) {
-          expect(err).toBeInstanceOf(Error);
-          expect(err).toHaveProperty('message');
-          expect(err).toContain('Access token is missing');
-        }
+      await suppressionService.save(suppression, undefined as any).catch((err) => {
+        expect(err).toEqual(Error('Key is missing'))
       });
     });
 
