@@ -25,26 +25,20 @@ const mockSuppressionData: SuppressionData = {
 
 const mockRequestData = {
   session: {
-    get: jest.fn(),
-    data: jest.fn(),
-    getExtraData: jest.fn(),
-    setExtraData: jest.fn(),
-    deleteExtraData: jest.fn(),
-    verify: jest.fn()
-  } as unknown as Session
+    getExtraData: jest.fn() as any
+  } as Session
 } as Request;
 
 describe('SessionService', () => {
 
   it('should retrieve suppression data from the session', () => {
 
-    const suppressionData: SuppressionData = mockSuppressionData;
     const mockRequest: Request = mockRequestData;
 
-    const mockGetExtraData = jest.fn().mockReturnValue(suppressionData);
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionData);
     mockRequest.session!.getExtraData = mockGetExtraData;
 
-    expect(SessionService.getSuppressionSession(mockRequest)).toEqual(suppressionData);
+    expect(SessionService.getSuppressionSession(mockRequest)).toEqual(mockSuppressionData);
     expect(mockGetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY);
   });
 
@@ -61,15 +55,14 @@ describe('SessionService', () => {
 
   it('should set the suppression data in the session', () => {
 
-    const suppressionData: SuppressionData = mockSuppressionData;
     const mockRequest: Request = mockRequestData;
 
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
-    SessionService.setSuppressionSession(mockRequest, suppressionData);
+    SessionService.setSuppressionSession(mockRequest, mockSuppressionData);
 
-    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, suppressionData);
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionData);
   })
 
 });
