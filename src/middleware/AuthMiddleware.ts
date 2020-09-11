@@ -4,7 +4,6 @@ import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import { newUriFactory } from '../utils/UriFactory';
 
-
 export function AuthMiddleware(): RequestHandler {
 
   return (req: Request, res: Response, next: NextFunction): any => {
