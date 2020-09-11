@@ -6,6 +6,7 @@ import IORedis from 'ioredis';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
+import { AuthMiddleware } from './middleware/AuthMiddleware';
 import {
   getConfigValue,
   loadEnvironmentVariables
@@ -20,14 +21,16 @@ const app = express();
 
 const sessionStore = new SessionStore(new IORedis(`redis://${getConfigValue('CACHE_SERVER')}`))
 
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(SessionMiddleware({
   cookieName: getConfigValue('COOKIE_NAME') as string,
   cookieDomain: getConfigValue('COOKIE_DOMAIN') as string,
   cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === 'true',
   cookieTimeToLiveInSeconds: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string, 10),
   cookieSecret: getConfigValue('COOKIE_SECRET') as string
-}, sessionStore, true))
+}, sessionStore));
+
+app.use(AuthMiddleware());
 
 // set up app variables from the environment
 app.set('port', getConfigValue('PORT'));
