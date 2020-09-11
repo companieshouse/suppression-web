@@ -1,8 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { StatusCodes, UNAUTHORIZED } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes/build';
 import { SuppressionData } from '../../models/SuppressionDataModel';
-import { getConfigValue } from '../../modules/config-handler/ConfigHandler';
-import { RefreshTokenService } from '../refresh-token-service/RefreshTokenService';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 
 
@@ -10,19 +8,26 @@ export class SuppressionService {
 
   private readonly axiosInstance: AxiosInstance;
 
-  constructor(private readonly uri: string, private readonly refreshTokenService: RefreshTokenService) {
+  constructor(private readonly uri: string) {
     this.uri = uri;
-    this.refreshTokenService = refreshTokenService;
     this.axiosInstance = axios.create();
   }
 
-  public async saveSuppression(suppression: SuppressionData, accessToken: string , refreshToken: string): Promise<string> {
+  public async save(suppression: SuppressionData, accessToken: string): Promise<string> {
 
-    this.refreshTokenInterceptor(accessToken, refreshToken);
+    this.checkArgumentOrThrow(suppression, 'Suppression data is missing');
+    this.checkArgumentOrThrow(accessToken, 'Access token is missing');
 
     const uri: string = `${this.uri}/suppressions`;
 
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
+
+    this.axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
+      config.headers = this.getHeaders(accessToken);
+      return config
+    }, async (error: AxiosError) => {
+      return Promise.reject(error)
+    });
 
     return await this.axiosInstance
       .post(uri, suppression)
@@ -52,41 +57,17 @@ export class SuppressionService {
     };
   };
 
-  private refreshTokenInterceptor(accessToken: string, refreshToken: string): void {
-
-    this.axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
-      config.headers = this.getHeaders(accessToken);
-      return config
-    }, async (error: AxiosError) => {
-        return Promise.reject(error)
-    });
-
-    this.axiosInstance.interceptors.response.use((response: AxiosResponse) => {
-      return response;
-    }, async (error) => {
-
-      const requestConfig = error.config;
-      const response: AxiosResponse | undefined = error.response;
-
-      if (response && response.status === StatusCodes.UNAUTHORIZED && !requestConfig._isRetry) {
-        requestConfig._isRetry = true;
-        console.log(`${SuppressionService.name} - create suppression failed with: ${response.status} - attempting token refresh`);
-        const newAccessToken: string = await this.refreshTokenService.refresh(accessToken, refreshToken);
-        if (newAccessToken) {
-          requestConfig.headers = this.getHeaders(newAccessToken);
-          return this.axiosInstance(requestConfig);
-        }
-      }
-      return Promise.reject(error);
-    });
-
+  private checkArgumentOrThrow<T>(arg: T, errorMessage: string): void {
+    if (arg == null) {
+      throw new Error(errorMessage);
+    }
   }
 
-  private getHeaders(token: string): AxiosRequestConfig['headers'] {
+  private getHeaders(accessToken: string): AxiosRequestConfig['headers'] {
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      'Authorization': 'Bearer ' + accessToken
     };
   }
 }

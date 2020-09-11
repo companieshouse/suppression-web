@@ -1,5 +1,5 @@
-import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../src/models/SuppressionDataModel';
-import SessionService from '../../src/services/Session/SessionService';
+import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../../src/models/SuppressionDataModel';
+import SessionService from '../../../src/services/Session/SessionService';
 
 describe('SessionService', () => {
 
