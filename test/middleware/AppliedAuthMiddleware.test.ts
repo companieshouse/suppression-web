@@ -65,7 +65,7 @@ describe('Applied auth middleware', () => {
 
   describe('Landing page', () => {
 
-    it(`should not redirect unauthenticated user to sign in page `, async () => {
+    it('should not redirect unauthenticated user to sign in page', async () => {
 
       const app = createApp(true);
 
