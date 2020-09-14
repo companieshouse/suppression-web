@@ -56,6 +56,20 @@ describe('SuppressionService', () => {
 
     });
 
+    it('should return error when resource not created', async() => {
+
+      mockedAxios.post.mockResolvedValue({
+        status: StatusCodes.CONFLICT,
+      });
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+        expect(err).toEqual(new Error('save suppression failed with message: Could not create suppression resource'));
+      })
+
+    });
+
     it('should return entity error when invalid suppression data', async() => {
 
       mockedAxios.post.mockReturnValue(Promise.reject({

@@ -43,7 +43,7 @@ export class SuppressionService {
         }
       }
 
-      throw new SuppressionServiceError(`${operation} suppression failed with message ${err.message || 'unknown error'}: `);
+      throw new SuppressionServiceError(`${operation} suppression failed with message: ${err.message || 'unknown error'}`);
     };
   };
 
