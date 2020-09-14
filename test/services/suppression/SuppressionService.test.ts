@@ -1,9 +1,11 @@
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { StatusCodes } from 'http-status-codes/build';
 import { SuppressionData } from '../../../src/models/SuppressionDataModel';
-import { SuppressionUnprocessableEntityError } from '../../../src/services/Suppression/errors';
+import {
+  SuppressionUnauthorisedError,
+  SuppressionUnprocessableEntityError
+} from '../../../src/services/Suppression/errors';
 import { SuppressionService } from '../../../src/services/Suppression/SuppressionService';
-import exp = require('constants');
 jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -58,16 +60,30 @@ describe('SuppressionService', () => {
 
     });
 
-    it('should return status 422 when invalid suppression data', async() => {
+    it('should return entity error when invalid suppression data', async() => {
 
-      mockedAxios.post.mockRejectedValue(StatusCodes.UNPROCESSABLE_ENTITY);
+      mockedAxios.post.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.UNPROCESSABLE_ENTITY }
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
-        expect(err).toEqual(SuppressionUnprocessableEntityError);
+        expect(err).toEqual(new SuppressionUnprocessableEntityError('save suppression on invalid appeal data'));
       })
+    });
 
+    it('should return unauthorized error when invalid headers', async() => {
+
+      mockedAxios.post.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.UNAUTHORIZED }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+        expect(err).toEqual(new SuppressionUnauthorisedError('save suppression unauthorised'));
+      })
     });
 
   });

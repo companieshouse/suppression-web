@@ -20,32 +20,28 @@ export class SuppressionService {
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
     return await axios
-      .post(uri, suppression, {
-        headers: this.getHeaders(key)
-      })
+      .post(uri, suppression, {headers: this.getHeaders(key)})
       .then((response: AxiosResponse<string>) => {
-        console.log(response.headers.location);
         if (response.status === StatusCodes.CREATED && response.headers.location) {
           console.log(`${SuppressionService.name} - save: created resource ${response.data} - ${response.headers.location}`);
           return response.data.toString()
         }
         throw new Error('Could not create suppression resource');
       })
-      .catch(this.handleResponseError('save'))
+      .catch(this.handleResponseError('save')
+      )
 
   }
 
   private handleResponseError(operation: 'save'): (_: AxiosError) => never {
     return (err: AxiosError) => {
-      console.log(err);
-      if (err.isAxiosError && err.response != null) {
 
+      if (err.response != null) {
         switch (err.response.status) {
           case StatusCodes.UNAUTHORIZED:
             throw new SuppressionUnauthorisedError(`${operation} suppression unauthorised`);
           case StatusCodes.UNPROCESSABLE_ENTITY:
             throw new SuppressionUnprocessableEntityError(`${operation} suppression on invalid appeal data`);
-
         }
       }
 
