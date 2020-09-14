@@ -22,10 +22,6 @@ describe('SuppressionService', () => {
       jest.clearAllMocks();
     });
 
-    afterAll(() => {
-      jest.resetAllMocks();
-    });
-
     it('should throw an error when suppression not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
@@ -47,7 +43,7 @@ describe('SuppressionService', () => {
       mockedAxios.post.mockResolvedValue({
         status: StatusCodes.CREATED,
         headers: {
-          location: true
+          location: '/suppressions/123123'
         },
         data: mockGeneratedReference
       });
@@ -69,7 +65,7 @@ describe('SuppressionService', () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
-        expect(err).toEqual(new SuppressionUnprocessableEntityError('save suppression on invalid appeal data'));
+        expect(err).toEqual(new SuppressionUnprocessableEntityError('save suppression on invalid suppression data'));
       })
     });
 

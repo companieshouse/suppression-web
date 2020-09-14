@@ -3,24 +3,23 @@ import { StatusCodes } from 'http-status-codes/build';
 import { SuppressionData } from '../../models/SuppressionDataModel';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 
-
 export class SuppressionService {
 
   constructor(private readonly uri: string) {
     this.uri = uri;
   }
 
-  public async save(suppression: SuppressionData, key: string): Promise<string> {
+  public async save(suppression: SuppressionData, apiKey: string): Promise<string> {
 
     this.checkArgumentOrThrow(suppression, 'Suppression data is missing');
-    this.checkArgumentOrThrow(key, 'Key is missing');
+    this.checkArgumentOrThrow(apiKey, 'Key is missing');
 
     const uri: string = `${this.uri}/suppressions`;
 
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
     return await axios
-      .post(uri, suppression, {headers: this.getHeaders(key)})
+      .post(uri, suppression, {headers: this.getHeaders(apiKey)})
       .then((response: AxiosResponse<string>) => {
         if (response.status === StatusCodes.CREATED && response.headers.location) {
           console.log(`${SuppressionService.name} - save: created resource ${response.data} - ${response.headers.location}`);
@@ -28,8 +27,7 @@ export class SuppressionService {
         }
         throw new Error('Could not create suppression resource');
       })
-      .catch(this.handleResponseError('save')
-      )
+      .catch(this.handleResponseError('save'))
 
   }
 
@@ -41,7 +39,7 @@ export class SuppressionService {
           case StatusCodes.UNAUTHORIZED:
             throw new SuppressionUnauthorisedError(`${operation} suppression unauthorised`);
           case StatusCodes.UNPROCESSABLE_ENTITY:
-            throw new SuppressionUnprocessableEntityError(`${operation} suppression on invalid appeal data`);
+            throw new SuppressionUnprocessableEntityError(`${operation} suppression on invalid suppression data`);
         }
       }
 
@@ -55,11 +53,11 @@ export class SuppressionService {
     }
   }
 
-  private getHeaders(key: string): AxiosRequestConfig['headers'] {
+  private getHeaders(apiKey: string): AxiosRequestConfig['headers'] {
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': key
+      'Authorization': apiKey
     };
   }
 }
