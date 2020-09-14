@@ -8,7 +8,8 @@ export function AuthMiddleware(): RequestHandler {
 
   return (req: Request, res: Response, next: NextFunction): any => {
 
-    if (req.originalUrl === ROOT_URI) {
+    const url: string = req.originalUrl;
+    if (url === ROOT_URI || url === ROOT_URI + '/') {
       return next();
     }
 
