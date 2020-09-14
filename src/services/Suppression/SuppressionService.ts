@@ -28,7 +28,6 @@ export class SuppressionService {
         throw new Error('Could not create suppression resource');
       })
       .catch(this.handleResponseError('save'))
-
   }
 
   private handleResponseError(operation: 'save'): (_: AxiosError) => never {

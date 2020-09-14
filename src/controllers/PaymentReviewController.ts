@@ -20,7 +20,12 @@ export class PaymentReviewController {
 
     const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
 
-    const suppression: SuppressionData = SessionService.getSuppressionSession(req)!;
+    const suppression: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+
+    if (!suppression) {
+      throw Error('session data expected but none found')
+    }
+
     suppression.applicationReference = await suppressionService.save(suppression, getConfigValue('CHS_API_KEY') as string);
     SessionService.setSuppressionSession(req, suppression);
 
