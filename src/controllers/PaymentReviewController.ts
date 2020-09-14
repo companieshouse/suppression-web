@@ -10,6 +10,12 @@ const template = 'payment-review';
 
 export class PaymentReviewController {
 
+   private suppressionService: SuppressionService;
+
+   constructor(suppressionService: SuppressionService){
+    this.suppressionService = suppressionService;
+  }
+
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10)
     const totalFee = documentAmendmentFee;
@@ -18,15 +24,13 @@ export class PaymentReviewController {
 
   public continue = async (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
-
     const suppression: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppression) {
       throw Error('session data expected but none found')
     }
 
-    suppression.applicationReference = await suppressionService.save(suppression, getConfigValue('CHS_API_KEY') as string);
+    suppression.applicationReference = await this.suppressionService.save(suppression, getConfigValue('CHS_API_KEY') as string);
     SessionService.setSuppressionSession(req, suppression);
 
     res.redirect(PAYMENT_REVIEW_PAGE_URI);
