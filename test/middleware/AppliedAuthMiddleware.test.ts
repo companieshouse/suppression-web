@@ -30,13 +30,14 @@ describe('Applied auth middleware', () => {
   describe('Unauthenticated user: landing page', () => {
 
     it('should not redirect user to sign in page', async () => {
+      for (const page of [ROOT_URI, ROOT_URI + '/']) {
+        const app = createApp(true);
 
-      const app = createApp(true);
-
-      await request(app).get(ROOT_URI)
-        .expect(response => {
-          expect(response.status).toEqual(StatusCodes.OK);
-        });
+        await request(app).get(page)
+          .expect(response => {
+            expect(response.status).toEqual(StatusCodes.OK);
+          });
+      }
     });
   });
 
