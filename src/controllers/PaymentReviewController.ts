@@ -18,10 +18,10 @@ export class PaymentReviewController {
 
   public continue = async (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSION_API_URL') as string);
+    const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
 
     const suppression: SuppressionData = SessionService.getSuppressionSession(req)!;
-    suppression.applicationReference = await suppressionService.save(suppression, getConfigValue('ACCOUNTS_API_KEY') as string);
+    suppression.applicationReference = await suppressionService.save(suppression, getConfigValue('CHS_API_KEY') as string);
     SessionService.setSuppressionSession(req, suppression);
 
     res.redirect(PAYMENT_REVIEW_PAGE_URI);
