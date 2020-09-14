@@ -59,7 +59,7 @@ describe('SuppressionService', () => {
     it('should return error when resource not created', async() => {
 
       mockedAxios.post.mockResolvedValue({
-        status: StatusCodes.CONFLICT,
+        status: StatusCodes.CONFLICT
       });
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
