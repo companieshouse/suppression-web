@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { SuppressionData } from '../../models/SuppressionDataModel';
+import { SuppressionData } from '../../../models/SuppressionDataModel';
 
 export default class SessionService {
   static getSuppressionSession(req: Request): SuppressionData | undefined {

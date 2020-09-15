@@ -10,7 +10,7 @@ import {
 } from '../../src/routes/paths';
 import { createApp } from '../ApplicationFactory';
 
-jest.mock('../../src/services/SessionService');
+jest.mock('../../src/services/Session/SessionService');
 
 beforeEach(() => {
   jest.clearAllMocks();
