@@ -4,19 +4,18 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { SuppressionData } from '../models/SuppressionDataModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
-import { PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
-import { PaymentService } from '../services/PaymentService';
-import SessionService from '../services/Session/SessionService';
-import { SuppressionService } from '../services/Suppression/SuppressionService';
+import { PaymentService } from '../services/payment/PaymentService';
+import SessionService from '../services/session/SessionService';
+import { SuppressionService } from '../services/suppression/SuppressionService';
 
 const template = 'payment-review';
 
 export class PaymentReviewController {
 
-   private suppressionService: SuppressionService;
-   private paymentService: PaymentService;
+  private suppressionService: SuppressionService;
+  private paymentService: PaymentService;
 
-   constructor(suppressionService: SuppressionService, paymentService: PaymentService){
+  constructor(suppressionService: SuppressionService, paymentService: PaymentService) {
     this.suppressionService = suppressionService;
     this.paymentService = paymentService;
   }
@@ -24,43 +23,44 @@ export class PaymentReviewController {
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
     const totalFee = documentAmendmentFee;
-    res.render(template, { documentAmendmentFee, totalFee });
+    res.render(template, {documentAmendmentFee, totalFee});
   };
 
-  public continue = async (req: Request, res: Response, next: NextFunction) => {
+  public continue = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (suppressionData === undefined) {
       throw new Error('Expected session but found none.')
     }
+
+    let applicationReference: string;
+
     try {
-      suppressionData.applicationReference = await this.suppressionService.save(suppressionData, getConfigValue('CHS_API_KEY') as string);
-    } catch (err){
+      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, getConfigValue('CHS_API_KEY') as string);
+    } catch (err) {
       next(err);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
     }
 
-    const suppressionID = 'placeholder';
-    // } END OUT OF SCOPE
+    try {
 
-    let paymentStateUUID = suppressionData?.paymentStateUUID;
-    if (paymentStateUUID === undefined) {
-      paymentStateUUID = uuidv4()
+      const token: string = SessionService.getAccessToken(req);
+      const paymentStateUUID: string = uuidv4();
 
-      try {
-        const token = SessionService.getAccessToken(req)
-        const govpayUrl = await this.paymentService.initPayment(suppressionID, paymentStateUUID, token);
-        suppressionData.paymentStateUUID = paymentStateUUID
-        SessionService.setSuppressionSession(req, suppressionData)
-        res.redirect(govpayUrl);
-      } catch (error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
-      }
+      const govPayUrl: string = await this.paymentService.initPayment(applicationReference, paymentStateUUID, token);
 
-    } else {
-      // OUT OF SCOPE: Check payment status, redirect accordingly
-      res.redirect(PAYMENT_REVIEW_PAGE_URI)
+      const updatedSession: SuppressionData = {
+        ...suppressionData,
+        paymentStateUUID
+      };
+
+      SessionService.setSuppressionSession(req, updatedSession);
+
+      res.redirect(govPayUrl);
+
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
     }
   };
 }

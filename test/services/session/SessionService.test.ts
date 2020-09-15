@@ -1,8 +1,8 @@
-import { ISignInInfo, Session } from 'ch-node-session-handler';
+import { Session } from 'ch-node-session-handler';
+import {SessionKey} from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { Request } from 'express';
-
-import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../src/models/SuppressionDataModel';
-import SessionService from '../../src/services/Session/SessionService';
+import {SuppressionData, SUPPRESSION_DATA_KEY} from '../../../src/models/SuppressionDataModel';
+import SessionService from '../../../src/services/session/SessionService';
 
 const mockSuppressionData: SuppressionData = {
   applicantDetails: {
@@ -21,7 +21,9 @@ const mockSuppressionData: SuppressionData = {
     companyNumber: 'NI000000',
     description: 'This is a document',
     date: '2020-01-01'
-  }
+  },
+  applicationReference: '123',
+  paymentStateUUID: '1'
 };
 
 const mockRequestData = {
@@ -84,8 +86,9 @@ describe('SessionService', () => {
     });
     mockRequest.session!.get = mockGetSignInInfo;
 
-    const result = SessionService.getAccessToken(mockRequest)
-    expect(result).toEqual(testToken)
+    const result = SessionService.getAccessToken(mockRequest);
+    expect(result).toEqual(testToken);
+    expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
   })
 
 });

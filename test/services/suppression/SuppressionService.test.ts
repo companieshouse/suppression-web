@@ -4,8 +4,8 @@ import { SuppressionData } from '../../../src/models/SuppressionDataModel';
 import {
   SuppressionUnauthorisedError,
   SuppressionUnprocessableEntityError
-} from '../../../src/services/Suppression/errors';
-import { SuppressionService } from '../../../src/services/Suppression/SuppressionService';
+} from '../../../src/services/suppression/errors';
+import { SuppressionService } from '../../../src/services/suppression/SuppressionService';
 jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;

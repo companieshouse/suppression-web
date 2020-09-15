@@ -5,8 +5,8 @@ import { DocumentDetailsController } from '../controllers/DocumentDetailsControl
 import { PaymentReviewController } from '../controllers/PaymentReviewController';
 import { StartPageController } from '../controllers/StartPageController';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
-import { PaymentService } from '../services/PaymentService';
-import { SuppressionService } from '../services/Suppression/SuppressionService';
+import { PaymentService } from '../services/payment/PaymentService';
+import { SuppressionService } from '../services/suppression/SuppressionService';
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
