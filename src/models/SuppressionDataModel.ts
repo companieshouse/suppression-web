@@ -1,6 +1,7 @@
 export const SUPPRESSION_DATA_KEY: string = 'suppression';
 
 export interface SuppressionData {
+  applicationReference?: string
   applicantDetails: ApplicantDetails,
   addressToRemove: Address,
   documentDetails: DocumentDetails,

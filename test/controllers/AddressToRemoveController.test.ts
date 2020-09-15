@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
 import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
-import SessionService from '../../src/services/SessionService'
+import SessionService from '../../src/services/Session/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
@@ -14,8 +14,7 @@ import {
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
-jest.mock('../../src/middleware/AuthMiddleware')
-jest.mock('../../src/services/SessionService')
+jest.mock('../../src/services/Session/SessionService');
 
 afterEach(() => {
   jest.restoreAllMocks();

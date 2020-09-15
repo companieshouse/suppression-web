@@ -6,8 +6,9 @@ import { PaymentService } from '../../src/services/PaymentService';
 import { createApp } from '../ApplicationFactory';
 import { expectToHaveTitle } from '../HtmlPatternAssertions'
 
+jest.mock('../../src/services/Session/SessionService');
+jest.mock('../../src/services/Suppression/SuppressionService');
 jest.mock('../../src/middleware/AuthMiddleware')
-jest.mock('../../src/services/SessionService')
 jest.mock('../../src/services/PaymentService')
 
 describe('PaymentReviewController', () => {

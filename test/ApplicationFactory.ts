@@ -5,11 +5,12 @@ import express from 'express';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
+import { AuthMiddleware } from '../src/middleware/AuthMiddleware';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { routes } from '../src/routes/routes';
 
-export function createApp() {
+export function createApp(authEnabled?: boolean) {
 
   loadEnvironmentVariables({validationSchema: configValidationSchema});
   const app = express();
@@ -40,7 +41,11 @@ export function createApp() {
     cookieSecureFlag: getConfigValue('COOKIE_SECURE_ONLY') === 'true',
     cookieTimeToLiveInSeconds: parseInt(getConfigValue('COOKIE_EXPIRATION_IN_SECONDS') as string, 10),
     cookieSecret: getConfigValue('COOKIE_SECRET') as string
-  }, sessionStore))
+  }, sessionStore));
+
+  if (authEnabled) {
+    app.use(AuthMiddleware());
+  }
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));

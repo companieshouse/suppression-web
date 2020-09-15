@@ -1,11 +1,10 @@
-import { Session } from 'ch-node-session-handler';
-import { ISignInInfo } from 'ch-node-session-handler/lib/session/model/SessionInterfaces';
+import { ISignInInfo, Session } from 'ch-node-session-handler';
 import { Request } from 'express';
 
 import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../src/models/SuppressionDataModel';
-import SessionService from '../../src/services/SessionService';
+import SessionService from '../../src/services/Session/SessionService';
 
-const mockSuppressionData = {
+const mockSuppressionData: SuppressionData = {
   applicantDetails: {
     fullName: 'test-name',
     emailAddress: 'test-email'
@@ -23,7 +22,7 @@ const mockSuppressionData = {
     description: 'This is a document',
     date: '2020-01-01'
   }
-} as SuppressionData;
+};
 
 const mockRequestData = {
   session: {

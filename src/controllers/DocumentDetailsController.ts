@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
-import SessionService from '../services/SessionService';
+import SessionService from '../services/Session/SessionService';
 import { DocumentDetailsValidator } from '../validators/DocumentDetailsValidator';
 
 const template = 'document-details';
