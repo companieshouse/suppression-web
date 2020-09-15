@@ -2,10 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
-import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
+import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
   expectToHaveInput,
@@ -13,6 +14,7 @@ import {
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
+jest.mock('../../src/middleware/AuthMiddleware')
 jest.mock('../../src/services/SessionService')
 
 afterEach(() => {
@@ -39,6 +41,7 @@ describe('AddressToRemoveController', () => {
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveInput(
           response.text,
           'line1',
@@ -57,6 +60,7 @@ describe('AddressToRemoveController', () => {
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHavePopulatedInput(response.text, 'line1', '1 Test Street');
         expectToHavePopulatedInput(response.text, 'town', 'Test Town');
         expectToHavePopulatedInput(response.text, 'county', 'Test Midlands');
@@ -96,6 +100,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
           addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage
         ]);
@@ -113,6 +118,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [addressLine1ErrorMessage]);
         expectToHaveErrorMessages(response.text, [addressLine1ErrorMessage]);
       })
@@ -126,6 +132,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [townOrCityErrorMessage]);
         expectToHaveErrorMessages(response.text, [townOrCityErrorMessage]);
       })
@@ -139,6 +146,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countyErrorMessage]);
         expectToHaveErrorMessages(response.text, [countyErrorMessage]);
       })
@@ -152,6 +160,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
         expectToHaveErrorMessages(response.text, [postcodeErrorMessage]);
       })

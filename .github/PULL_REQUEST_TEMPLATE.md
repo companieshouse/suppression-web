@@ -1,18 +1,19 @@
-### JIRA link
+### JIRA
+
+[Jira Ticket]()
+
+### Change Description
 
 
 
-### Change description
-
-
-
-### Page Screenshot (if applicable)
+### Page Screenshot
 
 
 
 ### Work Checklist
 
 - [ ] Tests added where applicable
+- [ ] Test coverage of new code meets target of 80%
 - [ ] UI changes look good on mobile
 - [ ] UI changes meet accessibility criteria
 
