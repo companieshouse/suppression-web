@@ -33,6 +33,7 @@ export class PaymentReviewController {
     try{
       suppression.applicationReference = await this.suppressionService.save(suppression, getConfigValue('CHS_API_KEY') as string);
     } catch (err){
+      next(err);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
     }
     SessionService.setSuppressionSession(req, suppression);
