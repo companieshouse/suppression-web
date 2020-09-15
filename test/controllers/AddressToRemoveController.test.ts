@@ -14,8 +14,7 @@ import {
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
-jest.mock('../../src/middleware/AuthMiddleware')
-jest.mock('../../src/services/Session/SessionService')
+jest.mock('../../src/services/Session/SessionService');
 
 afterEach(() => {
   jest.restoreAllMocks();

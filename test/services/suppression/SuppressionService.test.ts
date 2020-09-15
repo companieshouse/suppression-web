@@ -96,5 +96,19 @@ describe('SuppressionService', () => {
       })
     });
 
+    it('should return error when API not found', async() => {
+
+      mockedAxios.post.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.NOT_FOUND }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+        expect(err).toEqual(new Error('save suppression failed. API not found'));
+      })
+
+    });
+
   });
 });

@@ -39,6 +39,8 @@ export class SuppressionService {
             throw new SuppressionUnauthorisedError(`${operation} suppression unauthorised`);
           case StatusCodes.UNPROCESSABLE_ENTITY:
             throw new SuppressionUnprocessableEntityError(`${operation} suppression on invalid suppression data`);
+          case StatusCodes.NOT_FOUND:
+            throw new Error(`${operation} suppression failed. API not found`);
         }
       }
 
