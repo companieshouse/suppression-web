@@ -30,7 +30,7 @@ export class PaymentReviewController {
 
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
-    if (suppressionData === undefined) {
+    if (!suppressionData) {
       throw new Error('Expected session but found none.')
     }
 
@@ -48,7 +48,7 @@ export class PaymentReviewController {
       const token: string = SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
 
-      const govPayUrl: string = await this.paymentService.initPayment(applicationReference, paymentStateUUID, token);
+      const govPayUrl: string = await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, token);
 
       const updatedSession: SuppressionData = {
         ...suppressionData,

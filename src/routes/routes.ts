@@ -17,6 +17,9 @@ import {
 
 export const routes = Router();
 
+/**
+ * Services
+ */
 const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
 const paymentService: PaymentService = new PaymentService();
 

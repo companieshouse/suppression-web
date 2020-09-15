@@ -20,7 +20,7 @@ export class PaymentService {
     this.suppressionApiUrl = getConfigValue('SUPPRESSIONS_API_URL') as string
   }
 
-  public async initPayment(applicationReference: string, paymentStateUUID: string, token: string): Promise<string> {
+  public async generatePaymentUrl(applicationReference: string, paymentStateUUID: string, token: string): Promise<string> {
 
     const apiClient: ApiClient = createApiClient(undefined, token, this.paymentApiUrl);
 

@@ -9,7 +9,6 @@ import { expectToHaveTitle } from '../HtmlPatternAssertions'
 jest.mock('../../src/services/session/SessionService');
 jest.mock('../../src/services/suppression/SuppressionService');
 jest.mock('../../src/services/payment/PaymentService');
-jest.mock('../../src/middleware/AuthMiddleware');
 
 describe('PaymentReviewController', () => {
 
@@ -37,7 +36,7 @@ describe('PaymentReviewController', () => {
 
       const mockGovPayUrl = 'https://mock.payments.service.gov.uk/v1/payments/123456';
 
-      jest.spyOn(PaymentService.prototype, 'initPayment').mockImplementationOnce(async () => {
+      jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => {
         return Promise.resolve(mockGovPayUrl);
       });
 
@@ -51,7 +50,7 @@ describe('PaymentReviewController', () => {
 
     it('should return status code 500 and redirect to error page', async () => {
 
-      jest.spyOn(PaymentService.prototype, 'initPayment').mockImplementationOnce(async () => {
+      jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => {
         return Promise.reject();
       });
 

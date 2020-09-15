@@ -32,7 +32,7 @@ describe('PaymentService', () => {
     jest.spyOn(nodeSdk, 'createApiClient').mockImplementationOnce(() => apiClientMock);
 
     const paymentService = new PaymentService();
-    const result = await paymentService.initPayment(mockApplicationReference, mockPaymentStateUUID, mockToken);
+    const result = await paymentService.generatePaymentUrl(mockApplicationReference, mockPaymentStateUUID, mockToken);
     expect(payMock).toHaveBeenCalled();
     expect(result).toEqual(mockUrl + '?summary=false');
   });
@@ -49,7 +49,7 @@ describe('PaymentService', () => {
     jest.spyOn(nodeSdk, 'createApiClient').mockImplementationOnce(() => apiClientMock);
 
     const paymentService = new PaymentService();
-    await expect(paymentService.initPayment(mockApplicationReference, mockPaymentStateUUID, mockToken))
+    await expect(paymentService.generatePaymentUrl(mockApplicationReference, mockPaymentStateUUID, mockToken))
       .rejects
       .toThrow('Failed to initiate payment, status: 500, error: Test Error');
   });
