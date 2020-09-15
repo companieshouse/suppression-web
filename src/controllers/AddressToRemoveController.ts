@@ -3,7 +3,7 @@ import { StatusCodes  } from 'http-status-codes';
 
 import { Address } from '../models/SuppressionDataModel'
 import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
-import SessionService from '../services/SessionService'
+import SessionService from '../services/Session/SessionService'
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema'

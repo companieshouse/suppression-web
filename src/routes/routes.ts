@@ -4,6 +4,8 @@ import { ApplicantDetailsController } from '../controllers/ApplicantDetailsContr
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
 import { PaymentReviewController } from '../controllers/PaymentReviewController';
 import { StartPageController } from '../controllers/StartPageController';
+import { getConfigValue } from '../modules/config-handler/ConfigHandler';
+import { SuppressionService } from '../services/Suppression/SuppressionService';
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
@@ -12,8 +14,9 @@ import {
   ROOT_URI
 } from './paths';
 
-
 export const routes = Router();
+
+const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
 
 /**
  * Controllers (route handlers).
@@ -22,7 +25,7 @@ const startPageController = new StartPageController();
 const applicantDetailsController = new ApplicantDetailsController();
 const addressToRemoveController = new AddressToRemoveController();
 const documentDetailsController = new DocumentDetailsController();
-const paymentReviewController = new PaymentReviewController();
+const paymentReviewController = new PaymentReviewController(suppressionService);
 
 /**
  * Route definitions
