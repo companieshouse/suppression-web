@@ -15,7 +15,7 @@ export class PaymentService {
 
   public constructor() {
     const serviceURL = getConfigValue('CHS_URL');
-    this.redirectUrl = `${serviceURL}/${CONFIRMATION_PAGE_URI}`;
+    this.redirectUrl = `${serviceURL}${CONFIRMATION_PAGE_URI}`;
     this.paymentApiUrl = getConfigValue('PAYMENTS_API_URL') as string
     this.suppressionApiUrl = getConfigValue('SUPPRESSIONS_API_URL') as string
   }
