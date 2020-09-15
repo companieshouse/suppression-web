@@ -30,7 +30,7 @@ export class PaymentReviewController {
     if (!suppression) {
       throw Error('session data expected but none found')
     }
-    try{
+    try {
       suppression.applicationReference = await this.suppressionService.save(suppression, getConfigValue('CHS_API_KEY') as string);
     } catch (err){
       next(err);
