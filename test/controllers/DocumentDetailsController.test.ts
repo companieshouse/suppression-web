@@ -19,7 +19,6 @@ const missingDocumentDateErrorMessage: string = 'Document date is required';
 const missingYearErrorMessage: string = 'You must enter a year';
 const invalidDateErrorMessage: string = 'Enter a real date';
 
-jest.mock('../../src/middleware/AuthMiddleware')
 jest.mock('../../src/services/SessionService')
 
 describe('DocumentDetailsController', () => {
