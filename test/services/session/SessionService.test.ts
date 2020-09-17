@@ -18,11 +18,12 @@ const mockSuppressionData: SuppressionData = {
     country: 'United Kingdom'
   },
   serviceAddress: {
-    line1: '2 Test Street',
+    line1: '2 New Street',
     line2: '',
-    town: 'Test Town',
-    county: 'Test Midlands',
-    postcode: 'TE10 6ST'
+    town: 'A Town',
+    county: 'Mid Lands',
+    postcode: 'AB33 2RR',
+    country: 'UK'
   },
   documentDetails: {
     companyName: 'company-name-test',
