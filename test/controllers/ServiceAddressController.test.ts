@@ -19,7 +19,8 @@ function generateTestData(): Address {
     line2: 'Selly Oak',
     town: 'Cardiff',
     county: 'Cardiff',
-    postcode: 'CF14 3UZ'
+    postcode: 'CF14 3UZ',
+    country: 'UK'
   }
 }
 
@@ -55,6 +56,7 @@ describe('ServiceAddressController', () => {
           expectToHaveInput(response.text, 'town', 'Town or city');
           expectToHaveInput(response.text, 'county', 'County');
           expectToHaveInput(response.text, 'postcode', 'Postcode');
+          expectToHaveInput(response.text, 'country', 'Country');
         });
     });
 
@@ -78,7 +80,7 @@ describe('ServiceAddressController', () => {
           expectToHavePopulatedInput(response.text, 'town', 'Cardiff');
           expectToHavePopulatedInput(response.text, 'county', 'Cardiff');
           expectToHavePopulatedInput(response.text, 'postcode', 'CF14 3UZ');
-          expectToHaveInput(response.text, 'country', '');
+          expectToHavePopulatedInput(response.text, 'country', 'UK');
         });
     });
 

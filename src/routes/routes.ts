@@ -32,8 +32,8 @@ const startPageController = new StartPageController();
 const applicantDetailsController = new ApplicantDetailsController();
 const addressToRemoveController = new AddressToRemoveController();
 const documentDetailsController = new DocumentDetailsController();
-const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
 const serviceAddressController = new ServiceAddressController();
+const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
 
 /**
  * Route definitions
@@ -50,8 +50,8 @@ routes.post(ADDRESS_TO_REMOVE_PAGE_URI, addressToRemoveController.processForm);
 routes.get(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.renderView);
 routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);
 
-routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
-routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
-
 routes.get(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.renderView);
 routes.post(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.processForm);
+
+routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
+routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);

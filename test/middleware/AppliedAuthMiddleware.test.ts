@@ -25,8 +25,8 @@ describe('Applied auth middleware', () => {
   const pageList = [
     {name: 'Applicant Details', uri: APPLICANT_DETAILS_PAGE_URI},
     {name: 'Address To Remove', uri: ADDRESS_TO_REMOVE_PAGE_URI},
-    {name: 'Service Address', uri: SERVICE_ADDRESS_PAGE_URI},
     {name: 'Document Details', uri: DOCUMENT_DETAILS_PAGE_URI},
+    {name: 'Service Address', uri: SERVICE_ADDRESS_PAGE_URI},
     {name: 'Payment Review', uri: PAYMENT_REVIEW_PAGE_URI},
   ];
 
