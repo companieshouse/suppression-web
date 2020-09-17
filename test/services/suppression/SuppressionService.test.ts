@@ -38,7 +38,7 @@ describe('SuppressionService', () => {
       });
     });
 
-    it('should save appeal and return application reference', async() => {
+    it('should save suppression and return application reference', async() => {
 
       mockedAxios.post.mockResolvedValue({
         status: StatusCodes.CREATED,

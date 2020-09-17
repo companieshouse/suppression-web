@@ -4,6 +4,7 @@ export interface SuppressionData {
   applicationReference?: string
   applicantDetails: ApplicantDetails,
   addressToRemove: Address,
+  serviceAddress?: Address,
   documentDetails: DocumentDetails,
   paymentStateUUID: string
 }

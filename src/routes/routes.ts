@@ -3,6 +3,7 @@ import { AddressToRemoveController } from '../controllers/AddressToRemoveControl
 import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
 import { PaymentReviewController } from '../controllers/PaymentReviewController';
+import { ServiceAddressController } from '../controllers/ServiceAddressController';
 import { StartPageController } from '../controllers/StartPageController';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { PaymentService } from '../services/payment/PaymentService';
@@ -12,7 +13,8 @@ import {
   APPLICANT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
   PAYMENT_REVIEW_PAGE_URI,
-  ROOT_URI
+  ROOT_URI,
+  SERVICE_ADDRESS_PAGE_URI
 } from './paths';
 
 export const routes = Router();
@@ -30,6 +32,7 @@ const startPageController = new StartPageController();
 const applicantDetailsController = new ApplicantDetailsController();
 const addressToRemoveController = new AddressToRemoveController();
 const documentDetailsController = new DocumentDetailsController();
+const serviceAddressController = new ServiceAddressController();
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
 
 /**
@@ -46,6 +49,9 @@ routes.post(ADDRESS_TO_REMOVE_PAGE_URI, addressToRemoveController.processForm);
 
 routes.get(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.renderView);
 routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);
+
+routes.get(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.renderView);
+routes.post(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.processForm);
 
 routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
 routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
