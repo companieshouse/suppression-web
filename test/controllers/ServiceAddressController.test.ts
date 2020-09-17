@@ -69,10 +69,11 @@ describe('ServiceAddressController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
-          expectToHavePopulatedInput(response.text, 'line1', '2 Test Street');
-          expectToHavePopulatedInput(response.text, 'town', 'Test Town');
-          expectToHavePopulatedInput(response.text, 'county', 'Test Midlands');
-          expectToHavePopulatedInput(response.text, 'postcode', 'TE10 6ST');
+          expectToHavePopulatedInput(response.text, 'line1', '1 Main Street');
+          expectToHavePopulatedInput(response.text, 'line2', 'Selly Oak');
+          expectToHavePopulatedInput(response.text, 'town', 'Cardiff');
+          expectToHavePopulatedInput(response.text, 'county', 'Cardiff');
+          expectToHavePopulatedInput(response.text, 'postcode', 'CF14 3UZ');
         });
     });
 
