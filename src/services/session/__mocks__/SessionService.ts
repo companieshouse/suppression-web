@@ -13,7 +13,8 @@ export default class SessionService {
         line2: '',
         town: 'Test Town',
         county: 'Test Midlands',
-        postcode: 'TE10 6ST'
+        postcode: 'TE10 6ST',
+        country: 'United Kingdom'
       }
     } as SuppressionData
   }

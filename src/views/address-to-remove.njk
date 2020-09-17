@@ -103,6 +103,19 @@
             })
           }}
           {{
+          govukInput({
+            label: {
+              text: 'Country'
+            },
+            errorMessage: validationResult.getErrorForField('country') if validationResult,
+            classes: 'govuk-input--width-10',
+            id: 'address-country',
+            name: 'country',
+            value: country,
+            autocomplete: 'address-country'
+          })
+          }}
+          {{
             govukButton({
               text: 'Continue',
               attributes: {

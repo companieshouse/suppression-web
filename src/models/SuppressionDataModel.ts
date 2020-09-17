@@ -19,7 +19,8 @@ export interface Address {
   line2?: string,
   town: string,
   county: string,
-  postcode: string
+  postcode: string,
+  country: string
 }
 
 export interface DocumentDetails {

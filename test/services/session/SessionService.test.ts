@@ -14,7 +14,8 @@ const mockSuppressionData: SuppressionData = {
     line2: '',
     town: 'Test Town',
     county: 'Test Midlands',
-    postcode: 'TE10 6ST'
+    postcode: 'TE10 6ST',
+    country: 'United Kingdom'
   },
   serviceAddress: {
     line1: '2 Test Street',
