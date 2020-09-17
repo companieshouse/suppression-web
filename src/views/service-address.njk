@@ -1,0 +1,125 @@
+{% extends 'layout.njk' %}
+
+{% from 'govuk/components/input/macro.njk'         import govukInput %}
+{% from 'govuk/components/button/macro.njk'        import govukButton %}
+{% from "govuk/components/fieldset/macro.njk"      import govukFieldset %}
+{% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
+
+{% block pageTitle %}
+  Service address
+{% endblock %}
+
+{% block backLink %}
+  {{
+    govukBackLink({
+      text: 'Back',
+      href: backNavigation
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="post">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+              What address do you want to replace your home address with?
+            </h1>
+          </legend>
+
+          <span class="govuk-hint">
+            This will be the company's service address (or 'correspondence' address) and is shown on the public register.
+          </span>
+
+          <p class="govuk-body">You do not need to provide this if:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>the company is dissolved</li>
+            <li>the person whose address you want to remove is no longer acting for the company</li>
+          </ul>
+
+          {{
+            govukInput({
+              label: {
+                html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+              },
+              id: 'address-line-1',
+              name: 'line1',
+              value: line1,
+              autocomplete: 'address-line1'
+            })
+          }}
+          {{
+            govukInput({
+              label: {
+                html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+              },
+              id: 'address-line-2',
+              name: 'line2',
+              value: line2,
+              autocomplete: 'address-line2'
+            })
+          }}
+          {{
+            govukInput({
+              label: {
+                text: 'Town or city'
+              },
+              classes: 'govuk-!-width-two-thirds',
+              id: 'address-town',
+              name: 'town',
+              value: town,
+              autocomplete: 'address-level2'
+            })
+          }}
+          {{
+            govukInput({
+              label: {
+                text: 'County'
+              },
+              classes: 'govuk-!-width-two-thirds',
+              id: 'address-County',
+              name: 'county',
+              value: county
+            })
+          }}
+          {{
+            govukInput({
+              label: {
+                text: 'Postcode'
+              },
+              classes: 'govuk-input--width-10',
+              id: 'address-postcode',
+              name: 'postcode',
+              value: postcode,
+              autocomplete: 'postal-code'
+            })
+          }}
+          {{
+            govukInput({
+              label: {
+                text: 'Country'
+              },
+              classes: 'govuk-input--width-10',
+              id: 'address-country',
+              name: 'country',
+              value: country,
+              autocomplete: 'country'
+            })
+          }}
+          {{
+            govukButton({
+              text: 'Continue',
+              attributes: {
+                id: 'submit'
+              }
+            })
+          }}
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
