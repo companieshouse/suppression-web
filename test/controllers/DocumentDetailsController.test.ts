@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
 import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI} from '../../src/routes/paths';
-import SessionService from '../../src/services/Session/SessionService';
+import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
@@ -19,7 +19,7 @@ const missingDocumentDateErrorMessage: string = 'Document date is required';
 const missingYearErrorMessage: string = 'You must enter a year';
 const invalidDateErrorMessage: string = 'Enter a real date';
 
-jest.mock('../../src/services/Session/SessionService');
+jest.mock('../../src/services/session/SessionService');
 
 describe('DocumentDetailsController', () => {
 

@@ -11,7 +11,7 @@ import {
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 
-jest.mock('../../src/services/Session/SessionService');
+jest.mock('../../src/services/session/SessionService');
 
 describe('ApplicantDetailsController', () => {
 

@@ -21,5 +21,9 @@ export default class SessionService {
   static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
     return;
   }
+
+  static getAccessToken(req: Request): string {
+    return 'mock-token';
+  }
 }
 

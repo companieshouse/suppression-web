@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
 import { authMiddleware } from 'web-security-node';
+
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
@@ -10,7 +11,7 @@ import {
 } from '../../src/routes/paths';
 import { createApp } from '../ApplicationFactory';
 
-jest.mock('../../src/services/Session/SessionService');
+jest.mock('../../src/services/session/SessionService');
 
 beforeEach(() => {
   jest.clearAllMocks();

@@ -1,7 +1,8 @@
 import { Session } from 'ch-node-session-handler';
+import {SessionKey} from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { Request } from 'express';
-import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../../src/models/SuppressionDataModel';
-import SessionService from '../../../src/services/Session/SessionService';
+import {SuppressionData, SUPPRESSION_DATA_KEY} from '../../../src/models/SuppressionDataModel';
+import SessionService from '../../../src/services/session/SessionService';
 
 const mockSuppressionData: SuppressionData = {
   applicantDetails: {
@@ -20,7 +21,9 @@ const mockSuppressionData: SuppressionData = {
     companyNumber: 'NI000000',
     description: 'This is a document',
     date: '2020-01-01'
-  }
+  },
+  applicationReference: '123',
+  paymentStateUUID: '1'
 };
 
 const mockRequestData = {
@@ -63,6 +66,29 @@ describe('SessionService', () => {
     SessionService.setSuppressionSession(mockRequest, mockSuppressionData);
 
     expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionData);
+  })
+
+
+  it('should retrieve the access token from the session', () => {
+
+    const testToken = 'test-token';
+    const mockRequest: Request = mockRequestData;
+
+    const mockGetSignInInfo: jest.Mock = jest.fn(() => {
+      return {
+        access_token: {
+          access_token: testToken
+        },
+        user_profile: {
+          email: 'test@example.com'
+        }
+      }
+    });
+    mockRequest.session!.get = mockGetSignInInfo;
+
+    const result = SessionService.getAccessToken(mockRequest);
+    expect(result).toEqual(testToken);
+    expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
   })
 
 });
