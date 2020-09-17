@@ -32,11 +32,13 @@ afterEach(() => {
 describe('ServiceAddressController', () => {
 
   const pageTitle = 'Service address';
-  const app = createApp();
 
   describe('on GET', () => {
 
     it('should return 200 and render the Service Address Page', async () => {
+
+      const app = createApp();
+
       await request(app)
         .get(SERVICE_ADDRESS_PAGE_URI)
         .expect(response => {
@@ -64,6 +66,8 @@ describe('ServiceAddressController', () => {
         } as SuppressionData
       });
 
+      const app = createApp();
+
       await request(app)
         .get(SERVICE_ADDRESS_PAGE_URI)
         .expect(response => {
@@ -74,6 +78,7 @@ describe('ServiceAddressController', () => {
           expectToHavePopulatedInput(response.text, 'town', 'Cardiff');
           expectToHavePopulatedInput(response.text, 'county', 'Cardiff');
           expectToHavePopulatedInput(response.text, 'postcode', 'CF14 3UZ');
+          expectToHaveInput(response.text, 'country', '');
         });
     });
 
@@ -82,7 +87,10 @@ describe('ServiceAddressController', () => {
   describe('on POST', () => {
 
     it('should throw an error if the session doesn’t exist', async () => {
+
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+
+      const app = createApp();
 
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
@@ -91,7 +99,8 @@ describe('ServiceAddressController', () => {
 
     it('should redirect to the Service Address page if data is provided by the user', async () => {
 
-      const testData = generateTestData();
+      const testData: Address = generateTestData();
+      const app = createApp();
 
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
@@ -102,6 +111,8 @@ describe('ServiceAddressController', () => {
     });
 
     it('should redirect to the Service Address page if no data is provided by the user', async () => {
+
+      const app = createApp();
 
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
