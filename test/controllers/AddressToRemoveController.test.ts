@@ -18,7 +18,7 @@ jest.mock('../../src/services/session/SessionService');
 
 afterEach(() => {
   jest.restoreAllMocks();
-})
+});
 
 describe('AddressToRemoveController', () => {
 
@@ -52,6 +52,7 @@ describe('AddressToRemoveController', () => {
         expectToHaveInput(response.text, 'town', 'Town or city');
         expectToHaveInput(response.text, 'county', 'County');
         expectToHaveInput(response.text, 'postcode', 'Postcode');
+        expectToHaveInput(response.text, 'country', 'Country')
       });
     });
 
@@ -64,6 +65,7 @@ describe('AddressToRemoveController', () => {
         expectToHavePopulatedInput(response.text, 'town', 'Test Town');
         expectToHavePopulatedInput(response.text, 'county', 'Test Midlands');
         expectToHavePopulatedInput(response.text, 'postcode', 'TE10 6ST');
+        expectToHavePopulatedInput(response.text, 'country', 'United Kingdom');
       });
     });
 
@@ -73,8 +75,9 @@ describe('AddressToRemoveController', () => {
 
     const addressLine1ErrorMessage = 'Building and street is required';
     const townOrCityErrorMessage = 'Town or city is required';
-    const countyErrorMessage = 'County is required'
+    const countyErrorMessage = 'County is required';
     const postcodeErrorMessage = 'Postcode is required';
+    const countryErrorMessage = 'Country is required';
 
     function generateTestData(): Address {
       return {
@@ -82,7 +85,8 @@ describe('AddressToRemoveController', () => {
         line2: 'Selly Oak',
         town: 'Cardiff',
         county: 'Cardiff',
-        postcode: 'CF14 3UZ'
+        postcode: 'CF14 3UZ',
+        country: 'United Kingdom'
       }
     }
 
@@ -101,10 +105,10 @@ describe('AddressToRemoveController', () => {
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
-          addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage
+          addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage, countryErrorMessage
         ]);
         expectToHaveErrorMessages(response.text, [
-          addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage
+          addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage, countryErrorMessage
         ]);
       });
     });
@@ -162,6 +166,20 @@ describe('AddressToRemoveController', () => {
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
         expectToHaveErrorMessages(response.text, [postcodeErrorMessage]);
+      })
+    });
+
+    it('should show a validation error message if Country is not provided', async () => {
+
+      const testData = generateTestData();
+      testData.country = '';
+
+      await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
+        expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
+        expectToHaveErrorSummaryContaining(response.text, [countryErrorMessage]);
+        expectToHaveErrorMessages(response.text, [countryErrorMessage]);
       })
     });
 

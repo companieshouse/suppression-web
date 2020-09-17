@@ -15,6 +15,7 @@ describe('Applicant Details schema', () => {
       new ValidationError('town', 'Town or city is required'),
       new ValidationError('county', 'County is required'),
       new ValidationError('postcode', 'Postcode is required'),
+      new ValidationError('country', 'Country is required'),
     ];
 
     function generateTestData(value: any): Address {
@@ -23,7 +24,8 @@ describe('Applicant Details schema', () => {
         line2: value,
         town: value,
         county: value,
-        postcode: value
+        postcode: value,
+        country: value
       };
     }
 
@@ -65,7 +67,8 @@ describe('Applicant Details schema', () => {
         line2: 'Selly Oak',
         town: 'Cardiff',
         county: 'Cardiff',
-        postcode: 'CF14 3UZ'
+        postcode: 'CF14 3UZ',
+        country: 'United Kingdom'
       }
     }
 
