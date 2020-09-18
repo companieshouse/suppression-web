@@ -4,6 +4,7 @@
 {% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 
 {% block pageTitle %}
   Applicant’s Details
@@ -31,7 +32,24 @@
       <h1 class="govuk-heading-l">
         What are your contact details?
       </h1>
+
       <form method="post">
+        {% set previousNamesHtml %}
+          {{
+            govukInput({
+              id: 'previous-name',
+              name: 'previousName',
+              value: 'previousName',
+              type: 'text',
+              classes: 'govuk-input--width-20',
+              label: {
+                text: 'Previous full name'
+              },
+              errorMessage: validationResult.getErrorForField('previousName') if validationResult
+            })
+          }}
+        {% endset -%}
+
         {{
           govukInput({
             classes: 'govuk-input--width-20',
@@ -43,6 +61,36 @@
             name: 'fullName',
             value: fullName,
             autocomplete: 'name'
+          })
+        }}
+
+        {{
+          govukRadios({
+            idPrefix: 'previous-name-conditional',
+            name: 'previousNameConditional',
+            fieldset: {
+              legend: {
+                text: 'Has the applicant used a different name on the Companies House register in the last 20 years?',
+                isPageHeading: false,
+                classes: 'govuk-fieldset__legend'
+              }
+            },
+            errorMessage: validationResult.getErrorForField('previousNameConditional') if validationResult,
+            items: [
+              {
+                value: 'yes',
+                text: 'Yes',
+                checked: true if previousNameConditional === 'yes',
+                conditional: {
+                  html: previousNamesHtml
+                }
+              },
+              {
+                value: 'no',
+                text: 'No',
+                checked: true if previousNameConditional === 'no'
+              }
+            ]
           })
         }}
         {{
