@@ -1,3 +1,5 @@
+import { YesNo } from './YesNo';
+
 export const SUPPRESSION_DATA_KEY: string = 'suppression';
 
 export interface SuppressionData {
@@ -11,6 +13,7 @@ export interface SuppressionData {
 
 export interface ApplicantDetails {
   fullName: string,
+  previousName?: string,
   emailAddress: string
 }
 

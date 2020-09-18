@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes  } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel'
+import { YesNo } from '../models/YesNo';
 import { ADDRESS_TO_REMOVE_PAGE_URI, ROOT_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
+import { ValidationError } from '../utils/validation/ValidationError';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchema'
@@ -22,6 +24,11 @@ export class ApplicantDetailsController {
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
     const validationResult: ValidationResult = await this.validator.validate(req);
+
+    if (req.body.hasPreviousName === YesNo.no){
+      req.body.previousName = '';
+    }
+
     if (validationResult.errors.length > 0) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);
       return res.render(template, {

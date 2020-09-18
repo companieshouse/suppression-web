@@ -27,6 +27,7 @@ describe('ApplicantDetailsController', () => {
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveInput(response.text, 'fullName', 'Full name');
+        expect(response.text).toContain('Has the applicant used a different name on the Companies House register in the last 20 years?');
         expectToHaveInput(response.text, 'emailAddress', 'Email address');
       });
     });
