@@ -58,7 +58,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send({ hasPreviousName: 'yes', previousName: 'test_name', emailAddress: 'test@example.com' })
         .expect(response => {
-
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
@@ -72,7 +71,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send({ fullName: 'John Doe', emailAddress: 'test@example.com' })
         .expect(response => {
-
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
@@ -86,7 +84,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send({ fullName: 'John Doe', hasPreviousName: 'yes', emailAddress: 'test@example.com' })
         .expect(response => {
-
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
@@ -100,7 +97,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send({ fullName: 'John Doe', hasPreviousName: 'yes', previousName: 'test_name'})
         .expect(response => {
-
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
@@ -116,7 +112,6 @@ describe('ApplicantDetailsController', () => {
         hasPreviousName: 'yes',
         previousName: 'test_name',
         emailAddress: 'test.com'
-
       }).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);

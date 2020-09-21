@@ -137,4 +137,3 @@ describe('Applicant Details schema', () => {
     });
   });
 });
-

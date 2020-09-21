@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { YesNo } from '../../models/YesNo';
+import { basicString } from './BasicStringSchemaItem';
 
 const fullNameErrorMessage = 'Full name is required';
 const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
@@ -8,15 +9,7 @@ const emailMissingErrorMessage = 'Email address is required';
 const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com'
 
 export const schema = Joi.object({
-  fullName: Joi.string()
-    .required()
-    .pattern(/\w+/)
-    .messages({
-      'any.required': fullNameErrorMessage,
-      'string.base': fullNameErrorMessage,
-      'string.empty': fullNameErrorMessage,
-      'string.pattern.base': fullNameErrorMessage
-    }),
+  fullName: basicString(fullNameErrorMessage),
   hasPreviousName: Joi.string()
     .required()
     .valid(YesNo.yes, YesNo.no)
@@ -28,12 +21,7 @@ export const schema = Joi.object({
     }),
   previousName: Joi.when('hasPreviousName', {
       is: Joi.valid(YesNo.yes).exist(),
-      then: Joi.string().required().pattern(/\w+/).messages({
-        'any.required': previousNameMissingMessage,
-        'any.only': previousNameMissingMessage,
-        'string.base': previousNameMissingMessage,
-        'string.empty': previousNameMissingMessage
-      })
+      then: basicString(previousNameMissingMessage)
     }),
   emailAddress: Joi.string()
     .required()
