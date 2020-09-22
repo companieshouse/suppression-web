@@ -2,9 +2,9 @@
 
 {% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
-{% from 'govuk/components/date-input/macro.njk'    import govukDateInput %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
 {% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
+{% from 'components/date-input.njk'                import dateInput %}
 
 {% block pageTitle %}
   Document details
@@ -29,55 +29,6 @@
           errorList: validationResult.errors
         }) if validationResult and validationResult.errors.length > 0
       }}
-
-      {% set classes_day = 'govuk-input--width-2' %}
-      {% set classes_month = 'govuk-input--width-2' %}
-      {% set classes_year = 'govuk-input--width-4' %}
-      {% set documentDateErrorMessage = false %}
-      {% set hasDateError = false %}
-
-      {% if validationResult and validationResult.errors.length > 0 %}
-
-        {% if validationResult.getErrorForField('day') %}
-          {% set classes_day = classes_day + ' govuk-input--error' %}
-          {% set hasDateError = true %}
-        {% endif %}
-        {% if validationResult.getErrorForField('month') %}
-          {% set classes_month = classes_month + ' govuk-input--error' %}
-          {% set hasDateError = true %}
-        {% endif %}
-         {% if validationResult.getErrorForField('year') %}
-          {% set classes_year = classes_year + ' govuk-input--error' %}
-          {% set hasDateError = true %}
-        {% endif %}
-        {% if validationResult.getErrorForField('date') %}
-          {% set classes_day = classes_day + ' govuk-input--error' %}
-          {% set classes_month = classes_month + ' govuk-input--error' %}
-          {% set classes_year = classes_year + ' govuk-input--error' %}
-          {% set hasDateError = true %}
-        {% endif %}
-
-        {% if hasDateError %}
-          {% set errorMessages %}
-            <ul style="padding: 0;list-style-type: none;">
-              {% for error in validationResult.errors %}
-                {% if error.field in ['day', 'month', 'year', 'date'] %}
-                  <li>
-                    {{ error.text }}
-                  </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          {% endset %}
-        {% endif %}
-
-        {% if errorMessages %}
-          {% set documentDateErrorMessage = {
-            html: errorMessages
-            }
-          %}
-        {% endif %}
-      {% endif %}
 
       <h1 class="govuk-heading-l">
         What are the document details?
@@ -141,45 +92,16 @@
           })
         }}
         {{
-          govukDateInput ({
-            id: 'document-date',
-            fieldset: {
-              legend: {
-                text: 'Document date',
-                isPageHeading: false,
-                classes: 'govuk-fieldset__legend--s'
-              }
-            },
-            hint: {
-              text: 'For example, 12 11 2007'
-            },
-            errorMessage: documentDateErrorMessage,
-            items: [
-              {
-                classes: classes_day,
-                id: 'doc-day',
-                label: 'Day',
-                name: 'day',
-                value: day,
-                autocomplete: 'off'
-              },
-              {
-                classes: classes_month,
-                id: 'doc-month',
-                label: 'Month',
-                name: 'month',
-                value: month,
-                autocomplete: 'off'
-              },
-              {
-                classes: classes_year,
-                id: 'doc-year',
-                label: 'Year',
-                name: 'year',
-                value: year,
-                autocomplete: 'off'
-              }
-            ]
+          dateInput({
+            idPrefix: 'document',
+            labelText: 'Document date',
+            hintText: 'For example, 12 11 2007',
+            validationResult: validationResult,
+            values: {
+              day: day,
+              month: month,
+              year: year
+            }
           })
         }}
         {{
