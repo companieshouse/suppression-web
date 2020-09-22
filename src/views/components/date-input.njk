@@ -1,6 +1,6 @@
 {% from 'govuk/components/date-input/macro.njk' import govukDateInput %}
 
-{% macro date_input(idPrefix, labelText, validationResult, hintText) %}
+{% macro dateInput(params) %}
   {% set classes_day = 'govuk-input--width-2' %}
   {% set classes_month = 'govuk-input--width-2' %}
   {% set classes_year = 'govuk-input--width-4' %}
@@ -8,24 +8,24 @@
   {% set dateErrorMessage = false %}
   {% set hasDateError = false %}
 
-  {% if validationResult and validationResult.errors.length > 0 %}
+  {% if params.validationResult and params.validationResult.errors.length > 0 %}
 
-    {% if validationResult.getErrorForField('day') %}
+    {% if params.validationResult.getErrorForField('day') %}
       {% set classes_day = classes_day + ' govuk-input--error' %}
       {% set hasDateError = true %}
     {% endif %}
 
-    {% if validationResult.getErrorForField('month') %}
+    {% if params.validationResult.getErrorForField('month') %}
       {% set classes_month = classes_month + ' govuk-input--error' %}
       {% set hasDateError = true %}
     {% endif %}
 
-    {% if validationResult.getErrorForField('year') %}
+    {% if params.validationResult.getErrorForField('year') %}
       {% set classes_year = classes_year + ' govuk-input--error' %}
       {% set hasDateError = true %}
     {% endif %}
 
-    {% if validationResult.getErrorForField('date') %}
+    {% if params.validationResult.getErrorForField('date') %}
       {% set classes_day = classes_day + ' govuk-input--error' %}
       {% set classes_month = classes_month + ' govuk-input--error' %}
       {% set classes_year = classes_year + ' govuk-input--error' %}
@@ -36,7 +36,7 @@
   {% if hasDateError %}
     {% set errorMessages %}
       <ul style="padding: 0;list-style-type: none;">
-        {% for error in validationResult.errors %}
+        {% for error in params.validationResult.errors %}
           {% if error.field in ['day', 'month', 'year', 'date'] %}
             <li>
               {{ error.text }}
@@ -53,22 +53,22 @@
 
   {{
     govukDateInput ({
-      id: idPrefix + '-date',
+      id: params.idPrefix + '-date',
       fieldset: {
         legend: {
-          text: labelText,
+          text: params.labelText,
           isPageHeading: false,
           classes: 'govuk-fieldset__legend--s'
         }
       },
       hint: {
-        text: hintText
+        text: params.hintText
       },
       errorMessage: dateErrorMessage,
       items: [
         {
           classes: classes_day,
-          id: idPrefix + '-day',
+          id: params.idPrefix + '-day',
           label: 'Day',
           name: 'day',
           value: day,
@@ -76,7 +76,7 @@
         },
         {
           classes: classes_month,
-          id: idPrefix + '-month',
+          id: params.idPrefix + '-month',
           label: 'Month',
           name: 'month',
           value: month,
@@ -84,7 +84,7 @@
         },
         {
           classes: classes_year,
-          id: idPrefix + '-year',
+          id: params.idPrefix + '-year',
           label: 'Year',
           name: 'year',
           value: year,
