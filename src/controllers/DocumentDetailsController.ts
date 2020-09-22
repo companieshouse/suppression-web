@@ -5,13 +5,17 @@ import moment from 'moment';
 import { DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
-import { DocumentDetailsValidator } from '../validators/DocumentDetailsValidator';
+import { FormWithDateValidator } from '../validators/FormWithDateValidator';
+import { schema } from '../validators/schema/DocumentDetailsSchema';
 
 const template = 'document-details';
+const missingDateErrorMessage: string = 'Document date is required';
 
 export class DocumentDetailsController {
 
-  constructor(private dateValidator: DocumentDetailsValidator = new DocumentDetailsValidator()) {}
+  constructor(private validator: FormWithDateValidator = new FormWithDateValidator(
+    schema, missingDateErrorMessage
+  )) {}
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
 
@@ -25,7 +29,7 @@ export class DocumentDetailsController {
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    const validationResult = await this.dateValidator.validate(req);
+    const validationResult = await this.validator.validate(req);
 
     if (validationResult.errors.length > 0) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);

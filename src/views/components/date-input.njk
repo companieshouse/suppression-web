@@ -53,7 +53,7 @@
 
   {{
     govukDateInput ({
-      id: params.idPrefix + '-date',
+      id: 'date',
       fieldset: {
         legend: {
           text: params.labelText,
@@ -68,7 +68,7 @@
       items: [
         {
           classes: classes_day,
-          id: params.idPrefix + '-day',
+          id: 'day',
           label: 'Day',
           name: 'day',
           value: params.values.day,
@@ -76,7 +76,7 @@
         },
         {
           classes: classes_month,
-          id: params.idPrefix + '-month',
+          id: 'month',
           label: 'Month',
           name: 'month',
           value: params.values.month,
@@ -84,7 +84,7 @@
         },
         {
           classes: classes_year,
-          id: params.idPrefix + '-year',
+          id: 'year',
           label: 'Year',
           name: 'year',
           value: params.values.year,

@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
-import { authMiddleware } from 'web-security-node';
+import * as authMiddleware from 'web-security-node';
 
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
@@ -19,8 +19,6 @@ beforeEach(() => {
 });
 
 describe('Applied auth middleware', () => {
-
-  const webSecurityModule = require('web-security-node');
 
   const pageList = [
     {name: 'Applicant Details', uri: APPLICANT_DETAILS_PAGE_URI},
@@ -51,7 +49,7 @@ describe('Applied auth middleware', () => {
 
         const app = createApp(true);
 
-        jest.spyOn(webSecurityModule, 'authMiddleware')
+        jest.spyOn(authMiddleware, 'authMiddleware')
           .mockReturnValue((req, res, next) => {
             return res.redirect('/fakeurl');
           });
@@ -74,7 +72,7 @@ describe('Applied auth middleware', () => {
 
         const app = createApp(true);
 
-        jest.spyOn(webSecurityModule, 'authMiddleware')
+        jest.spyOn(authMiddleware, 'authMiddleware')
           .mockReturnValue((req, res, next) => {
             return next();
           });

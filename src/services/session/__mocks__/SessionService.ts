@@ -4,10 +4,6 @@ import { SuppressionData } from '../../../models/SuppressionDataModel';
 export default class SessionService {
   static getSuppressionSession(req: Request): SuppressionData | undefined {
     return {
-      applicantDetails: {
-        fullName: 'John Doe',
-        emailAddress: 'test@example.com'
-      },
       addressToRemove: {
         line1: '1 Test Street',
         line2: '',
