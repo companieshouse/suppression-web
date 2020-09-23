@@ -6,6 +6,8 @@ const hyphenise = (value: string): string => {
 };
 
 export class ValidationError {
+  public href: string;
+
   constructor(public readonly field: string, public readonly text: string) {
     if (!field) {
       throw new Error('Field name is required');
@@ -13,9 +15,10 @@ export class ValidationError {
     if (!text) {
       throw new Error('Error message is required');
     }
+    this.href = `#${hyphenise(this.field)}-error`;
   }
 
-  get href(): string {
-    return `#${hyphenise(this.field)}-error`;
+  public overrideHref(attributeId: string): void {
+    this.href = `#${hyphenise(attributeId)}-error`;
   }
 }
