@@ -7,7 +7,8 @@ import SessionService from '../../../src/services/session/SessionService';
 const mockSuppressionData: SuppressionData = {
   applicantDetails: {
     fullName: 'test-name',
-    emailAddress: 'test-email'
+    emailAddress: 'test-email',
+    dateOfBirth: '1980-01-05'
   },
   addressToRemove: {
     line1: '1 Test Street',
