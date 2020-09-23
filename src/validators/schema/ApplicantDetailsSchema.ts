@@ -32,7 +32,7 @@ export const schema = Joi.object({
     .options({ abortEarly: true }),
   previousName: Joi.when('hasPreviousName', {
       is: YesNo.yes,
-      then: basicString(previousNameMissingMessage),
+      then: basicString(previousNameMissingMessage)
     }),
   emailAddress: Joi.string()
     .required()
@@ -76,6 +76,6 @@ export const schema = Joi.object({
     .messages({
       'any.required': missingDateErrorMessage,
       'date.base': invalidDateErrorMessage,
-      'date.format': invalidDateErrorMessage,
+      'date.format': invalidDateErrorMessage
     })
 });

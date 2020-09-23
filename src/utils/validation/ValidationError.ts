@@ -18,7 +18,7 @@ export class ValidationError {
     this.href = `#${hyphenise(this.field)}-error`;
   }
 
-  public overrideHref(attributeId: string): void {
+  public setHref(attributeId: string): void {
     this.href = `#${hyphenise(attributeId)}-error`;
   }
 }

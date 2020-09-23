@@ -50,7 +50,7 @@ export class FormWithDateValidator extends FormValidator {
 
       validationResult.errors.forEach((error) => {
         if ([dayField, monthField, yearField].includes(error.field)) {
-          error.overrideHref(dateField);
+          error.setHref(dateField);
         }
       });
     }
