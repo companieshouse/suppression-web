@@ -22,7 +22,6 @@
     ],
     "promise-function-async": true,
     "no-async-without-await": true,
-    "esModuleInterop": true,
-    "semicolon": [true, "always"]
+    "esModuleInterop": true
   }
 }

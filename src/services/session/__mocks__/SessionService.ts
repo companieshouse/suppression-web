@@ -12,7 +12,7 @@ export default class SessionService {
         postcode: 'TE10 6ST',
         country: 'United Kingdom'
       }
-    } as SuppressionData
+    } as SuppressionData;
   }
 
   static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
@@ -23,4 +23,3 @@ export default class SessionService {
     return 'mock-token';
   }
 }
-

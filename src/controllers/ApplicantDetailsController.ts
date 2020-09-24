@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 
-import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel'
+import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel';
 import { YesNo } from '../models/YesNo';
 import { ADDRESS_TO_REMOVE_PAGE_URI, ROOT_URI } from '../routes/paths';
-import SessionService from '../services/session/SessionService'
+import SessionService from '../services/session/SessionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormWithDateValidator } from '../validators/FormWithDateValidator';
-import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchema'
+import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchema';
 
 const template = 'applicant-details';
 const backNavigation = ROOT_URI;
@@ -27,7 +27,7 @@ export class ApplicantDetailsController {
       ...this.getApplicantDetails(suppressionData),
       backNavigation
     });
-  };
+  }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
     const validationResult: ValidationResult = await this.validator.validate(req);
@@ -59,7 +59,7 @@ export class ApplicantDetailsController {
 
     SessionService.setSuppressionSession(req, session);
     res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
-  };
+  }
 
   private getApplicantDetails(suppression: SuppressionData | undefined): any {
 
