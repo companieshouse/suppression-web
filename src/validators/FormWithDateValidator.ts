@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { Request } from 'express';
 import { AnySchema } from 'joi';
 import moment from 'moment';
 

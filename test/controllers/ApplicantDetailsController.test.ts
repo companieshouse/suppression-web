@@ -12,7 +12,7 @@ import {
   expectToHaveInput,
   expectToHavePopulatedInput,
   expectToHaveTitle
-} from '../HtmlPatternAssertions'
+} from '../HtmlPatternAssertions';
 
 jest.mock('../../src/services/session/SessionService');
 
@@ -25,7 +25,7 @@ function generateTestData(): any {
     day: '01',
     month: '01',
     year: '2020'
-  }
+  };
 }
 
 describe('ApplicantDetailsController', () => {
@@ -58,7 +58,7 @@ describe('ApplicantDetailsController', () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
         return {
           applicantDetails
-        } as SuppressionData
+        } as SuppressionData;
       });
 
       await request(app)
@@ -186,7 +186,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if the date of birth is entirely missing', async () => {
-      const testData = generateTestData()
+      const testData = generateTestData();
       delete testData.day;
       delete testData.month;
       delete testData.year;
@@ -203,7 +203,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if a component of the date of birth is missing', async () => {
-      const testData = generateTestData()
+      const testData = generateTestData();
       delete testData.year;
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -218,7 +218,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if the date of birth is invalid', async () => {
-      const testData = generateTestData()
+      const testData = generateTestData();
       testData.day = '34';
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
