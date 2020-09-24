@@ -1,29 +1,28 @@
-import { YesNo } from './YesNo';
-
 export const SUPPRESSION_DATA_KEY: string = 'suppression';
 
 export interface SuppressionData {
-  applicationReference?: string
-  applicantDetails: ApplicantDetails,
-  addressToRemove: Address,
-  serviceAddress?: Address,
-  documentDetails: DocumentDetails,
-  paymentStateUUID: string
+  applicationReference?: string;
+  applicantDetails: ApplicantDetails;
+  addressToRemove: Address;
+  serviceAddress?: Address;
+  documentDetails: DocumentDetails;
+  paymentStateUUID: string;
 }
 
 export interface ApplicantDetails {
-  fullName: string,
-  previousName?: string,
-  emailAddress: string
+  fullName: string;
+  previousName?: string;
+  emailAddress: string;
+  dateOfBirth: string;
 }
 
 export interface Address {
-  line1: string,
-  line2?: string,
-  town: string,
-  county: string,
-  postcode: string,
-  country: string
+  line1: string;
+  line2?: string;
+  town: string;
+  county: string;
+  postcode: string;
+  country: string;
 }
 
 export interface DocumentDetails {

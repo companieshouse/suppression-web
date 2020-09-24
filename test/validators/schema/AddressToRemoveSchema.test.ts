@@ -6,7 +6,7 @@ import { assertValidationErrors } from '../ValidationAssertions';
 
 const validator = new SchemaValidator(schema);
 
-describe('Applicant Details schema', () => {
+describe('Address To Remove schema', () => {
 
   describe('invalid values', () => {
 

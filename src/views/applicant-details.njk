@@ -5,6 +5,7 @@
 {% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
+{% from 'components/date-input.njk'                import dateInput %}
 
 {% block pageTitle %}
   Applicant’s Details
@@ -106,6 +107,19 @@
             name: 'emailAddress',
             value: emailAddress,
             autocomplete: 'email'
+          })
+        }}
+        {{
+          dateInput({
+            idPrefix: 'birth',
+            labelText: 'Date of birth',
+            hintText: 'For example, 31 3 1980',
+            validationResult: validationResult,
+            values: {
+              day: day,
+              month: month,
+              year: year
+            }
           })
         }}
         {{

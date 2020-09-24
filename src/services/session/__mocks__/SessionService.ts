@@ -4,10 +4,6 @@ import { SuppressionData } from '../../../models/SuppressionDataModel';
 export default class SessionService {
   static getSuppressionSession(req: Request): SuppressionData | undefined {
     return {
-      applicantDetails: {
-        fullName: 'John Doe',
-        emailAddress: 'test@example.com'
-      },
       addressToRemove: {
         line1: '1 Test Street',
         line2: '',
@@ -16,7 +12,7 @@ export default class SessionService {
         postcode: 'TE10 6ST',
         country: 'United Kingdom'
       }
-    } as SuppressionData
+    } as SuppressionData;
   }
 
   static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
@@ -27,4 +23,3 @@ export default class SessionService {
     return 'mock-token';
   }
 }
-

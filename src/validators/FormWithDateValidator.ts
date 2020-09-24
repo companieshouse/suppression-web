@@ -1,16 +1,18 @@
-import { Request } from 'express'
+import { Request } from 'express';
+import { AnySchema } from 'joi';
 import moment from 'moment';
 
 import { ValidationError } from '../utils/validation/ValidationError';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from './FormValidator';
-import { schema } from './schema/DocumentDetailsSchema';
 
-const missingDateErrorMessage: string = 'Document date is required';
+export class FormWithDateValidator extends FormValidator {
 
-export class DocumentDetailsValidator extends FormValidator {
-  constructor() {
+  private readonly missingDateErrorMessage: string;
+
+  constructor(schema: AnySchema, missingDateErrorMessage: string) {
     super(schema);
+    this.missingDateErrorMessage = missingDateErrorMessage;
   }
 
   public async validate(request: Request): Promise<ValidationResult> {
@@ -36,7 +38,7 @@ export class DocumentDetailsValidator extends FormValidator {
       const monthError: ValidationError | undefined = validationResult.getErrorForField(monthField);
       const yearError: ValidationError | undefined = validationResult.getErrorForField(yearField);
 
-      if (dateError && dateError.text === missingDateErrorMessage) {
+      if (dateError && dateError.text === this.missingDateErrorMessage) {
         if (dayError && monthError && yearError) {
           this.removeValidationError(validationResult, dayError);
           this.removeValidationError(validationResult, monthError);
@@ -45,6 +47,12 @@ export class DocumentDetailsValidator extends FormValidator {
           this.removeValidationError(validationResult, dateError);
         }
       }
+
+      validationResult.errors.forEach((error) => {
+        if ([dayField, monthField, yearField].includes(error.field)) {
+          error.setHref(dateField);
+        }
+      });
     }
     return validationResult;
   }
