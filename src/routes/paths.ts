@@ -6,3 +6,5 @@ export const DOCUMENT_DETAILS_PAGE_URI = `${ROOT_URI}/document-details`;
 export const SERVICE_ADDRESS_PAGE_URI = `${ROOT_URI}/service-address`;
 export const PAYMENT_REVIEW_PAGE_URI = `${ROOT_URI}/payment-review`;
 export const CONFIRMATION_PAGE_URI = `${ROOT_URI}/confirmation`;
+
+export const HEALTHCHECK_URI = `${ROOT_URI}/healthcheck`;
