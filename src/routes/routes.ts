@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { AddressToRemoveController } from '../controllers/AddressToRemoveController';
 import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
+import { HealthcheckController } from '../controllers/HealthcheckController';
 import { PaymentReviewController } from '../controllers/PaymentReviewController';
 import { ServiceAddressController } from '../controllers/ServiceAddressController';
 import { StartPageController } from '../controllers/StartPageController';
@@ -12,6 +13,7 @@ import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
+  HEALTHCHECK_URI,
   PAYMENT_REVIEW_PAGE_URI,
   ROOT_URI,
   SERVICE_ADDRESS_PAGE_URI
@@ -35,6 +37,8 @@ const documentDetailsController = new DocumentDetailsController();
 const serviceAddressController = new ServiceAddressController();
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
 
+const healthcheckController = new HealthcheckController();
+
 /**
  * Route definitions
  */
@@ -55,3 +59,5 @@ routes.post(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.processForm);
 
 routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
 routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
+
+routes.get(HEALTHCHECK_URI, healthcheckController.healthcheck);
