@@ -45,9 +45,12 @@ export class ApplicantDetailsController {
       });
     }
 
+    const dateOfBirth = moment(req.body.date).format('YYYY-MM-DD');
+    delete req.body.date;
+
     const applicantDetails = {
       ...req.body,
-      dateOfBirth: moment(req.body.date).format('YYYY-MM-DD')
+      dateOfBirth
     } as ApplicantDetails;
 
     let session = SessionService.getSuppressionSession(req);
