@@ -34,21 +34,14 @@ export class PaymentReviewController {
       throw new Error('Expected session but found none.')
     }
 
-    const accessToken: string =  SessionService.getAccessToken(req);
     let applicationReference: string;
 
     try {
 
-      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
-
-    } catch (error) {
-      next(error);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
-    }
-
-    try {
-
+      const accessToken: string =  SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
+
+      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
 
       const govPayUrl: string = await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
 
@@ -63,7 +56,6 @@ export class PaymentReviewController {
 
     } catch (error) {
       next(error);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
     }
   };
 }

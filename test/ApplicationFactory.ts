@@ -6,6 +6,7 @@ import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
 import { AuthMiddleware } from '../src/middleware/AuthMiddleware';
+import { defaultHandler } from '../src/middleware/ErrorHandler';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { routes } from '../src/routes/routes';
@@ -50,5 +51,8 @@ export function createApp(authEnabled?: boolean) {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use('/', routes);
+
+  app.use(defaultHandler);
+
   return app;
 }
