@@ -14,7 +14,7 @@ export default class SessionService {
   }
 
   static getAccessToken(req: Request): string {
-    const signInInfo = req.session!.get<ISignInInfo>(SessionKey.SignInInfo)!
+    const signInInfo = req.session!.get<ISignInInfo>(SessionKey.SignInInfo)!;
     return signInInfo.access_token!.access_token!
   }
 }
