@@ -81,7 +81,7 @@ describe('DocumentDetailsController', () => {
 
   describe('on POST', () => {
 
-    it('should redirect to the Service (Replacement) Address page when valid data was submitted', async () => {
+    it('should redirect to the Service Address page when valid data was submitted', async () => {
 
       const app = createApp();
 
