@@ -2,17 +2,19 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { Address } from '../models/SuppressionDataModel'
-import { SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 
 const template = 'service-address';
+const backNavigation = DOCUMENT_DETAILS_PAGE_URI;
 
 export class ServiceAddressController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const session = SessionService.getSuppressionSession(req);
     res.render(template, {
-      ...session?.serviceAddress
+      ...session?.serviceAddress,
+      backNavigation
     });
   }
 

@@ -3,11 +3,13 @@ import request from 'supertest';
 
 import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
 import {
+  DOCUMENT_DETAILS_PAGE_URI,
   SERVICE_ADDRESS_PAGE_URI
 } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveInput,
   expectToHavePopulatedInput,
   expectToHaveTitle
@@ -45,6 +47,7 @@ describe('ServiceAddressController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
+          expectToHaveBackButton(response.text, DOCUMENT_DETAILS_PAGE_URI);
           expectToHaveInput(
             response.text,
             'line1',
@@ -75,6 +78,7 @@ describe('ServiceAddressController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
+          expectToHaveBackButton(response.text, DOCUMENT_DETAILS_PAGE_URI);
           expectToHavePopulatedInput(response.text, 'line1', '1 Main Street');
           expectToHavePopulatedInput(response.text, 'line2', 'Selly Oak');
           expectToHavePopulatedInput(response.text, 'town', 'Cardiff');
