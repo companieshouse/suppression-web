@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
-import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI} from '../../src/routes/paths';
+import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI} from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
 import {
@@ -81,7 +81,7 @@ describe('DocumentDetailsController', () => {
 
   describe('on POST', () => {
 
-    it('should return 302 response when valid data was submitted', async () => {
+    it('should redirect to the Service (Replacement) Address page when valid data was submitted', async () => {
 
       const app = createApp();
 
@@ -99,7 +99,7 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toEqual(DOCUMENT_DETAILS_PAGE_URI)
+          expect(response.header.location).toEqual(SERVICE_ADDRESS_PAGE_URI)
         });
     });
 

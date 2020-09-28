@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 
 import { DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
-import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
+import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { FormWithDateValidator } from '../validators/FormWithDateValidator';
 import { schema } from '../validators/schema/DocumentDetailsSchema';
@@ -51,7 +51,7 @@ export class DocumentDetailsController {
     } as DocumentDetails;
 
     SessionService.setSuppressionSession(req, suppression);
-    res.redirect(DOCUMENT_DETAILS_PAGE_URI);
+    res.redirect(SERVICE_ADDRESS_PAGE_URI);
   }
 
   private getDocumentDetails(suppression: SuppressionData | undefined): any {
