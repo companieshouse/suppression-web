@@ -12,7 +12,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('SuppressionService', () => {
 
-  const mockApiKey: string = 'key';
+  const mockAccessToken: string = 'token';
   const mockGeneratedReference: string = '123123';
   const mockSuppressionsUri: string = '/suppressions';
 
@@ -25,7 +25,7 @@ describe('SuppressionService', () => {
     it('should throw an error when suppression not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save(undefined as any, mockApiKey).catch((err) => {
+      await suppressionService.save(undefined as any, mockAccessToken).catch((err) => {
         expect(err).toEqual(Error('Suppression data is missing'))
       })
     });
@@ -34,7 +34,7 @@ describe('SuppressionService', () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.save({} as SuppressionData, undefined as any).catch((err) => {
-        expect(err).toEqual(Error('Key is missing'))
+        expect(err).toEqual(Error('Access token is missing'))
       });
     });
 
@@ -50,7 +50,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockApiKey).then((response: string) => {
+      await suppressionService.save({} as SuppressionData, mockAccessToken).then((response: string) => {
         expect(response).toEqual(mockGeneratedReference)
       });
 
@@ -64,7 +64,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('save suppression failed with message: Could not create suppression resource'));
       })
 
@@ -78,7 +78,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('save suppression on invalid suppression data'));
       })
     });
@@ -91,7 +91,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnauthorisedError('save suppression unauthorised'));
       })
     });
@@ -104,7 +104,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockApiKey).catch((err) => {
+      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('save suppression failed. API not found'));
       })
 
