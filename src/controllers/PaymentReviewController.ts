@@ -49,8 +49,6 @@ export class PaymentReviewController {
 
       applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
 
-      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
-
       const govPayUrl: string = await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
 
       const updatedSession: SuppressionData = {
