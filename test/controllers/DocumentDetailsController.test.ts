@@ -44,6 +44,22 @@ describe('DocumentDetailsController', () => {
         });
     });
 
+    it('should render error when no session present ', async () => {
+
+      const app = createApp();
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+        return undefined
+      });
+
+      await request(app)
+        .get(DOCUMENT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
     it('should return 200 with pre-populated data when accessing page with a session', async () => {
 
       const app = createApp();

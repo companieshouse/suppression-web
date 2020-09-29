@@ -63,6 +63,22 @@ describe('ServiceAddressController', () => {
         });
     });
 
+    it('should render error when no session present ', async () => {
+
+      const app = createApp();
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+        return undefined
+      });
+
+      await request(app)
+        .get(SERVICE_ADDRESS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
     it('should prepopulate fields when relevant data is found in the session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {

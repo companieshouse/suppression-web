@@ -56,6 +56,20 @@ describe('AddressToRemoveController', () => {
       });
     });
 
+    it('should render error when no session present ', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+        return undefined
+      });
+
+      await request(app)
+        .get(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
     it('should prepopulate fields when relevent data is found in the session', async () => {
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
