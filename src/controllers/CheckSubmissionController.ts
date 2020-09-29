@@ -11,7 +11,6 @@ export class CheckSubmissionController {
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
-    console.log(JSON.stringify(suppressionData))
     if (!suppressionData) {
       return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
     }
