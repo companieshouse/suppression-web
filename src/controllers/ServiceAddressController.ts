@@ -11,21 +11,27 @@ const backNavigation = DOCUMENT_DETAILS_PAGE_URI;
 export class ServiceAddressController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const session = SessionService.getSuppressionSession(req);
-    res.render(template, {
-      ...session?.serviceAddress,
-      backNavigation
-    });
-  }
+    const suppressionData = SessionService.getSuppressionSession(req);
 
-  public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const session = SessionService.getSuppressionSession(req);
-    if (!session) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
+    if (!suppressionData) {
+      return next(new Error('Session expected, but not found'));
     }
 
-    session.serviceAddress = req.body as Address;
-    SessionService.setSuppressionSession(req, session);
+    res.render(template, {
+      ...suppressionData?.serviceAddress,
+      backNavigation
+    });
+  };
+
+  public processForm = async (req: Request, res: Response, next: NextFunction) => {
+    const suppressionData = SessionService.getSuppressionSession(req);
+
+    if (!suppressionData) {
+      return next(new Error('Session expected, but not found'));
+    }
+
+    suppressionData.serviceAddress = req.body as Address;
+    SessionService.setSuppressionSession(req, suppressionData);
     res.redirect(SERVICE_ADDRESS_PAGE_URI);
   };
 }

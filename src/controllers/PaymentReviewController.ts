@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { v4 as uuidv4 } from 'uuid'
 
 import { SuppressionData } from '../models/SuppressionDataModel';
@@ -21,6 +20,13 @@ export class PaymentReviewController {
   }
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
+
+    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+
+    if (!suppressionData) {
+      return next(new Error('Session expected, but not found'));
+    }
+
     const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
     const totalFee = documentAmendmentFee;
     res.render(template, {documentAmendmentFee, totalFee});
@@ -31,14 +37,22 @@ export class PaymentReviewController {
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      throw new Error('Expected session but found none.')
+      return next(new Error('Session expected, but not found'));
     }
 
+    const accessToken: string =  SessionService.getAccessToken(req);
     let applicationReference: string;
 
     try {
 
-      const accessToken: string =  SessionService.getAccessToken(req);
+      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
+
+    } catch(error){
+      return next(error)
+    }
+
+    try {
+
       const paymentStateUUID: string = uuidv4();
 
       applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
@@ -55,7 +69,8 @@ export class PaymentReviewController {
       res.redirect(govPayUrl);
 
     } catch (error) {
-      next(error);
+      error.statusCode = 500;
+      return next(error);
     }
   };
 }

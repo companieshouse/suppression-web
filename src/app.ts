@@ -7,7 +7,7 @@ import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
 import { AuthMiddleware } from './middleware/AuthMiddleware';
-import { defaultHandler, notFoundHandler } from './middleware/ErrorHandler';
+import { defaultHandler } from './middleware/ErrorHandler';
 import {
   getConfigValue,
   loadEnvironmentVariables

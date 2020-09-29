@@ -24,9 +24,11 @@ export class AddressToRemoveController {
   }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const session = SessionService.getSuppressionSession(req);
-    if (!session) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
+
+    const suppressionSession = SessionService.getSuppressionSession(req);
+
+    if (!suppressionSession) {
+      return next(new Error('Session expected, but not found'));
     }
 
     const validationResult: ValidationResult = await this.validator.validate(req);
@@ -38,8 +40,8 @@ export class AddressToRemoveController {
         backNavigation
       });
     } else {
-      session.addressToRemove = req.body as Address;
-      SessionService.setSuppressionSession(req, session);
+      suppressionSession.addressToRemove = req.body as Address;
+      SessionService.setSuppressionSession(req, suppressionSession);
       res.redirect(DOCUMENT_DETAILS_PAGE_URI);
     }
   };

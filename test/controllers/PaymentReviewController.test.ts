@@ -48,16 +48,16 @@ describe('PaymentReviewController', () => {
         });
     });
 
-    it('should return status code 404 and redirect to error page', async () => {
+    it('should return status code 500 and redirect to error page', async () => {
 
       jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => {
-        return Promise.reject();
+        return Promise.reject(new Error());
       });
 
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)
         .expect(response => {
-          expect(response.status).toEqual(StatusCodes.NOT_FOUND);
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
         });
     });
   });

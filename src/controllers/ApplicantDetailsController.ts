@@ -21,13 +21,18 @@ export class ApplicantDetailsController {
   )) {}
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
+
     const suppressionData = SessionService.getSuppressionSession(req);
+
+    if (!suppressionData) {
+      return next(new Error('Session expected, but not found'));
+    }
 
     res.render(template, {
       ...this.getApplicantDetails(suppressionData),
       backNavigation
     });
-  }
+  };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
     const validationResult: ValidationResult = await this.validator.validate(req);
