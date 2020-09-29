@@ -40,20 +40,14 @@ export class PaymentReviewController {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
 
-    const accessToken: string =  SessionService.getAccessToken(req);
     let applicationReference: string;
 
     try {
 
-      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
-
-    } catch(error){
-      return next(error)
-    }
-
-    try {
-
+      const accessToken: string =  SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
+
+      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
 
       applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
 
@@ -69,7 +63,6 @@ export class PaymentReviewController {
       res.redirect(govPayUrl);
 
     } catch (error) {
-      error.statusCode = 500;
       return next(error);
     }
   };
