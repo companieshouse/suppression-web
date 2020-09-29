@@ -21,6 +21,7 @@ export class ApplicantDetailsController {
   )) {}
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
+
     const suppressionData = SessionService.getSuppressionSession(req);
 
     res.render(template, {
@@ -53,14 +54,14 @@ export class ApplicantDetailsController {
       dateOfBirth
     } as ApplicantDetails;
 
-    let session = SessionService.getSuppressionSession(req);
-    if (!session) {
-      session = { applicantDetails } as SuppressionData;
+    let suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    if (!suppressionData) {
+      suppressionData = { applicantDetails } as SuppressionData;
     } else {
-      session.applicantDetails = applicantDetails;
+      suppressionData.applicantDetails = applicantDetails;
     }
 
-    SessionService.setSuppressionSession(req, session);
+    SessionService.setSuppressionSession(req, suppressionData);
     res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
   }
 

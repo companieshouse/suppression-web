@@ -7,6 +7,7 @@ import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 
 import { AuthMiddleware } from './middleware/AuthMiddleware';
+import { defaultHandler } from './middleware/ErrorHandler';
 import {
   getConfigValue,
   loadEnvironmentVariables
@@ -62,5 +63,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // apply our default routes to /
 app.use('/', routes);
+
+// set up error handler
+app.use(defaultHandler);
 
 export default app;
