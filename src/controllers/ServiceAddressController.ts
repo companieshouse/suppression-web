@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
-import { Address } from '../models/SuppressionDataModel'
+import { Address, SuppressionData } from '../models/SuppressionDataModel'
 import { DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 
@@ -11,10 +11,10 @@ const backNavigation = DOCUMENT_DETAILS_PAGE_URI;
 export class ServiceAddressController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData = SessionService.getSuppressionSession(req);
+    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      return next(new Error('Session expected, but not found'));
+      return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
     }
 
     res.render(template, {
@@ -24,10 +24,10 @@ export class ServiceAddressController {
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData = SessionService.getSuppressionSession(req);
+    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      return next(new Error('Session expected, but not found'));
+      return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
     }
 
     suppressionData.serviceAddress = req.body as Address;

@@ -24,7 +24,7 @@ export class PaymentReviewController {
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      return next(new Error('Session expected, but not found'));
+      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
 
     const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
@@ -37,7 +37,7 @@ export class PaymentReviewController {
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      return next(new Error('Session expected, but not found'));
+      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
 
     const accessToken: string =  SessionService.getAccessToken(req);

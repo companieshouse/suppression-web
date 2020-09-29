@@ -19,17 +19,17 @@ export class DocumentDetailsController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionData = SessionService.getSuppressionSession(req);
+    const suppressionSession: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
-    if (!suppressionData) {
-      return next(new Error('Session expected, but not found'));
+    if (!suppressionSession) {
+      return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
     }
 
     res.render(template, {
-      ...this.getDocumentDetails(suppressionData),
+      ...this.getDocumentDetails(suppressionSession),
       backNavigation: ADDRESS_TO_REMOVE_PAGE_URI
     });
-  }
+  };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
