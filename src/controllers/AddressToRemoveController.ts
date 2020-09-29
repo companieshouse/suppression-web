@@ -16,12 +16,17 @@ export class AddressToRemoveController {
   constructor(private validator: FormValidator = new FormValidator(formSchema)) {}
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const session = SessionService.getSuppressionSession(req);
+    const suppressionSession = SessionService.getSuppressionSession(req);
+
+    if (!suppressionSession) {
+      return next(new Error('Session expected, but not found'));
+    }
+
     res.render(template, {
-      ...session?.addressToRemove,
+      ...suppressionSession?.addressToRemove,
       backNavigation
     });
-  }
+  };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 

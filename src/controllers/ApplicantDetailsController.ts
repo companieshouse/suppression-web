@@ -24,10 +24,6 @@ export class ApplicantDetailsController {
 
     const suppressionData = SessionService.getSuppressionSession(req);
 
-    if (!suppressionData) {
-      return next(new Error('Session expected, but not found'));
-    }
-
     res.render(template, {
       ...this.getApplicantDetails(suppressionData),
       backNavigation
