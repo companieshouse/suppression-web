@@ -28,7 +28,7 @@ export class ApplicantDetailsController {
       ...this.getApplicantDetails(suppressionData),
       backNavigation
     });
-  };
+  }
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
     const validationResult: ValidationResult = await this.validator.validate(req);
@@ -63,7 +63,7 @@ export class ApplicantDetailsController {
 
     SessionService.setSuppressionSession(req, suppressionData);
     res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
-  };
+  }
 
   private getApplicantDetails(suppression: SuppressionData | undefined): any {
 
