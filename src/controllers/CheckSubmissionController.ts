@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { Address } from '../models/SuppressionDataModel';
+import { Address, SuppressionData } from '../models/SuppressionDataModel';
 import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 
@@ -9,8 +9,10 @@ const template = 'check-submission';
 export class CheckSubmissionController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData = SessionService.getSuppressionSession(req);
-    if (!suppressionData?.serviceAddress) {
+    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+
+    console.log(JSON.stringify(suppressionData))
+    if (!suppressionData) {
       return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
     }
 
@@ -30,7 +32,10 @@ export class CheckSubmissionController {
     return res.redirect(CHECK_SUBMISSION_PAGE_URI);
   };
 
-  private addressToList(address: Address): string[] {
+  private addressToList(address: Address | undefined): string[] {
+    if (!address) {
+      return [];
+    }
     const addressList = Object.values(address);
     return addressList.filter((e) => {
       return e !== '';
