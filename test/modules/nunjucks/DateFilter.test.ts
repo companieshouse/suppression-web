@@ -21,7 +21,7 @@ describe('Date Filter', () => {
 
     it('should throw an error if a date component is invalid', () => {
         const testInput = '2020-20-01';
-        expect(() => dateFilter(testInput)).toThrow('Input contains invalid month: 2020-20-01 BLAH CHECK ME');
+        expect(() => dateFilter(testInput)).toThrow('Input contains invalid month: 2020-20-01');
     });
 
     it('should throw an error if the input format is invalid', () => {

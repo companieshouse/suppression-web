@@ -7,17 +7,6 @@
   Check your answers
 {% endblock %}
 
-{% macro formatAddress(address) %}
-  {{ address.line1 }} <br>
-  {% if address.line2 %}
-    {{ address.line2 }} <br>
-  {% endif %}
-  {{ address.town }} <br>
-  {{ address.county }} <br>
-  {{ address.postcode }} <br>
-  {{ address.country }}
-{% endmacro %}
-
 {% set applicantDetailsRows = [
     {
       key: { text: 'Full name' },
@@ -40,6 +29,9 @@
   } %}
   {% set applicantDetailsRows = (applicantDetailsRows.splice(2, 0, applicantPreviousNameRow), applicantDetailsRows) %}
 {% endif %}
+
+{% set addressToRemoveHtml = addressToRemove | join('<br>') %}
+{% set serviceAddressHtml = serviceAddress | join('<br>') %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -68,7 +60,7 @@
           rows: [
             {
               key: { text: 'What home address would you like to remove?' },
-              value: { html: formatAddress(addressToRemove) }
+              value: { html: addressToRemoveHtml }
             }
           ]
         })
@@ -111,7 +103,7 @@
             rows: [
               {
                 key: { text: 'What address do you want to replace your home address with?' },
-                value: { html: formatAddress(serviceAddress) }
+                value: { html: serviceAddressHtml }
               }
             ]
           })
