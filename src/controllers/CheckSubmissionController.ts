@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 import { Address } from '../models/SuppressionDataModel';
 import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
@@ -12,7 +11,7 @@ export class CheckSubmissionController {
   public renderView = (req: Request, res: Response, next: NextFunction) => {
     const suppressionData = SessionService.getSuppressionSession(req);
     if (!suppressionData?.serviceAddress) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).render('error');
+      return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
     }
 
     const templateData = {
