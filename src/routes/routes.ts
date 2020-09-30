@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { AddressToRemoveController } from '../controllers/AddressToRemoveController';
 import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
 import { CheckSubmissionController } from '../controllers/CheckSubmissionController';
+import { ConfirmationController } from '../controllers/ConfirmationController';
 import { ContactDetailsController } from '../controllers/ContactDetailsController';
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
 import { HealthcheckController } from '../controllers/HealthcheckController';
@@ -16,6 +17,7 @@ import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
   CHECK_SUBMISSION_PAGE_URI,
+  CONFIRMATION_PAGE_URI,
   CONTACT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
   HEALTHCHECK_URI,
@@ -43,6 +45,7 @@ const serviceAddressController = new ServiceAddressController();
 const contactDetailsController = new ContactDetailsController();
 const checkSubmissionController = new CheckSubmissionController();
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
+const confirmationController = new ConfirmationController();
 
 const healthcheckController = new HealthcheckController();
 
@@ -72,5 +75,7 @@ routes.post(CHECK_SUBMISSION_PAGE_URI, checkSubmissionController.confirm);
 
 routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
 routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
+
+routes.get(CONFIRMATION_PAGE_URI, confirmationController.renderView);
 
 routes.get(HEALTHCHECK_URI, healthcheckController.healthcheck);
