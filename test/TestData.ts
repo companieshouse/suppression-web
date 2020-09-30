@@ -42,6 +42,7 @@ export function generateTestData(): SuppressionData {
       postcode: 'NY',
       country: 'USA'
     } as Address,
-    paymentStateUUID: 'TEST-TEST'
+    paymentStateUUID: 'asdfghjkl',
+    applicationReference: 'TEST-TEST'
   } as SuppressionData;
 }
