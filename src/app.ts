@@ -13,6 +13,7 @@ import {
   loadEnvironmentVariables
 } from './modules/config-handler/ConfigHandler';
 import { configValidationSchema } from './modules/config-handler/ConfigValidation.schema';
+import { dateFilter } from './modules/nunjucks/DateFilter';
 import * as Paths from './routes/paths';
 import { routes } from './routes/routes';
 
@@ -48,6 +49,8 @@ const env = nunjucks.configure([
   autoescape: true,
   express: app,
 });
+
+env.addFilter('date', dateFilter);
 
 app.set('views', viewPath);
 app.set('view engine', 'njk');

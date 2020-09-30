@@ -1,6 +1,8 @@
 import { Router } from 'express';
+
 import { AddressToRemoveController } from '../controllers/AddressToRemoveController';
 import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
+import { CheckSubmissionController } from '../controllers/CheckSubmissionController';
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
 import { HealthcheckController } from '../controllers/HealthcheckController';
 import { PaymentReviewController } from '../controllers/PaymentReviewController';
@@ -12,6 +14,7 @@ import { SuppressionService } from '../services/suppression/SuppressionService';
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
+  CHECK_SUBMISSION_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
   HEALTHCHECK_URI,
   PAYMENT_REVIEW_PAGE_URI,
@@ -35,6 +38,7 @@ const applicantDetailsController = new ApplicantDetailsController();
 const addressToRemoveController = new AddressToRemoveController();
 const documentDetailsController = new DocumentDetailsController();
 const serviceAddressController = new ServiceAddressController();
+const checkSubmissionController = new CheckSubmissionController();
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
 
 const healthcheckController = new HealthcheckController();
@@ -56,6 +60,9 @@ routes.post(DOCUMENT_DETAILS_PAGE_URI, documentDetailsController.processForm);
 
 routes.get(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.renderView);
 routes.post(SERVICE_ADDRESS_PAGE_URI, serviceAddressController.processForm);
+
+routes.get(CHECK_SUBMISSION_PAGE_URI, checkSubmissionController.renderView);
+routes.post(CHECK_SUBMISSION_PAGE_URI, checkSubmissionController.confirm);
 
 routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
 routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);

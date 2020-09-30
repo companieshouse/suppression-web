@@ -9,6 +9,7 @@ import { AuthMiddleware } from '../src/middleware/AuthMiddleware';
 import { defaultHandler } from '../src/middleware/ErrorHandler';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
+import { dateFilter } from '../src/modules/nunjucks/DateFilter'
 import { routes } from '../src/routes/routes';
 
 export function createApp(authEnabled?: boolean) {
@@ -28,6 +29,8 @@ export function createApp(authEnabled?: boolean) {
     autoescape: true,
     express: app,
   });
+
+  env.addFilter('date', dateFilter);
 
   app.set('views', viewPath);
   app.set('view engine', 'njk');

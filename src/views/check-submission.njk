@@ -1,0 +1,149 @@
+{% extends 'layout.njk' %}
+
+{% from 'govuk/components/summary-list/macro.njk' import govukSummaryList %}
+{% from 'govuk/components/button/macro.njk'       import govukButton %}
+
+{% block pageTitle %}
+  Check your answers
+{% endblock %}
+
+{% set applicantDetailsRows = [
+    {
+      key: { text: 'Full name' },
+      value: { text: applicantDetails.fullName }
+    },
+    {
+      key: { text: 'Has the applicant used a different name for business purposes in the last 20 years?' },
+      value: { text: 'Yes' if applicantDetails.previousName else 'No' }
+    },
+    {
+      key: { text: 'Date of birth' },
+      value: { text: applicantDetails.dateOfBirth | date }
+    }
+] %}
+
+{% if applicantDetails.previousName %}
+  {% set applicantPreviousNameRow = {
+    key: { text: 'Previous name' },
+    value: { text: applicantDetails.previousName }
+  } %}
+  {% set applicantDetailsRows = (applicantDetailsRows.splice(2, 0, applicantPreviousNameRow), applicantDetailsRows) %}
+{% endif %}
+
+{% set addressToRemoveHtml = addressToRemove | join('<br>') %}
+{% set serviceAddressHtml = serviceAddress | join('<br>') %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Check your answers before submitting your application
+      </h1>
+
+      <h2 class="govuk-heading-m">
+        Applicant details
+      </h2>
+      {{
+        govukSummaryList({
+          classes: 'govuk-!-margin-bottom-9',
+          rows: applicantDetailsRows
+        })
+      }}
+
+      <h2 class="govuk-heading-m">
+        Home address details
+      </h2>
+      {{
+        govukSummaryList({
+          classes: 'govuk-!-margin-bottom-9',
+          rows: [
+            {
+              key: { text: 'What home address would you like to remove?' },
+              value: { html: addressToRemoveHtml }
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">
+        Document details
+      </h2>
+      {{
+        govukSummaryList({
+          classes: 'govuk-!-margin-bottom-9',
+          rows: [
+            {
+              key: { text: 'Company name' },
+              value: { text: documentDetails.companyName }
+            },
+            {
+              key: { text: 'Company number' },
+              value: { text: documentDetails.companyNumber }
+            },
+            {
+              key: { text: 'Document description' },
+              value: { text: documentDetails.description }
+            },
+            {
+              key: { text: 'Document date' },
+              value: { text: documentDetails.date | date }
+            }
+          ]
+        })
+      }}
+
+      {% if serviceAddress %}
+        <h2 class="govuk-heading-m">
+          Replacement address details
+        </h2>
+        {{
+          govukSummaryList({
+            classes: 'govuk-!-margin-bottom-9',
+            rows: [
+              {
+                key: { text: 'What address do you want to replace your home address with?' },
+                value: { html: serviceAddressHtml }
+              }
+            ]
+          })
+        }}
+      {% endif %}
+
+      <h2 class="govuk-heading-m">
+        Contact details
+      </h2>
+      {{
+        govukSummaryList({
+          classes: 'govuk-!-margin-bottom-9',
+          rows: [
+            {
+              key: { text: 'Email address' },
+              value: { text: applicantDetails.emailAddress }
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">
+        Submit your application
+      </h2>
+
+      <p class="govuk-body">
+        By submitting this application you are confirming that, to the best of your knowledge, the details you have provided are correct.
+      </p>
+
+      <form method="post">
+        {{
+          govukButton({
+            text: 'Confirm and submit',
+            attributes: {
+              id: 'submit'
+            }
+          })
+        }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

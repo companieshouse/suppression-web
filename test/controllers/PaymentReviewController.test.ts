@@ -5,7 +5,7 @@ import { DOCUMENT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/ro
 import { PaymentService } from '../../src/services/payment/PaymentService';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
-import { expectToHaveTitle } from '../HtmlPatternAssertions'
+import { expectToHaveButton, expectToHaveTitle } from '../HtmlPatternAssertions'
 
 jest.mock('../../src/services/session/SessionService');
 jest.mock('../../src/services/suppression/SuppressionService');
@@ -43,8 +43,8 @@ describe('PaymentReviewController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, expectedTitle);
-          expect(response.text).toContain('The total amount to pay is £32')
-          expect(response.text).toMatch(/<button class="govuk-button".*>.*Continue to payment.*<\/button>/s)
+          expectToHaveButton(response.text, 'Continue to payment');
+          expect(response.text).toContain('The total amount to pay is £32');
         });
     });
   });
