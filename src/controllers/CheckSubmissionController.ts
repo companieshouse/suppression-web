@@ -36,8 +36,8 @@ export class CheckSubmissionController {
       return [];
     }
     const addressList = Object.values(address);
-    return addressList.filter((e) => {
-      return e !== '';
+    return addressList.filter((line) => {
+      return line !== '';
     });
   }
 }
