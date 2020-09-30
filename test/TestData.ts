@@ -35,6 +35,13 @@ export function generateTestData(): SuppressionData {
       postcode: 'CF14 3UZ',
       country: 'United Kingdom'
     } as Address,
+    contactAddress: {
+      line1: '1st Avenue',
+      town: 'New York',
+      county: 'New York',
+      postcode: 'NY',
+      country: 'USA'
+    } as Address,
     paymentStateUUID: 'TEST-TEST'
   } as SuppressionData;
 }

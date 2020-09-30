@@ -18,7 +18,7 @@ export class ServiceAddressController {
     }
 
     res.render(template, {
-      ...suppressionData?.serviceAddress,
+      ...suppressionData.serviceAddress,
       backNavigation
     });
   };

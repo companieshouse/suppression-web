@@ -1,0 +1,101 @@
+{% extends 'layout.njk' %}
+
+{% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
+{% from 'govuk/components/input/macro.njk'         import govukInput %}
+{% from 'govuk/components/button/macro.njk'        import govukButton %}
+{% from "govuk/components/fieldset/macro.njk"      import govukFieldset %}
+{% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
+
+{% block pageTitle %}
+  What are your contact details?
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form action="check-your-answers-mvp" method="GET">
+
+        <h1 class="govuk-heading-l">
+          What are your contact details?
+        </h1>
+
+        <p class="govuk-body">We’ll only use this address if we need to contact you by post about your application.</p>
+
+        {{ govukInput({
+          label: {
+            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+          },
+          id: "address-line-1",
+          name: "line1",
+          value: line1,
+          autocomplete: "address-line1"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+          },
+          id: "address-line-2",
+          name: "line2",
+          value: line2,
+          autocomplete: "address-line2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Town or city"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "address-town",
+          name: "town",
+          value: town,
+          autocomplete: "address-level2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "County"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "county",
+          value: county,
+          name: "address-county"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Postcode"
+          },
+          classes: "govuk-input--width-10",
+          id: "address-postcode",
+          name: "postcode",
+          value: postcode,
+          autocomplete: "postal-code"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Country"
+          },
+          classes: "govuk-input--width-10",
+          id: "country",
+          value: country,
+          name: "address-country"
+        }) }}
+
+        {{
+          govukButton({
+            text: 'Continue',
+            attributes: {
+              id: 'submit'
+            }
+          })
+        }}
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

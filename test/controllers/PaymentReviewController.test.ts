@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { DOCUMENT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
+import { PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
