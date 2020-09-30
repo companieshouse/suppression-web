@@ -55,7 +55,7 @@ describe('CheckSubmissionController', () => {
             'What address do you want to replace your home address with\\?',
             '1 Main Street<br>Cardiff<br>Cardiff<br>CF14 3UZ<br>United Kingdom');
           expectToHaveTableRow(response.text, 'Email address', 'test@example.com');
-          expectToHaveButton(response.text, 'Confirm and submit');
+          expectToHaveButton(response.text, 'Accept and submit');
         });
     });
 
