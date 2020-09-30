@@ -1,32 +1,12 @@
+import moment from 'moment';
+
 export function dateFilter(value: string): string {
 
-    const dateRegex: RegExp = /(\d{4})-(\d{2})-(\d{2})/;
-    if (!dateRegex.test(value)) {
-        throw new Error(`Input should be formatted as yyyy-MM-dd: ${value}`);
-    }
+  const filteredDate = moment(value, 'YYYY-MM-DD', true).format('D MMMM Y');
 
-    const [year, month, day] = value.split('-').map(i => {
-        return parseInt(i, 10);
-    });
+  if (filteredDate === 'Invalid date') {
+    throw new Error(`Invalid date passed to template: ${value}`)
+  }
 
-    if (month > 12 || month < 1) {
-        throw new Error(`Input contains invalid month: ${value}`);
-    }
-
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-
-    return `${day} ${months[month-1]} ${year}`;
+  return filteredDate
 }
