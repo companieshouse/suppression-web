@@ -55,6 +55,9 @@ describe('CheckSubmissionController', () => {
             'What address do you want to replace your home address with\\?',
             '1 Main Street<br>Cardiff<br>Cardiff<br>CF14 3UZ<br>United Kingdom');
           expectToHaveSummaryRow(response.text, 'Email address', 'test@example.com');
+          expectToHaveSummaryRow(response.text,
+            'Contact address',
+            '1st Avenue<br>New York<br>New York<br>NY<br>USA');
           expectToHaveButton(response.text, 'Accept and submit');
         });
     });

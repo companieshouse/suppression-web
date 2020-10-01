@@ -19,7 +19,8 @@ export class CheckSubmissionController {
       applicantDetails: suppressionData.applicantDetails,
       addressToRemove: this.addressToList(suppressionData.addressToRemove),
       documentDetails: suppressionData.documentDetails,
-      serviceAddress: this.addressToList(suppressionData.serviceAddress)
+      serviceAddress: this.addressToList(suppressionData.serviceAddress),
+      contactAddress: this.addressToList(suppressionData.contactAddress)
     };
 
     res.render(template, {
