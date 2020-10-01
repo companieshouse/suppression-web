@@ -35,6 +35,7 @@ export class ContactDetailsController {
     }
 
     const validationResult: ValidationResult = await this.validator.validate(req);
+
     if (validationResult.errors.length > 0) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);
       return res.render(template, {
