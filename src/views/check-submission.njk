@@ -32,6 +32,7 @@
 
 {% set addressToRemoveHtml = addressToRemove | join('<br>') %}
 {% set serviceAddressHtml = serviceAddress | join('<br>') %}
+{% set contactAddressHtml = contactAddress | join('<br>') %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -120,6 +121,10 @@
             {
               key: { text: 'Email address' },
               value: { text: applicantDetails.emailAddress }
+            },
+            {
+              key: { text: 'Contact address' },
+              value: { html: contactAddressHtml }
             }
           ]
         })
