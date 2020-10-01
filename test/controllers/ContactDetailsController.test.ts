@@ -10,6 +10,7 @@ import {
   expectToHaveInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions';
+import { generateTestData } from '../TestData';
 
 jest.mock('../../src/services/session/SessionService');
 
@@ -44,9 +45,7 @@ describe('ContactDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
 
       await request(app)
         .get(CONTACT_DETAILS_PAGE_URI)
@@ -65,17 +64,6 @@ describe('ContactDetailsController', () => {
     const countyErrorMessage = 'County is required';
     const postcodeErrorMessage = 'Postcode is required';
     const countryErrorMessage = 'Country is required';
-
-    function generateTestData(): Address {
-      return {
-        line1: '1 Main Street',
-        line2: 'Selly Oak',
-        town: 'Cardiff',
-        county: 'Cardiff',
-        postcode: 'CF14 3UZ',
-        country: 'United Kingdom'
-      }
-    }
 
     it('should throw an error if the session doesn’t exist', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
@@ -101,7 +89,7 @@ describe('ContactDetailsController', () => {
 
     it('should show a validation error message if Address Line 1 is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
       testData.line1 = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
@@ -114,7 +102,7 @@ describe('ContactDetailsController', () => {
 
     it('should show a validation error message if Town or City is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
       testData.town = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
@@ -127,7 +115,7 @@ describe('ContactDetailsController', () => {
 
     it('should show a validation error message if County is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
       testData.county = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
@@ -140,7 +128,7 @@ describe('ContactDetailsController', () => {
 
     it('should show a validation error message if Postcode is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
       testData.postcode = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
@@ -153,7 +141,7 @@ describe('ContactDetailsController', () => {
 
     it('should show a validation error message if Country is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
       testData.country = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
@@ -166,7 +154,7 @@ describe('ContactDetailsController', () => {
 
     it('should accept address details without data for Address Line 2, and redirect', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
       testData.line2 = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
@@ -177,7 +165,7 @@ describe('ContactDetailsController', () => {
 
     it('should redirect if the information provided by the user is valid', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().contactAddress;
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
