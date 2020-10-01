@@ -22,4 +22,8 @@ export default class SessionService {
   static getAccessToken(req: Request): string {
     return 'mock-token';
   }
+
+  static getUserEmail(req: Request): string {
+    return 'ch-test@example.com';
+  }
 }
