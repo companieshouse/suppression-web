@@ -32,6 +32,14 @@ const mockSuppressionData: SuppressionData = {
     description: 'This is a document',
     date: '2020-01-01'
   },
+  contactAddress: {
+    line1: '3 Test Street',
+    line2: '',
+    town: 'Test life',
+    county: 'Test bands',
+    postcode: 'A23 4567',
+    country: 'USA'
+  },
   applicationReference: '123',
   paymentStateUUID: '1'
 };

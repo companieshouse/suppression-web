@@ -1,0 +1,126 @@
+{% extends 'layout.njk' %}
+
+{% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
+{% from 'govuk/components/input/macro.njk'         import govukInput %}
+{% from 'govuk/components/button/macro.njk'        import govukButton %}
+{% from "govuk/components/fieldset/macro.njk"      import govukFieldset %}
+{% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
+
+{% block pageTitle %}
+  What are your contact details?
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{
+        govukErrorSummary ({
+          titleText: 'There is a problem with the details you gave us',
+          errorList: validationResult.errors
+        }) if validationResult and validationResult.errors.length > 0
+      }}
+
+      <form method="POST">
+
+        <h1 class="govuk-heading-l">
+          What are your contact details?
+        </h1>
+
+        <p class="govuk-body">We’ll only use this address if we need to contact you by post about your application.</p>
+
+        {{
+          govukInput({
+            label: {
+              html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+            },
+            errorMessage: validationResult.getErrorForField('line1') if validationResult,
+            id: 'line1',
+            name: 'line1',
+            value: line1,
+            autocomplete: 'line1'
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+            },
+            id: 'line2',
+            name: 'line2',
+            value: line2,
+            autocomplete: 'line2'
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              text: 'Town or city'
+            },
+            errorMessage: validationResult.getErrorForField('town') if validationResult,
+            classes: 'govuk-!-width-two-thirds',
+            id: 'town',
+            name: 'town',
+            value: town,
+            autocomplete: 'town'
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              text: 'County'
+            },
+            errorMessage: validationResult.getErrorForField('county') if validationResult,
+            classes: 'govuk-!-width-two-thirds',
+            id: 'county',
+            name: 'county',
+            value: county,
+            autocomplete: 'county'
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              text: 'Postcode'
+            },
+            errorMessage: validationResult.getErrorForField('postcode') if validationResult,
+            classes: 'govuk-input--width-10',
+            id: 'postcode',
+            name: 'postcode',
+            value: postcode,
+            autocomplete: 'postcode'
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              text: 'Country'
+            },
+            errorMessage: validationResult.getErrorForField('country') if validationResult,
+            classes: 'govuk-input--width-10',
+            id: 'country',
+            name: 'country',
+            value: country,
+            autocomplete: 'country'
+          })
+        }}
+
+        {{
+          govukButton({
+            text: 'Continue',
+            attributes: {
+              id: 'submit'
+            }
+          })
+        }}
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

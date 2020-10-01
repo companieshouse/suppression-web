@@ -6,6 +6,7 @@ export interface SuppressionData {
   addressToRemove: Address;
   serviceAddress?: Address;
   documentDetails: DocumentDetails;
+  contactAddress: Address;
   paymentStateUUID: string;
 }
 

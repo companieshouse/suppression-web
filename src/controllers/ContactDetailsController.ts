@@ -1,17 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes  } from 'http-status-codes';
-
-import { Address, SuppressionData } from '../models/SuppressionDataModel'
-import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
-import SessionService from '../services/session/SessionService'
+import { StatusCodes } from 'http-status-codes/build';
+import { Address, SuppressionData } from '../models/SuppressionDataModel';
+import { CONTACT_DETAILS_PAGE_URI } from '../routes/paths';
+import SessionService from '../services/session/SessionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
-import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema'
+import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
 
-const template = 'address-to-remove';
-const backNavigation = APPLICANT_DETAILS_PAGE_URI;
+const template = 'contact-details';
 
-export class AddressToRemoveController {
+export class ContactDetailsController {
 
   constructor(private validator: FormValidator = new FormValidator(formSchema)) {}
 
@@ -20,12 +18,11 @@ export class AddressToRemoveController {
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
     }
 
     res.render(template, {
-      ...suppressionData.addressToRemove,
-      backNavigation
+      ...suppressionData.contactAddress,
     });
   };
 
@@ -34,21 +31,21 @@ export class AddressToRemoveController {
     const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
     if (!suppressionData) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
     }
 
     const validationResult: ValidationResult = await this.validator.validate(req);
+
     if (validationResult.errors.length > 0) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY);
       return res.render(template, {
         ...req.body,
         validationResult,
-        backNavigation
       });
     } else {
-      suppressionData.addressToRemove = req.body as Address;
+      suppressionData.contactAddress = req.body as Address;
       SessionService.setSuppressionSession(req, suppressionData);
-      res.redirect(DOCUMENT_DETAILS_PAGE_URI);
+      res.redirect(CONTACT_DETAILS_PAGE_URI);
     }
   };
 }
