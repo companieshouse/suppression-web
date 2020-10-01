@@ -40,7 +40,6 @@ describe('ConfirmationController', () => {
           expectToHaveTableRow(response.text, 'Company name', 'company-name-test');
           expectToHaveTableRow(response.text, 'Company number', 'NI000000');
           expectToHaveTableRow(response.text, 'Document description', 'This is a document');
-          expectToHaveTableRow(response.text, 'Date the document was added to the register', '1 January 2020');
           expectToHaveTableRow(response.text, 'Payment received', '£32');
           expect(response.text).toContain(
             'We will send a confirmation email to ch-test@example.com which contains your reference number.'
