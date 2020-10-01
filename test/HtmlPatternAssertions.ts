@@ -71,10 +71,16 @@ export function expectToHaveButton(body: string, buttonText: string): void {
   expect(body).toMatch(pattern);
 }
 
-export function expectToHaveTableRow(body: string, key: string, value: string): void {
+export function expectToHaveSummaryRow(body: string, key: string, value: string): void {
   const keyPatternStr = `<dt class="govuk-summary-list__key">\\s*${key}\\s*</dt>`;
   const valuePatternStr = `<dd class="govuk-summary-list__value">\\s*${value}\\s*</dd>`;
   const patternStr = `${keyPatternStr}\\s*${valuePatternStr}`;
+  const pattern = new RegExp(patternStr, 's');
+  expect(body).toMatch(pattern);
+}
+
+export function expectToHaveTableRow(body: string, key: string, value: string): void {
+  const patternStr = `<tr class="govuk-table__row">.*>${key}<.*>${value}<.*</tr>`
   const pattern = new RegExp(patternStr, 's');
   expect(body).toMatch(pattern);
 }
