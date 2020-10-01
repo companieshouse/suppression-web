@@ -14,8 +14,14 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {{
+        govukErrorSummary ({
+          titleText: 'There is a problem with the details you gave us',
+          errorList: validationResult.errors
+        }) if validationResult and validationResult.errors.length > 0
+      }}
 
-      <form action="check-your-answers-mvp" method="GET">
+      <form method="POST">
 
         <h1 class="govuk-heading-l">
           What are your contact details?
@@ -23,67 +29,86 @@
 
         <p class="govuk-body">We’ll only use this address if we need to contact you by post about your application.</p>
 
-        {{ govukInput({
-          label: {
-            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
-          },
-          id: "address-line-1",
-          name: "line1",
-          value: line1,
-          autocomplete: "address-line1"
-        }) }}
+        {{
+          govukInput({
+            label: {
+              html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+            },
+            errorMessage: validationResult.getErrorForField('line1') if validationResult,
+            id: 'line1',
+            name: 'line1',
+            value: line1,
+            autocomplete: 'line1'
+          })
+        }}
 
-        {{ govukInput({
-          label: {
-            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-          },
-          id: "address-line-2",
-          name: "line2",
-          value: line2,
-          autocomplete: "address-line2"
-        }) }}
+        {{
+          govukInput({
+            label: {
+              html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+            },
+            id: 'line2',
+            name: 'line2',
+            value: line2,
+            autocomplete: 'line2'
+          })
+        }}
 
-        {{ govukInput({
-          label: {
-            text: "Town or city"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "address-town",
-          name: "town",
-          value: town,
-          autocomplete: "address-level2"
-        }) }}
+        {{
+          govukInput({
+            label: {
+              text: 'Town or city'
+            },
+            errorMessage: validationResult.getErrorForField('town') if validationResult,
+            classes: 'govuk-!-width-two-thirds',
+            id: 'town',
+            name: 'town',
+            value: town,
+            autocomplete: 'town'
+          })
+        }}
 
-        {{ govukInput({
-          label: {
-            text: "County"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "county",
-          value: county,
-          name: "address-county"
-        }) }}
+        {{
+          govukInput({
+            label: {
+              text: 'County'
+            },
+            errorMessage: validationResult.getErrorForField('county') if validationResult,
+            classes: 'govuk-!-width-two-thirds',
+            id: 'county',
+            name: 'county',
+            value: county,
+            autocomplete: 'county'
+          })
+        }}
 
-        {{ govukInput({
-          label: {
-            text: "Postcode"
-          },
-          classes: "govuk-input--width-10",
-          id: "address-postcode",
-          name: "postcode",
-          value: postcode,
-          autocomplete: "postal-code"
-        }) }}
+        {{
+          govukInput({
+            label: {
+              text: 'Postcode'
+            },
+            errorMessage: validationResult.getErrorForField('postcode') if validationResult,
+            classes: 'govuk-input--width-10',
+            id: 'postcode',
+            name: 'postcode',
+            value: postcode,
+            autocomplete: 'postcode'
+          })
+        }}
 
-        {{ govukInput({
-          label: {
-            text: "Country"
-          },
-          classes: "govuk-input--width-10",
-          id: "country",
-          value: country,
-          name: "address-country"
-        }) }}
+        {{
+          govukInput({
+            label: {
+              text: 'Country'
+            },
+            errorMessage: validationResult.getErrorForField('country') if validationResult,
+            classes: 'govuk-input--width-10',
+            id: 'country',
+            name: 'country',
+            value: country,
+            autocomplete: 'country'
+          })
+        }}
 
         {{
           govukButton({
