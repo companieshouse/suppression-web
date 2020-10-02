@@ -47,7 +47,7 @@
                 html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
               },
               errorMessage: validationResult.getErrorForField('line1') if validationResult,
-              id: 'address-line-1',
+              id: 'line1',
               name: 'line1',
               value: line1,
               autocomplete: 'address-line1'
@@ -58,7 +58,7 @@
               label: {
                 html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
               },
-              id: 'address-line-2',
+              id: 'line2',
               name: 'line2',
               value: line2,
               autocomplete: 'address-line2'
@@ -71,7 +71,7 @@
               },
               errorMessage: validationResult.getErrorForField('town') if validationResult,
               classes: 'govuk-!-width-two-thirds',
-              id: 'address-town',
+              id: 'town',
               name: 'town',
               value: town,
               autocomplete: 'address-level2'
@@ -84,7 +84,7 @@
               },
               errorMessage: validationResult.getErrorForField('county') if validationResult,
               classes: 'govuk-!-width-two-thirds',
-              id: 'address-County',
+              id: 'county',
               name: 'county',
               value: county
             })
@@ -96,7 +96,7 @@
               },
               errorMessage: validationResult.getErrorForField('postcode') if validationResult,
               classes: 'govuk-input--width-10',
-              id: 'address-postcode',
+              id: 'postcode',
               name: 'postcode',
               value: postcode,
               autocomplete: 'postal-code'
@@ -109,7 +109,7 @@
             },
             errorMessage: validationResult.getErrorForField('country') if validationResult,
             classes: 'govuk-input--width-10',
-            id: 'address-country',
+            id: 'country',
             name: 'country',
             value: country,
             autocomplete: 'address-country'
