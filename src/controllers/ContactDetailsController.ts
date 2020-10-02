@@ -43,6 +43,7 @@ export class ContactDetailsController {
       return res.render(template, {
         ...req.body,
         validationResult,
+        backNavigation
       });
     } else {
       suppressionData.contactAddress = req.body as Address;

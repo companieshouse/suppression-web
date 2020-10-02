@@ -120,7 +120,7 @@ describe('ServiceAddressController', () => {
         .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-    it('should redirect to the Service Address page if data is provided by the user', async () => {
+    it('should redirect to the Contact Address page if data is provided by the user', async () => {
 
       const testData: Address = generateTestData();
       const app = createApp();
@@ -133,7 +133,7 @@ describe('ServiceAddressController', () => {
         });
     });
 
-    it('should redirect to the contact address page if no data is provided by the user', async () => {
+    it('should redirect to the Contact Address page if no data is provided by the user', async () => {
 
       const app = createApp();
 

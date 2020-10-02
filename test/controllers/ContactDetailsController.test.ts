@@ -1,13 +1,18 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
-import { CHECK_SUBMISSION_PAGE_URI,  CONTACT_DETAILS_PAGE_URI,  SERVICE_ADDRESS_PAGE_URI } from '../../src/routes/paths';
+import { Address, SuppressionData } from '../../src/models/SuppressionDataModel';
+import {
+  CHECK_SUBMISSION_PAGE_URI,
+  CONTACT_DETAILS_PAGE_URI,
+  SERVICE_ADDRESS_PAGE_URI
+} from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
-  expectToHaveInput,
+  expectToHaveInput, expectToHavePopulatedInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions';
 import { generateTestData } from '../TestData';
@@ -56,6 +61,30 @@ describe('ContactDetailsController', () => {
         });
 
     })
+
+    it('should return 200 with pre-populated data when accessing page with a session', async () => {
+      const contactAddress = {
+        ...generateTestData().contactAddress
+      } as Address;
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+        return {
+          contactAddress
+        } as SuppressionData;
+      });
+
+      await request(app)
+        .get(CONTACT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.OK);
+          expectToHaveTitle(response.text, pageTitle);
+          expectToHavePopulatedInput(response.text, 'line1', contactAddress.line1);
+          expectToHavePopulatedInput(response.text, 'town', contactAddress.town);
+          expectToHavePopulatedInput(response.text, 'county', contactAddress.county);
+          expectToHavePopulatedInput(response.text, 'postcode', contactAddress.postcode);
+          expectToHavePopulatedInput(response.text, 'country', contactAddress.country);
+        });
+    });
   });
 
   describe('on POST', () => {
@@ -79,6 +108,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
           addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage, countryErrorMessage
         ]);
@@ -96,6 +126,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [addressLine1ErrorMessage]);
         expectToHaveErrorMessages(response.text, [addressLine1ErrorMessage]);
       })
@@ -109,6 +140,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [townOrCityErrorMessage]);
         expectToHaveErrorMessages(response.text, [townOrCityErrorMessage]);
       })
@@ -122,6 +154,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countyErrorMessage]);
         expectToHaveErrorMessages(response.text, [countyErrorMessage]);
       })
@@ -135,6 +168,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
         expectToHaveErrorMessages(response.text, [postcodeErrorMessage]);
       })
@@ -148,6 +182,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
+        expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countryErrorMessage]);
         expectToHaveErrorMessages(response.text, [countryErrorMessage]);
       })
