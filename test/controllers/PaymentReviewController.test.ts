@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
-import { expectToHaveButton, expectToHaveTitle } from '../HtmlPatternAssertions'
+import { expectToHaveBackButton, expectToHaveButton, expectToHaveTitle } from '../HtmlPatternAssertions'
 
 jest.mock('../../src/services/session/SessionService');
 jest.mock('../../src/services/suppression/SuppressionService');
@@ -43,6 +43,7 @@ describe('PaymentReviewController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveBackButton(response.text, CHECK_SUBMISSION_PAGE_URI);
           expectToHaveButton(response.text, 'Continue to payment');
           expect(response.text).toContain('The total amount to pay is £32');
         });

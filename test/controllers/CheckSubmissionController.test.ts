@@ -1,12 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { CHECK_SUBMISSION_PAGE_URI } from '../../src/routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI, CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveButton,
-  expectToHaveTableRow,
+  expectToHaveSummaryRow,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
 import { generateTestData } from '../TestData';
@@ -38,23 +39,27 @@ describe('CheckSubmissionController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
-          expectToHaveTableRow(response.text, 'Full name', 'John Doe');
-          expectToHaveTableRow(response.text,
+          expectToHaveBackButton(response.text, CONTACT_DETAILS_PAGE_URI);
+          expectToHaveSummaryRow(response.text, 'Full name', 'John Doe');
+          expectToHaveSummaryRow(response.text,
             'Has the applicant used a different name for business purposes in the last 20 years\\?',
             'No');
           expect(response.text).not.toContain('Previous name');
-          expectToHaveTableRow(response.text, 'Date of birth', '1 May 1980');
-          expectToHaveTableRow(response.text,
+          expectToHaveSummaryRow(response.text, 'Date of birth', '1 May 1980');
+          expectToHaveSummaryRow(response.text,
             'What home address would you like to remove\\?',
             '1 Residential Avenue<br>Selly Oak<br>Birmingham<br>West Midlands<br>B29 4TD<br>United Kingdom');
-          expectToHaveTableRow(response.text, 'Company name', 'company-name-test');
-          expectToHaveTableRow(response.text, 'Company number', 'NI000000');
-          expectToHaveTableRow(response.text, 'Document description', 'This is a document');
-          expectToHaveTableRow(response.text, 'Document date', '1 January 2020');
-          expectToHaveTableRow(response.text,
+          expectToHaveSummaryRow(response.text, 'Company name', 'company-name-test');
+          expectToHaveSummaryRow(response.text, 'Company number', 'NI000000');
+          expectToHaveSummaryRow(response.text, 'Document description', 'This is a document');
+          expectToHaveSummaryRow(response.text, 'Document date', '1 January 2020');
+          expectToHaveSummaryRow(response.text,
             'What address do you want to replace your home address with\\?',
             '1 Main Street<br>Cardiff<br>Cardiff<br>CF14 3UZ<br>United Kingdom');
-          expectToHaveTableRow(response.text, 'Email address', 'test@example.com');
+          expectToHaveSummaryRow(response.text, 'Email address', 'test@example.com');
+          expectToHaveSummaryRow(response.text,
+            'Contact address',
+            '1st Avenue<br>New York<br>New York<br>NY<br>USA');
           expectToHaveButton(response.text, 'Accept and submit');
         });
     });
@@ -69,7 +74,8 @@ describe('CheckSubmissionController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
-          expectToHaveTableRow(response.text, 'Previous name', 'Jane Doe');
+          expectToHaveBackButton(response.text, CONTACT_DETAILS_PAGE_URI);
+          expectToHaveSummaryRow(response.text, 'Previous name', 'Jane Doe');
         });
     });
 
@@ -90,7 +96,7 @@ describe('CheckSubmissionController', () => {
 
   describe('on POST', () => {
 
-    it('should redirect to the Check Submission page', async () => {
+    it('should redirect to the Payment Review page', async () => {
 
       const app = createApp();
 
@@ -98,7 +104,7 @@ describe('CheckSubmissionController', () => {
         .post(CHECK_SUBMISSION_PAGE_URI)
         .send({}).expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toContain(CHECK_SUBMISSION_PAGE_URI);
+          expect(response.header.location).toContain(PAYMENT_REVIEW_PAGE_URI);
         });
     });
 
