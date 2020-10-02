@@ -1,10 +1,10 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
-import { Address } from '../../src/models/SuppressionDataModel';
-import { CONTACT_DETAILS_PAGE_URI } from '../../src/routes/paths';
+import { CONTACT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
   expectToHaveInput,
@@ -32,6 +32,7 @@ describe('ContactDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
+          expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
           expectToHaveInput(response.text, 'line1',
             'Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>');
           expectToHaveInput(response.text, 'line2',

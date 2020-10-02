@@ -3,6 +3,7 @@ import request from 'supertest';
 
 import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
 import {
+  CONTACT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
   SERVICE_ADDRESS_PAGE_URI
 } from '../../src/routes/paths';
@@ -128,11 +129,11 @@ describe('ServiceAddressController', () => {
         .post(SERVICE_ADDRESS_PAGE_URI)
         .send(testData).expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toContain(SERVICE_ADDRESS_PAGE_URI);
+          expect(response.header.location).toContain(CONTACT_DETAILS_PAGE_URI);
         });
     });
 
-    it('should redirect to the Service Address page if no data is provided by the user', async () => {
+    it('should redirect to the contact address page if no data is provided by the user', async () => {
 
       const app = createApp();
 
@@ -140,7 +141,7 @@ describe('ServiceAddressController', () => {
         .post(SERVICE_ADDRESS_PAGE_URI)
         .send({}).expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toContain(SERVICE_ADDRESS_PAGE_URI);
+          expect(response.header.location).toContain(CONTACT_DETAILS_PAGE_URI);
         });
     });
 
