@@ -1,10 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { CHECK_SUBMISSION_PAGE_URI } from '../../src/routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI, CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
 import { createApp } from '../ApplicationFactory';
 import {
+  expectToHaveBackButton,
   expectToHaveButton,
   expectToHaveSummaryRow,
   expectToHaveTitle
@@ -38,6 +39,7 @@ describe('CheckSubmissionController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
+          expectToHaveBackButton(response.text, CONTACT_DETAILS_PAGE_URI);
           expectToHaveSummaryRow(response.text, 'Full name', 'John Doe');
           expectToHaveSummaryRow(response.text,
             'Has the applicant used a different name for business purposes in the last 20 years\\?',
@@ -72,6 +74,7 @@ describe('CheckSubmissionController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
+          expectToHaveBackButton(response.text, CONTACT_DETAILS_PAGE_URI);
           expectToHaveSummaryRow(response.text, 'Previous name', 'Jane Doe');
         });
     });
@@ -93,7 +96,7 @@ describe('CheckSubmissionController', () => {
 
   describe('on POST', () => {
 
-    it('should redirect to the Check Submission page', async () => {
+    it('should redirect to the Payment Review page', async () => {
 
       const app = createApp();
 
@@ -101,7 +104,7 @@ describe('CheckSubmissionController', () => {
         .post(CHECK_SUBMISSION_PAGE_URI)
         .send({}).expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toContain(CHECK_SUBMISSION_PAGE_URI);
+          expect(response.header.location).toContain(PAYMENT_REVIEW_PAGE_URI);
         });
     });
 

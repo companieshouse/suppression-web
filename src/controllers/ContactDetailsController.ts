@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes/build';
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
-import { CONTACT_DETAILS_PAGE_URI } from '../routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
@@ -45,7 +45,7 @@ export class ContactDetailsController {
     } else {
       suppressionData.contactAddress = req.body as Address;
       SessionService.setSuppressionSession(req, suppressionData);
-      res.redirect(CONTACT_DETAILS_PAGE_URI);
+      res.redirect(CHECK_SUBMISSION_PAGE_URI);
     }
   };
 }

@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
-import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
+import { CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 
 const template = 'check-submission';
+const backNavigation = CONTACT_DETAILS_PAGE_URI;
 
 export class CheckSubmissionController {
 
@@ -24,12 +25,13 @@ export class CheckSubmissionController {
     };
 
     res.render(template, {
-      ...templateData
+      ...templateData,
+      backNavigation
     });
   }
 
   public confirm = async (req: Request, res: Response, next: NextFunction) => {
-    return res.redirect(CHECK_SUBMISSION_PAGE_URI);
+    return res.redirect(PAYMENT_REVIEW_PAGE_URI);
   };
 
   private addressToList(address: Address | undefined): string[] {
