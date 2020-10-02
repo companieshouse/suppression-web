@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel'
-import { DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 
 const template = 'service-address';
@@ -32,6 +32,6 @@ export class ServiceAddressController {
 
     suppressionData.serviceAddress = req.body as Address;
     SessionService.setSuppressionSession(req, suppressionData);
-    res.redirect(SERVICE_ADDRESS_PAGE_URI);
+    res.redirect(CONTACT_DETAILS_PAGE_URI);
   };
 }

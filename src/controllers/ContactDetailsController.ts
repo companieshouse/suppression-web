@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes/build';
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
-import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
 
 const template = 'contact-details';
+const backNavigation = SERVICE_ADDRESS_PAGE_URI;
 
 export class ContactDetailsController {
 
@@ -23,6 +24,7 @@ export class ContactDetailsController {
 
     res.render(template, {
       ...suppressionData.contactAddress,
+      backNavigation
     });
   };
 
@@ -41,6 +43,7 @@ export class ContactDetailsController {
       return res.render(template, {
         ...req.body,
         validationResult,
+        backNavigation
       });
     } else {
       suppressionData.contactAddress = req.body as Address;
