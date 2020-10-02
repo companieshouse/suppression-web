@@ -78,6 +78,7 @@ describe('ContactDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
+          expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
           expectToHavePopulatedInput(response.text, 'line1', contactAddress.line1);
           expectToHavePopulatedInput(response.text, 'town', contactAddress.town);
           expectToHavePopulatedInput(response.text, 'county', contactAddress.county);
