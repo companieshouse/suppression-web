@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
 import { Address } from '../../src/models/SuppressionDataModel';
-import { CONTACT_DETAILS_PAGE_URI } from '../../src/routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI, CONTACT_DETAILS_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
 import {
@@ -159,7 +159,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-        expect(response.header.location).toContain(CONTACT_DETAILS_PAGE_URI);
+        expect(response.header.location).toContain(CHECK_SUBMISSION_PAGE_URI);
       });
     });
 
@@ -169,7 +169,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-        expect(response.header.location).toContain(CONTACT_DETAILS_PAGE_URI);
+        expect(response.header.location).toContain(CHECK_SUBMISSION_PAGE_URI);
       });
     });
   })
