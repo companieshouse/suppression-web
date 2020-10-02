@@ -1,10 +1,20 @@
 {% extends 'layout.njk' %}
 
-{% from 'govuk/components/table/macro.njk'  import govukTable %}
-{% from 'govuk/components/button/macro.njk' import govukButton %}
+{% from 'govuk/components/table/macro.njk'     import govukTable %}
+{% from 'govuk/components/button/macro.njk'    import govukButton %}
+{% from 'govuk/components/back-link/macro.njk' import govukBackLink %}
 
 {% block pageTitle %}
   Review your payment
+{% endblock %}
+
+{% block backLink %}
+  {{
+    govukBackLink({
+      text: 'Back',
+      href: backNavigation
+    })
+  }}
 {% endblock %}
 
 {% block content %}
