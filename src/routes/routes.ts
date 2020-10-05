@@ -7,6 +7,7 @@ import { ConfirmationController } from '../controllers/ConfirmationController';
 import { ContactDetailsController } from '../controllers/ContactDetailsController';
 import { DocumentDetailsController } from '../controllers/DocumentDetailsController';
 import { HealthcheckController } from '../controllers/HealthcheckController';
+import { PaymentCallbackController } from '../controllers/PaymentCallbackController';
 import { PaymentReviewController } from '../controllers/PaymentReviewController';
 import { ServiceAddressController } from '../controllers/ServiceAddressController';
 import { StartPageController } from '../controllers/StartPageController';
@@ -21,6 +22,7 @@ import {
   CONTACT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
   HEALTHCHECK_URI,
+  PAYMENT_CALLBACK_URI,
   PAYMENT_REVIEW_PAGE_URI,
   ROOT_URI,
   SERVICE_ADDRESS_PAGE_URI
@@ -45,6 +47,7 @@ const serviceAddressController = new ServiceAddressController();
 const contactDetailsController = new ContactDetailsController();
 const checkSubmissionController = new CheckSubmissionController();
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
+const paymentCallbackController = new PaymentCallbackController(paymentService);
 const confirmationController = new ConfirmationController();
 
 const healthcheckController = new HealthcheckController();
@@ -75,6 +78,8 @@ routes.post(CHECK_SUBMISSION_PAGE_URI, checkSubmissionController.confirm);
 
 routes.get(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.renderView);
 routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
+
+routes.get(PAYMENT_CALLBACK_URI, paymentCallbackController.checkPaymentStatus);
 
 routes.get(CONFIRMATION_PAGE_URI, confirmationController.renderView);
 

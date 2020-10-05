@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid'
 
-import { SuppressionData } from '../models/SuppressionDataModel';
+import { PaymentStatus } from '../models/PaymentStatus';
+import { PaymentDetails, SuppressionData } from '../models/SuppressionDataModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
-import { PaymentService } from '../services/payment/PaymentService';
+import { PaymentResource, PaymentService } from '../services/payment/PaymentService';
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
@@ -56,16 +57,17 @@ export class PaymentReviewController {
 
       applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
 
-      const govPayUrl: string = await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
+      const paymentUrls: PaymentResource =  await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
 
-      const updatedSession: SuppressionData = {
-        ...suppressionData,
-        paymentStateUUID
-      };
+      suppressionData.paymentDetails = {
+        stateUUID: paymentStateUUID,
+        status: PaymentStatus.CREATED,
+        resourceUri: paymentUrls.resourceUri
+      } as PaymentDetails
 
-      SessionService.setSuppressionSession(req, updatedSession);
+      SessionService.setSuppressionSession(req, suppressionData);
 
-      res.redirect(govPayUrl);
+      res.redirect(paymentUrls.redirectUrl);
 
     } catch (error) {
       return next(error);
