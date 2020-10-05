@@ -6,7 +6,7 @@ import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../../src/models/Suppr
 import SessionService from '../../../src/services/session/SessionService';
 import { generateTestData } from '../../TestData';
 
-const mockSuppressionData: SuppressionData = generateTestData()
+const mockSuppressionData: SuppressionData = generateTestData();
 
 const mockRequestData = {
   session: {
