@@ -5,7 +5,7 @@ import { ApiResponse } from 'ch-sdk-node/dist/services/resource';
 import { failure, success } from 'ch-sdk-node/dist/services/result';
 import { StatusCodes } from 'http-status-codes';
 
-import { PaymentService } from '../../../src/services/payment/PaymentService';
+import { PaymentResource, PaymentService } from '../../../src/services/payment/PaymentService';
 
 const MockedAPIClient = ApiClient as jest.Mock<ApiClient>;
 const apiClientMock = new MockedAPIClient() as jest.Mocked<ApiClient>;
@@ -18,10 +18,12 @@ describe('PaymentService', () => {
 
   it('should initiate GOV Pay payment and return a GOV Pay URL', async () => {
     const mockUrl = 'http://test.payments.gov.uk/123456';
+    const mockResource = 'payments/TEST123456'
     const mockResponse = success({
       resource: {
         links: {
-          journey: mockUrl
+          journey: mockUrl,
+          self: mockResource
         }
       } as Payment
     } as ApiResponse<Payment>);
@@ -34,7 +36,8 @@ describe('PaymentService', () => {
     const paymentService = new PaymentService();
     const result = await paymentService.generatePaymentUrl(mockApplicationReference, mockPaymentStateUUID, mockToken);
     expect(payMock).toHaveBeenCalled();
-    expect(result).toEqual(mockUrl + '?summary=false');
+    expect(result.redirectUrl).toEqual(mockUrl + '?summary=false');
+    expect(result.resourceUri).toEqual(mockResource);
   });
 
   it('should throw an error when the CH Payment Wrapper fails', async () => {
@@ -51,6 +54,6 @@ describe('PaymentService', () => {
     const paymentService = new PaymentService();
     await expect(paymentService.generatePaymentUrl(mockApplicationReference, mockPaymentStateUUID, mockToken))
       .rejects
-      .toThrow('Failed to initiate payment, status: 500, error: Test Error');
+      .toThrow('Failed to initiate payment - status: 500, error: Test Error');
   });
 });

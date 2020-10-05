@@ -22,7 +22,7 @@
     "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "ch-node-session-handler": "git+ssh://git@github.com/companieshouse/node-session-handler.git#4.0.0",
-    "ch-sdk-node": "git+ssh://git@github.com/companieshouse/api-sdk-node.git#6fd9347c",
+    "ch-sdk-node": "git+ssh://git@github.com/companieshouse/api-sdk-node.git",
     "connect-redis": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",

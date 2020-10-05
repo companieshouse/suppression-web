@@ -54,17 +54,21 @@ describe('PaymentReviewController', () => {
 
     it('should return status code 302 and redirect to GOV Pay', async () => {
 
-      const mockGovPayUrl = 'https://mock.payments.service.gov.uk/v1/payments/123456';
+      const mockRedirectUrl = 'https://mock.payments.service.gov.uk/v1/payments/123456/pay';
+      const mockResourceUri = 'payments/123456';
 
       jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => {
-        return Promise.resolve(mockGovPayUrl);
+        return Promise.resolve({
+          redirectUrl: mockRedirectUrl,
+          resourceUri: mockResourceUri
+        });
       });
 
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(response.header.location).toEqual(mockGovPayUrl)
+          expect(response.header.location).toEqual(mockRedirectUrl)
         });
     });
 
