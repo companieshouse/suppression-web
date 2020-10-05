@@ -46,7 +46,7 @@ export function generateTestData(): SuppressionData {
     paymentDetails: {
       stateUUID: 'asdfghjkl',
       status: 'created',
-      resourceUri: 'paments/TEST12345678'
+      resourceUri: 'payments/TEST12345678'
     } as PaymentDetails,
     applicationReference: 'TEST-TEST'
   } as SuppressionData;

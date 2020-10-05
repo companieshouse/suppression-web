@@ -14,9 +14,9 @@ export class PaymentCallbackController {
 
   public checkPaymentStatus = async (req: Request, res: Response, next: NextFunction) => {
 
-    const state = req.query.state;
-    const status = req.query.status;
-    const reference = req.query.ref;
+    const state: string = req.query.state as string;
+    const status: PaymentStatus = req.query.status as PaymentStatus;
+    const reference: string = req.query.ref as string;
     if (!(state && status && reference)) {
       return next(new Error(`${PaymentCallbackController.name} - received invalid arguments`));
     }
@@ -31,16 +31,16 @@ export class PaymentCallbackController {
       return next(new Error(`${PaymentCallbackController.name} - session expected but none found`));
     }
 
-    const expectedPaymentStateUUID = suppressionData.paymentDetails.stateUUID;
+    const expectedPaymentStateUUID: string = suppressionData.paymentDetails.stateUUID;
     if (state !== expectedPaymentStateUUID) {
       return next(new Error(`${PaymentCallbackController.name} - payment state mismatch`));
     }
 
     let redirectURI: string;
     if (status === PaymentStatus.PAID) {
-      const paymentResourceUri = suppressionData.paymentDetails.resourceUri;
+      const paymentResourceUri: string = suppressionData.paymentDetails.resourceUri;
       const accessToken: string =  SessionService.getAccessToken(req);
-      const verifiedStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken);
+      const verifiedStatus: PaymentStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken);
       if (verifiedStatus === PaymentStatus.PAID) {
         redirectURI = CONFIRMATION_PAGE_URI;
       } else {
@@ -51,7 +51,7 @@ export class PaymentCallbackController {
       redirectURI = PAYMENT_REVIEW_PAGE_URI;
     }
 
-    suppressionData.paymentDetails.status = status as PaymentStatus;
+    suppressionData.paymentDetails.status = status;
     SessionService.setSuppressionSession(req, suppressionData);
 
     return res.redirect(redirectURI);
