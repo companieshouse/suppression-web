@@ -6,6 +6,7 @@ import {
   SuppressionUnprocessableEntityError
 } from '../../../src/services/suppression/errors';
 import { SuppressionService } from '../../../src/services/suppression/SuppressionService';
+import { generateTestData } from '../../TestData';
 jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -106,6 +107,203 @@ describe('SuppressionService', () => {
 
       await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('save suppression failed. API not found'));
+      })
+
+    });
+
+  });
+
+  describe('get suppression', () => {
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should throw an error when application reference not defined', async() => {
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(undefined as any, mockAccessToken).catch((err) => {
+        expect(err).toEqual(Error('Application reference is missing'))
+      })
+    });
+
+    it('should throw an error when Access token not defined', async () => {
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(mockGeneratedReference, undefined as any).catch((err) => {
+        expect(err).toEqual(Error('Access token is missing'))
+      });
+    });
+
+    it('should retrieve full suppression', async() => {
+
+      mockedAxios.get.mockResolvedValue({
+        status: StatusCodes.OK,
+        headers: {
+          location: `/suppressions/${mockGeneratedReference}`
+        },
+        data: generateTestData() as SuppressionData
+      });
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken).then((response: SuppressionData) => {
+        expect(response).toEqual(generateTestData())
+      });
+
+    });
+
+    it('should retrieve partial suppression', async() => {
+
+      mockedAxios.get.mockResolvedValue({
+        status: StatusCodes.OK,
+        headers: {
+          location: `/suppressions/${mockGeneratedReference}`
+        },
+        data: { applicantDetails: generateTestData().applicantDetails } as SuppressionData
+      });
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken).then((response: SuppressionData) => {
+        const partialSuppression: SuppressionData = response;
+
+        expect(partialSuppression).toEqual({ applicantDetails: generateTestData().applicantDetails })
+      });
+
+    });
+
+    it('should return error when resource not found', async() => {
+
+      mockedAxios.get.mockResolvedValue({
+        status: StatusCodes.NOT_FOUND
+      });
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new Error('get suppression failed with message: Could not retrieve suppression resource'));
+      })
+
+    });
+
+    it('should return unauthorized error when invalid headers', async() => {
+
+      mockedAxios.get.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.UNAUTHORIZED }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new SuppressionUnprocessableEntityError('get suppression unauthorised'));
+      })
+    });
+
+    it('should return error when API not found', async() => {
+
+      mockedAxios.get.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.NOT_FOUND }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new Error('get suppression failed. API not found'));
+      })
+
+    });
+
+  });
+
+  describe('partially update suppression', () => {
+
+    const mockPartialData = { applicantDetails: generateTestData().applicantDetails }
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should throw an error when application reference not defined', async() => {
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(mockPartialData, undefined as any, mockAccessToken).catch((err) => {
+        expect(err).toEqual(Error('Application reference is missing'))
+      })
+    });
+
+    it('should throw an error when Access token not defined', async () => {
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, undefined as any).catch((err) => {
+        expect(err).toEqual(Error('Access token is missing'))
+      });
+    });
+
+    it('should throw an error when partial data not defined', async () => {
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(undefined as any, mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(Error('Partial suppression data is missing'))
+      });
+    });
+
+    it('should return No Content when partial data saved', async() => {
+
+      mockedAxios.patch.mockResolvedValue({
+        status: StatusCodes.NO_CONTENT,
+        headers: {
+          location: `/suppressions/${mockGeneratedReference}`
+        },
+        data: true
+      });
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken)
+        .then((response => {
+          expect(response).toEqual(true)
+        }))
+
+    });
+
+    it('should return error when resource not found', async() => {
+
+      mockedAxios.patch.mockResolvedValue({
+        status: StatusCodes.NOT_FOUND
+      });
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new Error('partially update suppression failed with message: Could not update suppression resource'));
+      })
+
+    });
+
+    it('should return unauthorized error when invalid headers', async() => {
+
+      mockedAxios.patch.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.UNAUTHORIZED }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new SuppressionUnprocessableEntityError('partially update suppression unauthorised'));
+      })
+    });
+
+    it('should return error when API not found', async() => {
+
+      mockedAxios.patch.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.NOT_FOUND }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new Error('partially update suppression failed. API not found'));
       })
 
     });
