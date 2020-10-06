@@ -51,7 +51,7 @@ export class SuppressionService {
       .catch(this.handleResponseError('get'))
   }
 
-  public async partiallyUpdate(partialSuppression:any, applicationReference: string, accessToken: string): Promise<boolean> {
+  public async partiallyUpdate(partialSuppression: any, applicationReference: string, accessToken: string): Promise<boolean> {
 
     this.checkArgumentOrThrow(partialSuppression, 'Partial suppression data is missing');
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');

@@ -2,7 +2,8 @@ import { Session } from 'ch-node-session-handler';
 import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { Request } from 'express';
 
-import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../../src/models/SuppressionDataModel';
+import { SuppressionData} from '../../../src/models/SuppressionDataModel';
+import { SUPPRESSION_DATA_KEY } from '../../../src/models/suppressionSessionModel';
 import SessionService from '../../../src/services/session/SessionService';
 import { generateTestData } from '../../TestData';
 

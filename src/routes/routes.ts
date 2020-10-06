@@ -40,7 +40,7 @@ const paymentService: PaymentService = new PaymentService();
  * Controllers (route handlers).
  */
 const startPageController = new StartPageController();
-const applicantDetailsController = new ApplicantDetailsController();
+const applicantDetailsController = new ApplicantDetailsController(suppressionService);
 const addressToRemoveController = new AddressToRemoveController();
 const documentDetailsController = new DocumentDetailsController();
 const serviceAddressController = new ServiceAddressController();

@@ -1,7 +1,5 @@
 import { PaymentStatus } from '../models/PaymentStatus';
 
-export const SUPPRESSION_DATA_KEY: string = 'suppression';
-
 export interface SuppressionData {
   applicationReference?: string;
   applicantDetails: ApplicantDetails;
