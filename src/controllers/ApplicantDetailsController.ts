@@ -26,14 +26,19 @@ export class ApplicantDetailsController {
     this.suppressionService = suppressionService
   }
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
     const session: SuppressionSession | undefined = SessionService.getSession(req);
 
     const accessToken: string = SessionService.getAccessToken(req);
 
+    const templateData = await this.getApplicantDetails(session?.applicationReference, accessToken)
+      .catch((error) => {
+      return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
+    });
+
     res.render(template, {
-      ...this.getApplicantDetails(session?.applicationReference, accessToken),
+      ...templateData,
       backNavigation
     });
   };
@@ -83,7 +88,10 @@ export class ApplicantDetailsController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
+      .catch(reason => {
+        throw new Error(`${ApplicantDetailsController.name} - ${reason} `);
+      });
     const applicantDetails = suppressionData.applicantDetails;
 
     const [year, month, day] = applicantDetails.dateOfBirth.split('-', 3);

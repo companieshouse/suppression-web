@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
 import * as authMiddleware from 'web-security-node';
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
@@ -10,9 +11,11 @@ import {
   ROOT_URI,
   SERVICE_ADDRESS_PAGE_URI
 } from '../../src/routes/paths';
+import SessionService from '../../src/services/session/SessionService';
 import { createApp } from '../ApplicationFactory';
 
 jest.mock('../../src/services/session/SessionService');
+jest.mock('../../src/services/suppression/SuppressionService');
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -64,6 +67,10 @@ describe('Applied auth middleware', () => {
   });
 
   describe('Authenticated user: all pages', () => {
+
+    jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      return { applicationReference: ''} as SuppressionSession
+    });
 
     pageList.push({name: 'Landing Page', uri: ROOT_URI});
 

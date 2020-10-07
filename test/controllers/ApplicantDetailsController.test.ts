@@ -2,8 +2,10 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { ApplicantDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
@@ -13,20 +15,9 @@ import {
   expectToHavePopulatedInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions';
+import { generateTestData } from '../TestData';
 
 jest.mock('../../src/services/session/SessionService');
-
-function generateTestData(): any {
-  return {
-    fullName: 'John Doe',
-    hasPreviousName: 'yes',
-    previousName: 'test_name',
-    emailAddress: 'test@example.com',
-    day: '01',
-    month: '01',
-    year: '2020'
-  };
-}
 
 describe('ApplicantDetailsController', () => {
 
@@ -50,15 +41,14 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should return 200 with pre-populated data when accessing page with a session', async () => {
-      const applicantDetails = {
-        ...generateTestData(),
-        dateOfBirth: '2020-01-01'
-      } as ApplicantDetails;
+      const applicantDetails: ApplicantDetails = generateTestData().applicantDetails;
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return {
-          applicantDetails
-        } as SuppressionData;
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        return Promise.resolve(generateTestData())
+      });
+
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
       await request(app)
@@ -70,14 +60,30 @@ describe('ApplicantDetailsController', () => {
           expectToHavePopulatedInput(response.text, 'emailAddress', applicantDetails.emailAddress);
           expectToHavePopulatedInput(response.text, 'previousName', applicantDetails.previousName!);
           expectToHavePopulatedInput(response.text, 'day', '01');
-          expectToHavePopulatedInput(response.text, 'month', '01');
-          expectToHavePopulatedInput(response.text, 'year', '2020');
+          expectToHavePopulatedInput(response.text, 'month', '05');
+          expectToHavePopulatedInput(response.text, 'year', '1980');
         });
     });
 
   });
 
   describe('on POST', () => {
+
+    function generateData(): any {
+      return {
+        fullName: 'John Doe',
+        hasPreviousName: 'yes',
+        previousName: 'test_name',
+        emailAddress: 'test@example.com',
+        day: '01',
+        month: '01',
+        year: '2020'
+      };
+    }
+
+    jest.spyOn(SuppressionService.prototype, 'save').mockImplementation(() => {
+      return Promise.resolve('12345-12345')
+    });
 
     const fullNameErrorMessage = 'Full name is required';
     const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
@@ -110,7 +116,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if no name is entered', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       delete testData.fullName;
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -125,7 +131,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if no hasPreviousName option entered', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       delete testData.hasPreviousName;
       delete testData.previousName;
 
@@ -141,7 +147,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if hasPreviousName option is yes, but no name entered', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       delete testData.previousName;
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -156,7 +162,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if no email address is entered', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       delete testData.emailAddress;
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -171,7 +177,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if the email address entered is invalid', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       testData.emailAddress = 'test.com';
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -186,7 +192,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if the date of birth is entirely missing', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       delete testData.day;
       delete testData.month;
       delete testData.year;
@@ -203,7 +209,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if a component of the date of birth is missing', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       delete testData.year;
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -218,7 +224,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should show a validation error if the date of birth is invalid', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       testData.day = '34';
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
@@ -233,7 +239,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should redirect to the next page if the information provided by the user is valid (yes to previousNames)', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send(testData)
@@ -244,7 +250,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
-      const testData = generateTestData();
+      const testData = generateData();
       testData.hasPreviousName = 'no';
       delete testData.previousName;
 

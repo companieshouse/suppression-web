@@ -1,7 +1,19 @@
 import { Request } from 'express';
 import { SuppressionData } from '../../../models/SuppressionDataModel';
+import { SuppressionSession } from '../../../models/suppressionSessionModel';
 
 export default class SessionService {
+
+  static getSession(req: Request): SuppressionSession | undefined {
+    return {
+      applicationReference: ''
+    } as SuppressionSession
+  }
+
+  static setSession(req: Request): void {
+    return;
+  }
+
   static getSuppressionSession(req: Request): SuppressionData | undefined {
     return {
       addressToRemove: {
