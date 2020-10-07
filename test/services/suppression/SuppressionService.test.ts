@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { StatusCodes } from 'http-status-codes/build';
 import { SuppressionData } from '../../../src/models/SuppressionDataModel';
 import {
@@ -135,9 +136,6 @@ describe('SuppressionService', () => {
 
       mockedAxios.get.mockResolvedValue({
         status: StatusCodes.OK,
-        headers: {
-          location: `/suppressions/${mockGeneratedReference}`
-        },
         data: generateTestData() as SuppressionData
       });
 
@@ -153,18 +151,13 @@ describe('SuppressionService', () => {
 
       mockedAxios.get.mockResolvedValue({
         status: StatusCodes.OK,
-        headers: {
-          location: `/suppressions/${mockGeneratedReference}`
-        },
         data: { applicantDetails: generateTestData().applicantDetails } as SuppressionData
       });
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken).then((response: SuppressionData) => {
-        const partialSuppression: SuppressionData = response;
-
-        expect(partialSuppression).toEqual({ applicantDetails: generateTestData().applicantDetails })
+        expect(response).toEqual({ applicantDetails: generateTestData().applicantDetails })
       });
 
     });
@@ -244,9 +237,6 @@ describe('SuppressionService', () => {
 
       mockedAxios.patch.mockResolvedValue({
         status: StatusCodes.NO_CONTENT,
-        headers: {
-          location: `/suppressions/${mockGeneratedReference}`
-        },
         data: true
       });
 
