@@ -19,11 +19,11 @@ const missingDateErrorMessage: string = 'Date of birth is required';
 export class ApplicantDetailsController {
 
   private suppressionService: SuppressionService;
+  private validator: FormWithDateValidator;
 
-  constructor(suppressionService: SuppressionService, private validator: FormWithDateValidator = new FormWithDateValidator(
-    formSchema, missingDateErrorMessage
-  )) {
-    this.suppressionService = suppressionService
+  constructor(suppressionService: SuppressionService){
+    this.suppressionService = suppressionService;
+    this.validator = new FormWithDateValidator(formSchema, missingDateErrorMessage);
   }
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
