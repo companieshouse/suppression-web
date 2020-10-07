@@ -67,17 +67,16 @@ export class ApplicantDetailsController {
       dateOfBirth
     } as ApplicantDetails;
 
-    let suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
-    if (!suppressionData) {
-      suppressionData = { applicantDetails } as SuppressionData;
-    } else {
-      suppressionData.applicantDetails = applicantDetails;
-    }
+    const partialSuppressionData: SuppressionData = { applicantDetails } as SuppressionData;
 
     const accessToken: string = SessionService.getAccessToken(req);
-    const applicationReference: string = await this.suppressionService.save(suppressionData, accessToken);
 
-    SessionService.setSession(req, { applicationReference });
+    try{
+      const applicationReference: string = await this.suppressionService.save(partialSuppressionData, accessToken);
+      SessionService.setSession(req, { applicationReference });
+    } catch (error) {
+      return next(error)
+    }
 
     res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
   };

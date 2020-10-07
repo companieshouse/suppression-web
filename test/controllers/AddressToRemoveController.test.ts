@@ -1,9 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
+import { SuppressionData } from '../../src/models/SuppressionDataModel'
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
@@ -13,6 +15,7 @@ import {
   expectToHavePopulatedInput,
   expectToHaveTitle
 } from '../HtmlPatternAssertions'
+import { generateTestData } from '../TestData';
 
 jest.mock('../../src/services/session/SessionService');
 
@@ -28,14 +31,6 @@ describe('AddressToRemoveController', () => {
   describe('on GET', () => {
 
     it('should return 200 and render the Address to Remove Page', async () => {
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return {
-          applicantDetails: {
-            fullName: 'test-name',
-            emailAddress: 'test-email'
-          }
-        } as SuppressionData
-      });
 
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
@@ -58,7 +53,7 @@ describe('AddressToRemoveController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
         return undefined
       });
 
@@ -71,15 +66,24 @@ describe('AddressToRemoveController', () => {
     });
 
     it('should prepopulate fields when relevent data is found in the session', async () => {
+
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        return Promise.resolve(generateTestData())
+      });
+
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
-        expectToHavePopulatedInput(response.text, 'line1', '1 Test Street');
-        expectToHavePopulatedInput(response.text, 'town', 'Test Town');
-        expectToHavePopulatedInput(response.text, 'county', 'Test Midlands');
-        expectToHavePopulatedInput(response.text, 'postcode', 'TE10 6ST');
-        expectToHavePopulatedInput(response.text, 'country', 'United Kingdom');
+        expectToHavePopulatedInput(response.text, 'line1', generateTestData().addressToRemove.line1);
+        expectToHavePopulatedInput(response.text, 'town', generateTestData().addressToRemove.town);
+        expectToHavePopulatedInput(response.text, 'county', generateTestData().addressToRemove.county);
+        expectToHavePopulatedInput(response.text, 'postcode', generateTestData().addressToRemove.postcode);
+        expectToHavePopulatedInput(response.text, 'country', generateTestData().addressToRemove.country);
       });
     });
 
@@ -93,19 +97,8 @@ describe('AddressToRemoveController', () => {
     const postcodeErrorMessage = 'Postcode is required';
     const countryErrorMessage = 'Country is required';
 
-    function generateTestData(): Address {
-      return {
-        line1: '1 Main Street',
-        line2: 'Selly Oak',
-        town: 'Cardiff',
-        county: 'Cardiff',
-        postcode: 'CF14 3UZ',
-        country: 'United Kingdom'
-      }
-    }
-
     it('should throw an error if the session doesn’t exist', async () => {
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => undefined);
 
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
@@ -129,7 +122,7 @@ describe('AddressToRemoveController', () => {
 
     it('should show a validation error message if Address Line 1 is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
       testData.line1 = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
@@ -143,7 +136,7 @@ describe('AddressToRemoveController', () => {
 
     it('should show a validation error message if Town or City is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
       testData.town = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
@@ -157,7 +150,7 @@ describe('AddressToRemoveController', () => {
 
     it('should show a validation error message if County is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
       testData.county = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
@@ -171,7 +164,7 @@ describe('AddressToRemoveController', () => {
 
     it('should show a validation error message if Postcode is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
       testData.postcode = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
@@ -185,7 +178,7 @@ describe('AddressToRemoveController', () => {
 
     it('should show a validation error message if Country is not provided', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
       testData.country = '';
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
@@ -199,8 +192,12 @@ describe('AddressToRemoveController', () => {
 
     it('should accept address details without data for Address Line 2, and redirect to the Document Details page', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
       testData.line2 = '';
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+        return Promise.resolve(true)
+      });
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
@@ -210,7 +207,11 @@ describe('AddressToRemoveController', () => {
 
     it('should redirect to the Document Details page if the information provided by the user is valid', async () => {
 
-      const testData = generateTestData();
+      const testData = generateTestData().addressToRemove;
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+        return Promise.resolve(true)
+      });
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);

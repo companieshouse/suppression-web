@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
-import { Address, SuppressionData } from '../models/SuppressionDataModel'
+import { SuppressionData } from '../models/SuppressionDataModel'
 import { SuppressionSession } from '../models/suppressionSessionModel';
 import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
@@ -25,9 +25,13 @@ export class AddressToRemoveController {
 
     const session: SuppressionSession | undefined = SessionService.getSession(req);
 
+    if (!session) {
+      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+    }
+
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData = await this.getAddressToRemove(session?.applicationReference, accessToken)
+    const templateData = await this.getAddressToRemove(session.applicationReference, accessToken)
       .catch((error) => {
         return next(new Error(`${AddressToRemoveController.name} - ${error}`));
       });
@@ -40,9 +44,9 @@ export class AddressToRemoveController {
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
 
-    if (!suppressionData) {
+    if (!session) {
       return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
     }
 
@@ -55,12 +59,14 @@ export class AddressToRemoveController {
         backNavigation
       });
     } else {
-      suppressionData.addressToRemove = req.body as Address;
+
+      const partialSuppressionData: SuppressionData = { addressToRemove: req.body } as SuppressionData;
 
       const accessToken: string = SessionService.getAccessToken(req);
-      const session: SuppressionSession | undefined = SessionService.getSession(req);
 
-      await this.suppressService.patch(suppressionData, session?.applicationReference! , accessToken);
+      await this.suppressService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+        return next(error)
+      });
 
       res.redirect(DOCUMENT_DETAILS_PAGE_URI);
     }
