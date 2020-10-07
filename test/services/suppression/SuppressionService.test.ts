@@ -27,17 +27,22 @@ describe('SuppressionService', () => {
     it('should throw an error when suppression not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save(undefined as any, mockAccessToken).catch((err) => {
-        expect(err).toEqual(Error('Suppression data is missing'))
-      })
+      for (const data of [undefined, null]) {
+        await suppressionService.save(data as any, mockAccessToken).catch((err) => {
+          expect(err).toEqual(Error('Suppression data is missing'))
+        })
+      }
+
     });
 
     it('should throw an error when API Key not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, undefined as any).catch((err) => {
-        expect(err).toEqual(Error('Access token is missing'))
-      });
+      for (const data of [undefined, null]) {
+        await suppressionService.save({} as SuppressionData, data as any).catch((err) => {
+          expect(err).toEqual(Error('Access token is missing'))
+        });
+      }
     });
 
     it('should save suppression and return application reference', async() => {
@@ -119,17 +124,21 @@ describe('SuppressionService', () => {
     it('should throw an error when application reference not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.get(undefined as any, mockAccessToken).catch((err) => {
-        expect(err).toEqual(Error('Application reference is missing'))
-      })
+      for (const data of [undefined, null]) {
+        await suppressionService.get(data as any, mockAccessToken).catch((err) => {
+          expect(err).toEqual(Error('Application reference is missing'))
+        })
+      }
     });
 
     it('should throw an error when Access token not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.get(mockGeneratedReference, undefined as any).catch((err) => {
-        expect(err).toEqual(Error('Access token is missing'))
-      });
+      for (const data of [undefined, null]) {
+        await suppressionService.get(mockGeneratedReference, data as any).catch((err) => {
+          expect(err).toEqual(Error('Access token is missing'))
+        });
+      }
     });
 
     it('should retrieve full suppression', async() => {
@@ -212,25 +221,31 @@ describe('SuppressionService', () => {
     it('should throw an error when application reference not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.patch(mockPartialData, undefined as any, mockAccessToken).catch((err) => {
-        expect(err).toEqual(Error('Application reference is missing'))
-      })
+      for (const data of [undefined, null]) {
+        await suppressionService.patch(mockPartialData, data as any, mockAccessToken).catch((err) => {
+          expect(err).toEqual(Error('Application reference is missing'))
+        })
+      }
     });
 
     it('should throw an error when Access token not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.patch(mockPartialData, mockGeneratedReference, undefined as any).catch((err) => {
-        expect(err).toEqual(Error('Access token is missing'))
-      });
+      for (const data of [undefined, null]) {
+        await suppressionService.patch(mockPartialData, mockGeneratedReference, data as any).catch((err) => {
+          expect(err).toEqual(Error('Access token is missing'))
+        });
+      }
     });
 
     it('should throw an error when partial data not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.patch(undefined as any, mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(Error('Partial suppression data is missing'))
-      });
+      for (const data of [undefined, null]) {
+        await suppressionService.patch(data as any, mockGeneratedReference, mockAccessToken).catch((err) => {
+          expect(err).toEqual(Error('Partial suppression data is missing'))
+        });
+      }
     });
 
     it('should return No Content when partial data saved', async() => {
