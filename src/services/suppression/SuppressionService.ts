@@ -35,15 +35,15 @@ export class SuppressionService {
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
 
-    const uri: string = `${this.uri}/${applicationReference}`;
+    const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
     console.log(`${SuppressionService.name} - Making a GET request to ${uri}`);
 
     return await axios
       .get(uri, {headers: this.getHeaders(accessToken)})
       .then((response: AxiosResponse<SuppressionData>) => {
-        if (response.status === StatusCodes.OK && response.headers.location) {
-          console.log(`${SuppressionService.name} - get: retrieved resource ${response.data} - ${response.headers.location}`);
+        if (response.status === StatusCodes.OK) {
+          console.log(`${SuppressionService.name} - get: retrieved resource ${response.data}`);
           return response.data
         }
         throw new Error('Could not retrieve suppression resource');

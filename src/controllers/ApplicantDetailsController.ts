@@ -96,6 +96,11 @@ export class ApplicantDetailsController {
 
     const [year, month, day] = applicantDetails.dateOfBirth.split('-', 3);
 
-    return {...applicantDetails, day, month, year};
+    let hasPreviousName: YesNo = YesNo.no;
+    if(applicantDetails.previousName){
+      hasPreviousName = YesNo.yes
+    }
+
+    return {...applicantDetails, hasPreviousName , day, month, year};
   }
 }
