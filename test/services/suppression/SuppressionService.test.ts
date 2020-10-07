@@ -13,15 +13,15 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('SuppressionService', () => {
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockAccessToken: string = 'token';
   const mockGeneratedReference: string = '123123';
   const mockSuppressionsUri: string = '/suppressions';
 
   describe('saving suppression', () => {
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
 
     it('should throw an error when suppression not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
@@ -114,10 +114,6 @@ describe('SuppressionService', () => {
   });
 
   describe('get suppression', () => {
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
 
     it('should throw an error when application reference not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
@@ -216,18 +212,14 @@ describe('SuppressionService', () => {
 
   });
 
-  describe('partially update suppression', () => {
+  describe('patching suppression', () => {
 
     const mockPartialData = { applicantDetails: generateTestData().applicantDetails }
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
 
     it('should throw an error when application reference not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(mockPartialData, undefined as any, mockAccessToken).catch((err) => {
+      await suppressionService.patch(mockPartialData, undefined as any, mockAccessToken).catch((err) => {
         expect(err).toEqual(Error('Application reference is missing'))
       })
     });
@@ -235,7 +227,7 @@ describe('SuppressionService', () => {
     it('should throw an error when Access token not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, undefined as any).catch((err) => {
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, undefined as any).catch((err) => {
         expect(err).toEqual(Error('Access token is missing'))
       });
     });
@@ -243,7 +235,7 @@ describe('SuppressionService', () => {
     it('should throw an error when partial data not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(undefined as any, mockGeneratedReference, mockAccessToken).catch((err) => {
+      await suppressionService.patch(undefined as any, mockGeneratedReference, mockAccessToken).catch((err) => {
         expect(err).toEqual(Error('Partial suppression data is missing'))
       });
     });
@@ -260,7 +252,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken)
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken)
         .then((response => {
           expect(response).toEqual(true)
         }))
@@ -275,7 +267,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('partially update suppression failed with message: Could not update suppression resource'));
       })
 
@@ -289,7 +281,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('partially update suppression unauthorised'));
       })
     });
@@ -302,7 +294,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.partiallyUpdate(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('partially update suppression failed. API not found'));
       })
 
