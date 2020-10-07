@@ -57,7 +57,7 @@ export class SuppressionService {
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
 
-    const uri: string = `${this.uri}/${applicationReference}`;
+    const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
     console.log(`${SuppressionService.name} - Making a PATCH request to ${uri}`);
 
