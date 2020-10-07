@@ -2,8 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel'
+import { SuppressionSession } from '../models/suppressionSessionModel';
 import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
+import { SuppressionService } from '../services/suppression/SuppressionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema'
@@ -13,18 +15,25 @@ const backNavigation = APPLICANT_DETAILS_PAGE_URI;
 
 export class AddressToRemoveController {
 
-  constructor(private validator: FormValidator = new FormValidator(formSchema)) {}
+  private suppressService: SuppressionService;
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
+  constructor(suppressionService: SuppressionService, private validator: FormValidator = new FormValidator(formSchema)) {
+    this.suppressService = suppressionService
+  }
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!suppressionData) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
-    }
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
+
+    const accessToken: string = SessionService.getAccessToken(req);
+
+    const templateData = await this.getAddressToRemove(session?.applicationReference, accessToken)
+      .catch((error) => {
+        return next(new Error(`${AddressToRemoveController.name} - ${error}`));
+      });
 
     res.render(template, {
-      ...suppressionData.addressToRemove,
+      ...templateData,
       backNavigation
     });
   };
@@ -47,8 +56,28 @@ export class AddressToRemoveController {
       });
     } else {
       suppressionData.addressToRemove = req.body as Address;
-      SessionService.setSuppressionSession(req, suppressionData);
+
+      const accessToken: string = SessionService.getAccessToken(req);
+      const session: SuppressionSession | undefined = SessionService.getSession(req);
+
+      await this.suppressService.patch(suppressionData, session?.applicationReference! , accessToken);
+
       res.redirect(DOCUMENT_DETAILS_PAGE_URI);
     }
   };
+
+  private async getAddressToRemove(applicationReference: string | undefined, accessToken: string): Promise<any> {
+
+    if (!applicationReference) {
+      return {};
+    }
+
+    const suppressionData: SuppressionData = await this.suppressService.get(applicationReference, accessToken)
+      .catch(reason => {
+        throw new Error(`${AddressToRemoveController.name} - ${reason} `);
+      });
+
+    return {...suppressionData.addressToRemove};
+  }
+
 }

@@ -41,7 +41,7 @@ const paymentService: PaymentService = new PaymentService();
  */
 const startPageController = new StartPageController();
 const applicantDetailsController = new ApplicantDetailsController(suppressionService);
-const addressToRemoveController = new AddressToRemoveController();
+const addressToRemoveController = new AddressToRemoveController(suppressionService);
 const documentDetailsController = new DocumentDetailsController();
 const serviceAddressController = new ServiceAddressController();
 const contactDetailsController = new ContactDetailsController();

@@ -22,7 +22,6 @@ export class SuppressionService {
       .post(uri, suppression, {headers: this.getHeaders(accessToken)})
       .then((response: AxiosResponse<string>) => {
         if (response.status === StatusCodes.CREATED && response.headers.location) {
-          console.log(`${SuppressionService.name} - save: created resource ${response.data} - ${response.headers.location}`);
           return response.data.toString()
         }
         throw new Error('Could not create suppression resource');
@@ -43,7 +42,6 @@ export class SuppressionService {
       .get(uri, {headers: this.getHeaders(accessToken)})
       .then((response: AxiosResponse<SuppressionData>) => {
         if (response.status === StatusCodes.OK) {
-          console.log(`${SuppressionService.name} - get: retrieved resource ${response.data}`);
           return response.data
         }
         throw new Error('Could not retrieve suppression resource');
@@ -65,7 +63,6 @@ export class SuppressionService {
       .patch(uri, partialSuppression as SuppressionData, {headers: this.getHeaders(accessToken)})
       .then((response: AxiosResponse<boolean>) => {
         if (response.status === StatusCodes.NO_CONTENT) {
-          console.log(`${SuppressionService.name} - patch: updated resource ${response.data}`);
           return true;
         }
         throw new Error('Could not update suppression resource');
