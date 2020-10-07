@@ -65,15 +65,15 @@ export class SuppressionService {
       .patch(uri, partialSuppression as SuppressionData, {headers: this.getHeaders(accessToken)})
       .then((response: AxiosResponse<boolean>) => {
         if (response.status === StatusCodes.NO_CONTENT) {
-          console.log(`${SuppressionService.name} - partially update: updated resource ${response.data}`);
+          console.log(`${SuppressionService.name} - patch: updated resource ${response.data}`);
           return true;
         }
         throw new Error('Could not update suppression resource');
       })
-      .catch(this.handleResponseError('partially update'))
+      .catch(this.handleResponseError('patch'))
   }
 
-  private handleResponseError(operation: 'save' | 'get' | 'partially update'): (_: AxiosError) => never {
+  private handleResponseError(operation: 'save' | 'get' | 'patch'): (_: AxiosError) => never {
     return (err: AxiosError) => {
 
       if (err.response != null) {

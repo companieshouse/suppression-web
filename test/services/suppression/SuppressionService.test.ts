@@ -273,9 +273,22 @@ describe('SuppressionService', () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('partially update suppression failed with message: Could not update suppression resource'));
+        expect(err).toEqual(new Error('patch suppression failed with message: Could not update suppression resource'));
       })
 
+    });
+
+    it('should return entity error when invalid suppression data', async() => {
+
+      mockedAxios.patch.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.UNPROCESSABLE_ENTITY }
+      }));
+
+      const suppressionService = new SuppressionService(mockSuppressionsUri);
+
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
+        expect(err).toEqual(new SuppressionUnprocessableEntityError('patch suppression on invalid suppression data'));
+      })
     });
 
     it('should return unauthorized error when invalid headers', async() => {
@@ -287,7 +300,7 @@ describe('SuppressionService', () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new SuppressionUnprocessableEntityError('partially update suppression unauthorised'));
+        expect(err).toEqual(new SuppressionUnprocessableEntityError('patch suppression unauthorised'));
       })
     });
 
@@ -300,7 +313,7 @@ describe('SuppressionService', () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('partially update suppression failed. API not found'));
+        expect(err).toEqual(new Error('patch suppression failed. API not found'));
       })
 
     });
