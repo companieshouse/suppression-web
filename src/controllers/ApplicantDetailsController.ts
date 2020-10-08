@@ -72,8 +72,6 @@ export class ApplicantDetailsController {
     const session: SuppressionSession | undefined = SessionService.getSession(req);
     const accessToken: string = SessionService.getAccessToken(req);
 
-    console.log(applicantDetails);
-    console.log(session?.applicationReference);
     try{
       if (session?.applicationReference) {
         console.log(session.applicationReference);
