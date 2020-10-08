@@ -2,36 +2,56 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 
-import { DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
-import { ADDRESS_TO_REMOVE_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { ApplicantDetails, DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionSession } from '../models/suppressionSessionModel';
+import { ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
+import { SuppressionService } from '../services/suppression/SuppressionService';
 import { FormWithDateValidator } from '../validators/FormWithDateValidator';
 import { schema } from '../validators/schema/DocumentDetailsSchema';
 
 const template = 'document-details';
+const backNavigation = ADDRESS_TO_REMOVE_PAGE_URI;
 const missingDateErrorMessage: string = 'Document date is required';
 
 export class DocumentDetailsController {
 
-  constructor(private validator: FormWithDateValidator = new FormWithDateValidator(
-    schema, missingDateErrorMessage
-  )) {}
+  private suppressionService: SuppressionService;
+  private validator: FormWithDateValidator;
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
+  constructor(suppressionService: SuppressionService) {
+    this.suppressionService = suppressionService;
+    this.validator = new FormWithDateValidator(schema, missingDateErrorMessage);
+  }
 
-    const suppressionSession: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!suppressionSession) {
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
+
+    if (!session) {
       return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
     }
 
+    const accessToken: string = SessionService.getAccessToken(req);
+
+    const templateData = await this.getDocumentDetails(session.applicationReference, accessToken)
+      .catch((error) => {
+        return next(new Error(`${DocumentDetailsController.name} - ${error}`));
+      });
+
     res.render(template, {
-      ...this.getDocumentDetails(suppressionSession),
-      backNavigation: ADDRESS_TO_REMOVE_PAGE_URI
+      ...templateData,
+      backNavigation
     });
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
+
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
+
+    if (!session) {
+      return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
+    }
 
     const validationResult = await this.validator.validate(req);
 
@@ -40,32 +60,47 @@ export class DocumentDetailsController {
       return res.render(template, {
         ...req.body,
         validationResult,
-        backNavigation: ADDRESS_TO_REMOVE_PAGE_URI
+        backNavigation
       });
+    } else {
+
+      const date = moment(req.body.date).format('YYYY-MM-DD');
+
+      const documentDetails: DocumentDetails = {
+        ...req.body,
+        date
+      } as DocumentDetails;
+
+      const partialSuppressionData: SuppressionData = { documentDetails } as SuppressionData;
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+        return next(error)
+      });
+
+      res.redirect(SERVICE_ADDRESS_PAGE_URI);
     }
-
-    let suppression: SuppressionData | undefined = SessionService.getSuppressionSession(req);
-    if (suppression === undefined) {
-      suppression = {} as SuppressionData;
-    }
-
-    suppression.documentDetails = {
-      ...req.body,
-      date: moment(req.body.date).format('YYYY-MM-DD')
-    } as DocumentDetails;
-
-    SessionService.setSuppressionSession(req, suppression);
-    res.redirect(SERVICE_ADDRESS_PAGE_URI);
   }
 
-  private getDocumentDetails(suppression: SuppressionData | undefined): any {
+  private async getDocumentDetails(applicationReference: string | undefined, accessToken: string): Promise<any> {
 
-    const documentDetails: DocumentDetails | undefined = suppression?.documentDetails;
-    if (!documentDetails) {
+    if (!applicationReference) {
       return {};
     }
-    const [year, month, day] = documentDetails.date.split('-', 3);
 
-    return {...documentDetails, day, month, year};
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
+      .catch(reason => {
+        throw new Error(`${DocumentDetailsController.name} - ${reason} `);
+      });
+
+    if (!suppressionData.documentDetails) {
+      return {};
+    }
+
+    const [year, month, day] = suppressionData.documentDetails.date.split('-', 3);
+
+    return {...suppressionData.documentDetails, day, month, year};
   }
+
 }
