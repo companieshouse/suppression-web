@@ -1,15 +1,18 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
+import { DocumentDetails } from '../../src/models/SuppressionDataModel';
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI} from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
   expectToHaveErrorMessages, expectToHaveErrorSummaryContaining, expectToHaveInput,
   expectToHavePopulatedInput, expectToHaveTitle
 } from '../HtmlPatternAssertions'
+import { generateTestData } from '../TestData';
 
 const expectedTitle: string = 'Document details';
 const missingCompanyNameErrorMessage: string = 'Company name is required';
@@ -21,11 +24,19 @@ const invalidDateErrorMessage: string = 'Enter a real date';
 
 jest.mock('../../src/services/session/SessionService');
 
+beforeEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe('DocumentDetailsController', () => {
 
   describe('on GET', () => {
 
     it('should return 200 and render the page', async () => {
+
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+        return { applicationReference: ''} as SuppressionSession
+      });
 
       const app = createApp();
 
@@ -46,6 +57,10 @@ describe('DocumentDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+        return undefined
+      });
+
       const app = createApp();
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
@@ -62,13 +77,15 @@ describe('DocumentDetailsController', () => {
 
     it('should return 200 with pre-populated data when accessing page with a session', async () => {
 
-      const app = createApp();
-
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return {
-          documentDetails
-        } as SuppressionData
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
       });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        return Promise.resolve(generateTestData())
+      });
+
+      const app = createApp();
 
       const documentDetails = {
         companyName: 'company-name-test',
@@ -98,6 +115,10 @@ describe('DocumentDetailsController', () => {
   describe('on POST', () => {
 
     it('should redirect to the Service Address page when valid data was submitted', async () => {
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+        return Promise.resolve(true)
+      });
 
       const app = createApp();
 

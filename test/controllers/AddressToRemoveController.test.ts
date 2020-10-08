@@ -18,10 +18,6 @@ import { generateTestData } from '../TestData';
 
 jest.mock('../../src/services/session/SessionService');
 
-afterEach(() => {
-  jest.restoreAllMocks();
-});
-
 describe('AddressToRemoveController', () => {
 
   const pageTitle = 'Address details';
@@ -30,6 +26,10 @@ describe('AddressToRemoveController', () => {
   describe('on GET', () => {
 
     it('should return 200 and render the Address to Remove Page', async () => {
+
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: ''} as SuppressionSession
+      });
 
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
@@ -52,7 +52,7 @@ describe('AddressToRemoveController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -66,11 +66,11 @@ describe('AddressToRemoveController', () => {
 
     it('should prepopulate fields when relevent data is found in the session', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
-      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
         return Promise.resolve(generateTestData())
       });
 
@@ -95,6 +95,12 @@ describe('AddressToRemoveController', () => {
     const countyErrorMessage = 'County is required';
     const postcodeErrorMessage = 'Postcode is required';
     const countryErrorMessage = 'Country is required';
+
+    beforeEach(() => {
+      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+        return { applicationReference: ''} as SuppressionSession
+      });
+    });
 
     it('should throw an error if the session doesn’t exist', async () => {
       jest.spyOn(SessionService, 'getSession').mockImplementation(() => undefined);

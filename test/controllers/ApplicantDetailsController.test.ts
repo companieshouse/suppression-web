@@ -4,7 +4,7 @@ import request from 'supertest';
 import { ApplicantDetails } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
-import SessionService from '../../src/services/session/__mocks__/SessionService';
+import SessionService from '../../src/services/session/SessionService';
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
@@ -19,10 +19,6 @@ import { generateTestData } from '../TestData';
 
 jest.mock('../../src/services/session/SessionService');
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
 describe('ApplicantDetailsController', () => {
 
   const pageTitle = 'Applicant’s Details';
@@ -30,7 +26,7 @@ describe('ApplicantDetailsController', () => {
 
   describe('on GET', () => {
 
-    jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+    jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
       return Promise.resolve(generateTestData())
     });
 
@@ -49,6 +45,15 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should return 200 with pre-populated data when accessing page with a valid suppression ID in session', async () => {
+
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve(generateTestData())
+      });
+
       const applicantDetails: ApplicantDetails = generateTestData().applicantDetails;
 
       await request(app)
@@ -81,11 +86,11 @@ describe('ApplicantDetailsController', () => {
       };
     }
 
-    jest.spyOn(SuppressionService.prototype, 'save').mockImplementation(() => {
+    jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
       return Promise.resolve('12345-12345')
     });
 
-    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
       return Promise.resolve(true)
     });
 
@@ -254,6 +259,10 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
+        return Promise.resolve(true)
+      });
 
       const testData = generateData();
       testData.hasPreviousName = 'no';
