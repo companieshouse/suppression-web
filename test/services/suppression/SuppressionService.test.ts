@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { StatusCodes } from 'http-status-codes/build';
-import { SuppressionData } from '../../../src/models/SuppressionDataModel';
+import { ApplicantDetails, SuppressionData } from '../../../src/models/SuppressionDataModel';
 import {
   SuppressionUnauthorisedError,
   SuppressionUnprocessableEntityError
@@ -29,7 +29,7 @@ describe('SuppressionService', () => {
 
       for (const data of [undefined, null]) {
         await suppressionService.save(data as any, mockAccessToken).catch((err) => {
-          expect(err).toEqual(Error('Suppression data is missing'))
+          expect(err).toEqual(Error('applicant details data is missing'))
         })
       }
 
@@ -39,7 +39,7 @@ describe('SuppressionService', () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       for (const data of [undefined, null]) {
-        await suppressionService.save({} as SuppressionData, data as any).catch((err) => {
+        await suppressionService.save({} as ApplicantDetails, data as any).catch((err) => {
           expect(err).toEqual(Error('Access token is missing'))
         });
       }
@@ -57,7 +57,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockAccessToken).then((response: string) => {
+      await suppressionService.save({} as ApplicantDetails, mockAccessToken).then((response: string) => {
         expect(response).toEqual(mockGeneratedReference)
       });
 
@@ -71,7 +71,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
+      await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('save suppression failed with message: Could not create suppression resource'));
       })
 
@@ -85,7 +85,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
+      await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('save suppression on invalid suppression data'));
       })
     });
@@ -98,7 +98,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
+      await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnauthorisedError('save suppression unauthorised'));
       })
     });
@@ -111,7 +111,7 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.save({} as SuppressionData, mockAccessToken).catch((err) => {
+      await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
         expect(err).toEqual(new Error('save suppression failed. API not found'));
       })
 

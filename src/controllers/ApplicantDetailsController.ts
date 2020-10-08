@@ -62,18 +62,26 @@ export class ApplicantDetailsController {
     const dateOfBirth = moment(req.body.date).format('YYYY-MM-DD');
     delete req.body.date;
 
-    const applicantDetails = {
+    const applicantDetails: ApplicantDetails = {
       ...req.body,
       dateOfBirth
     } as ApplicantDetails;
 
     const partialSuppressionData: SuppressionData = { applicantDetails } as SuppressionData;
 
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
     const accessToken: string = SessionService.getAccessToken(req);
 
+    console.log(applicantDetails);
+    console.log(session?.applicationReference);
     try{
-      const applicationReference: string = await this.suppressionService.save(partialSuppressionData, accessToken);
-      SessionService.setSession(req, { applicationReference });
+      if (session?.applicationReference) {
+        console.log(session.applicationReference);
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+      } else {
+        const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken);
+        SessionService.setSession(req, { applicationReference });
+      }
     } catch (error) {
       return next(error)
     }

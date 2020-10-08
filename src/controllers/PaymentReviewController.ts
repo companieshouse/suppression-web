@@ -55,7 +55,7 @@ export class PaymentReviewController {
       const accessToken: string =  SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
 
-      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
+      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData.applicantDetails, accessToken);
 
       const paymentUrls: PaymentResource =  await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
 

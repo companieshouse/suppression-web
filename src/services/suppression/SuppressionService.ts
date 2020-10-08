@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes/build';
-import { SuppressionData } from '../../models/SuppressionDataModel';
+import { ApplicantDetails, SuppressionData } from '../../models/SuppressionDataModel';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 
 export class SuppressionService {
@@ -9,9 +9,9 @@ export class SuppressionService {
     this.uri = uri;
   }
 
-  public async save(suppression: SuppressionData, accessToken: string): Promise<string> {
+  public async save(applicantDetails: ApplicantDetails, accessToken: string): Promise<string> {
 
-    this.checkArgumentOrThrow(suppression, 'Suppression data is missing');
+    this.checkArgumentOrThrow(applicantDetails, 'applicant details data is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
 
     const uri: string = `${this.uri}/suppressions`;
@@ -19,7 +19,7 @@ export class SuppressionService {
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
     return await axios
-      .post(uri, suppression, {headers: this.getHeaders(accessToken)})
+      .post(uri, applicantDetails, {headers: this.getHeaders(accessToken)})
       .then((response: AxiosResponse<string>) => {
         if (response.status === StatusCodes.CREATED && response.headers.location) {
           return response.data.toString()

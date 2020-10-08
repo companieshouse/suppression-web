@@ -1,10 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { ApplicantDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
+import { ApplicantDetails } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
-import SessionService from '../../src/services/session/SessionService';
+import SessionService from '../../src/services/session/__mocks__/SessionService';
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
@@ -19,12 +19,20 @@ import { generateTestData } from '../TestData';
 
 jest.mock('../../src/services/session/SessionService');
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe('ApplicantDetailsController', () => {
 
   const pageTitle = 'Applicant’s Details';
   const app = createApp();
 
   describe('on GET', () => {
+
+    jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+      return Promise.resolve(generateTestData())
+    });
 
     it('should return 200 and render the Applicant Details Page', async () => {
       await request(app).get(APPLICANT_DETAILS_PAGE_URI).expect(response => {
@@ -40,16 +48,8 @@ describe('ApplicantDetailsController', () => {
       });
     });
 
-    it('should return 200 with pre-populated data when accessing page with a session', async () => {
+    it('should return 200 with pre-populated data when accessing page with a valid suppression ID in session', async () => {
       const applicantDetails: ApplicantDetails = generateTestData().applicantDetails;
-
-      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
-        return Promise.resolve(generateTestData())
-      });
-
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
-        return { applicationReference: '12345-12345'} as SuppressionSession
-      });
 
       await request(app)
         .get(APPLICANT_DETAILS_PAGE_URI)
@@ -83,6 +83,10 @@ describe('ApplicantDetailsController', () => {
 
     jest.spyOn(SuppressionService.prototype, 'save').mockImplementation(() => {
       return Promise.resolve('12345-12345')
+    });
+
+    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+      return Promise.resolve(true)
     });
 
     const fullNameErrorMessage = 'Full name is required';
@@ -250,6 +254,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
+
       const testData = generateData();
       testData.hasPreviousName = 'no';
       delete testData.previousName;
