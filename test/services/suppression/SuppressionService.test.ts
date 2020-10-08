@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { StatusCodes } from 'http-status-codes/build';
 import { ApplicantDetails, SuppressionData } from '../../../src/models/SuppressionDataModel';
 import {
