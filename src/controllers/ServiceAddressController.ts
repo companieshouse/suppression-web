@@ -14,10 +14,10 @@ const backNavigation = DOCUMENT_DETAILS_PAGE_URI;
 
 export class ServiceAddressController {
 
-  private suppressService: SuppressionService;
+  private suppressionService: SuppressionService;
 
   constructor(suppressionService: SuppressionService) {
-    this.suppressService = suppressionService
+    this.suppressionService = suppressionService
   }
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
@@ -52,7 +52,7 @@ export class ServiceAddressController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    await this.suppressService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+    await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
       return next(error)
     });
 
@@ -66,7 +66,7 @@ export class ServiceAddressController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressService.get(applicationReference, accessToken)
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
       .catch(reason => {
         throw new Error(`${ServiceAddressController.name} - ${reason} `);
       });

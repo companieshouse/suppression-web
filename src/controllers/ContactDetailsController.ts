@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes/build';
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
-import { CHECK_SUBMISSION_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { SuppressionSession } from '../models/suppressionSessionModel';
+import { CHECK_SUBMISSION_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
+import { SuppressionService } from '../services/suppression/SuppressionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
@@ -12,27 +14,40 @@ const backNavigation = SERVICE_ADDRESS_PAGE_URI;
 
 export class ContactDetailsController {
 
-  constructor(private validator: FormValidator = new FormValidator(formSchema)) {}
+  private validator: FormValidator;
+  private suppressionService: SuppressionService;
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
+  constructor(suppressionService: SuppressionService) {
+    this.validator = new FormValidator(formSchema);
+    this.suppressionService = suppressionService
+  }
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!suppressionData) {
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
+
+    if (!session) {
       return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
     }
 
+    const accessToken: string = SessionService.getAccessToken(req);
+
+    const templateData = await this.getContactAddress(session.applicationReference, accessToken)
+      .catch((error) => {
+        return next(new Error(`${ContactDetailsController.name} - ${error}`));
+      });
+
     res.render(template, {
-      ...suppressionData.contactAddress,
+      ...templateData,
       backNavigation
     });
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
 
-    if (!suppressionData) {
+    if (!session) {
       return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
     }
 
@@ -46,9 +61,34 @@ export class ContactDetailsController {
         backNavigation
       });
     } else {
-      suppressionData.contactAddress = req.body as Address;
-      SessionService.setSuppressionSession(req, suppressionData);
+
+      const partialSuppressionData: SuppressionData = { contactAddress: req.body } as SuppressionData;
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+        return next(error)
+      });
+
       res.redirect(CHECK_SUBMISSION_PAGE_URI);
     }
   };
+
+  private async getContactAddress(applicationReference: string | undefined, accessToken: string): Promise<any> {
+
+    if (!applicationReference) {
+      return {};
+    }
+
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
+      .catch(reason => {
+        throw new Error(`${ContactDetailsController.name} - ${reason} `);
+      });
+
+    if (!suppressionData.contactAddress){
+      return {};
+    }
+
+    return {...suppressionData.contactAddress};
+  }
 }

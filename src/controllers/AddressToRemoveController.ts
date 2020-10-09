@@ -15,12 +15,12 @@ const backNavigation = APPLICANT_DETAILS_PAGE_URI;
 
 export class AddressToRemoveController {
 
-  private suppressService: SuppressionService;
+  private suppressionService: SuppressionService;
   private validator: FormValidator;
 
   constructor(suppressionService: SuppressionService) {
     this.validator = new FormValidator(formSchema);
-    this.suppressService = suppressionService
+    this.suppressionService = suppressionService
   }
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,7 +66,7 @@ export class AddressToRemoveController {
 
       const accessToken: string = SessionService.getAccessToken(req);
 
-      await this.suppressService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+      await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
         return next(error)
       });
 
@@ -80,7 +80,7 @@ export class AddressToRemoveController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressService.get(applicationReference, accessToken)
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
       .catch(reason => {
         throw new Error(`${AddressToRemoveController.name} - ${reason} `);
       });

@@ -1,12 +1,13 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
-import { Address, SuppressionData } from '../../src/models/SuppressionDataModel';
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import {
   CHECK_SUBMISSION_PAGE_URI,
   CONTACT_DETAILS_PAGE_URI,
   SERVICE_ADDRESS_PAGE_URI
 } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
@@ -32,6 +33,10 @@ describe('ContactDetailsController', () => {
 
     it('should return 200 and render the Contact Details page', async () => {
 
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: ''} as SuppressionSession
+      });
+
       await request(app)
         .get(CONTACT_DETAILS_PAGE_URI)
         .expect(response => {
@@ -51,7 +56,9 @@ describe('ContactDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return undefined
+      });
 
       await request(app)
         .get(CONTACT_DETAILS_PAGE_URI)
@@ -63,14 +70,15 @@ describe('ContactDetailsController', () => {
     })
 
     it('should return 200 with pre-populated data when accessing page with a session', async () => {
-      const contactAddress = {
-        ...generateTestData().contactAddress
-      } as Address;
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return {
-          contactAddress
-        } as SuppressionData;
+      const testData = generateTestData();
+
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve(testData)
       });
 
       await request(app)
@@ -79,11 +87,11 @@ describe('ContactDetailsController', () => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
-          expectToHavePopulatedInput(response.text, 'line1', contactAddress.line1);
-          expectToHavePopulatedInput(response.text, 'town', contactAddress.town);
-          expectToHavePopulatedInput(response.text, 'county', contactAddress.county);
-          expectToHavePopulatedInput(response.text, 'postcode', contactAddress.postcode);
-          expectToHavePopulatedInput(response.text, 'country', contactAddress.country);
+          expectToHavePopulatedInput(response.text, 'line1', testData.contactAddress.line1);
+          expectToHavePopulatedInput(response.text, 'town', testData.contactAddress.town);
+          expectToHavePopulatedInput(response.text, 'county', testData.contactAddress.county);
+          expectToHavePopulatedInput(response.text, 'postcode', testData.contactAddress.postcode);
+          expectToHavePopulatedInput(response.text, 'country', testData.contactAddress.country);
         });
     });
   });
@@ -97,7 +105,9 @@ describe('ContactDetailsController', () => {
     const countryErrorMessage = 'Country is required';
 
     it('should throw an error if the session doesn’t exist', async () => {
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return undefined
+      });
 
       await request(app)
         .post(CONTACT_DETAILS_PAGE_URI)
@@ -191,6 +201,14 @@ describe('ContactDetailsController', () => {
 
     it('should accept address details without data for Address Line 2, and redirect', async () => {
 
+      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
+        return Promise.resolve('12345-12345')
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
+        return Promise.resolve(true)
+      });
+
       const testData = generateTestData().contactAddress;
       testData.line2 = '';
 
@@ -201,6 +219,14 @@ describe('ContactDetailsController', () => {
     });
 
     it('should redirect if the information provided by the user is valid', async () => {
+
+      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
+        return Promise.resolve('12345-12345')
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
+        return Promise.resolve(true)
+      });
 
       const testData = generateTestData().contactAddress;
 
