@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
 import { CHECK_SUBMISSION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';
@@ -23,7 +24,7 @@ describe('PaymentReviewController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -37,6 +38,10 @@ describe('PaymentReviewController', () => {
 
     it('should return 200 and render the Payment Review Page', async () => {
       const expectedTitle = 'Review your payment';
+
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: ''} as SuppressionSession
+      });
 
       await request(app)
         .get(PAYMENT_REVIEW_PAGE_URI)

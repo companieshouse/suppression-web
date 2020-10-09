@@ -51,7 +51,6 @@ export class PaymentCallbackController {
       redirectURI = PAYMENT_REVIEW_PAGE_URI;
     }
 
-    suppressionData.paymentDetails.status = status;
     SessionService.setSuppressionSession(req, suppressionData);
 
     return res.redirect(redirectURI);

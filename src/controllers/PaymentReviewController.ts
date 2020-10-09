@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid'
 
 import { PaymentStatus } from '../models/PaymentStatus';
-import { PaymentDetails, SuppressionData } from '../models/SuppressionDataModel';
+import { PaymentDetails, SuppressionSession } from '../models/suppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
 import { PaymentResource, PaymentService } from '../services/payment/PaymentService';
@@ -24,9 +24,9 @@ export class PaymentReviewController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
 
-    if (!suppressionData) {
+    if (!session) {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
 
@@ -42,30 +42,27 @@ export class PaymentReviewController {
 
   public continue = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
 
-    if (!suppressionData) {
+    if (!session) {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
+    } else if (!session.applicationReference){
+      return next(new Error(`${PaymentReviewController.name} - application reference expected but none found`));
     }
-
-    let applicationReference: string;
 
     try {
 
       const accessToken: string =  SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
 
-      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData.applicantDetails, accessToken);
+      const paymentUrls: PaymentResource =  await this.paymentService.generatePaymentUrl(session.applicationReference, paymentStateUUID, accessToken);
 
-      const paymentUrls: PaymentResource =  await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
-
-      suppressionData.paymentDetails = {
+      session.paymentDetails = {
         stateUUID: paymentStateUUID,
-        status: PaymentStatus.CREATED,
         resourceUri: paymentUrls.resourceUri
-      } as PaymentDetails
+      } as PaymentDetails;
 
-      SessionService.setSuppressionSession(req, suppressionData);
+      SessionService.setSession(req, session);
 
       res.redirect(paymentUrls.redirectUrl);
 

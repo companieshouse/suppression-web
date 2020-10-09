@@ -34,7 +34,6 @@ export interface DocumentDetails {
 }
 
 export interface PaymentDetails {
-  status: PaymentStatus;
   stateUUID: string;
   resourceUri: string;
 }
