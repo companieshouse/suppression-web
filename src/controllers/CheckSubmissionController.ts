@@ -1,20 +1,38 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionSession } from '../models/suppressionSessionModel';
 import { CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
+import { SuppressionService } from '../services/suppression/SuppressionService';
+import { FormValidator } from '../validators/FormValidator';
+import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
 
 const template = 'check-submission';
 const backNavigation = CONTACT_DETAILS_PAGE_URI;
 
 export class CheckSubmissionController {
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  private suppressionService: SuppressionService;
 
-    if (!suppressionData) {
+  constructor(suppressionService: SuppressionService) {
+    this.suppressionService = suppressionService
+  }
+
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
+
+    const session: SuppressionSession | undefined = SessionService.getSession(req);
+
+    if (!session) {
       return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
     }
+
+    const accessToken: string = SessionService.getAccessToken(req);
+
+    const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference!, accessToken)
+      .catch(reason => {
+        throw new Error(`${CheckSubmissionController.name} - ${reason} `);
+      });
 
     const templateData = {
       applicantDetails: suppressionData.applicantDetails,
