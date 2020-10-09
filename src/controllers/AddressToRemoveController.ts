@@ -16,8 +16,10 @@ const backNavigation = APPLICANT_DETAILS_PAGE_URI;
 export class AddressToRemoveController {
 
   private suppressService: SuppressionService;
+  private validator: FormValidator;
 
-  constructor(suppressionService: SuppressionService, private validator: FormValidator = new FormValidator(formSchema)) {
+  constructor(suppressionService: SuppressionService) {
+    this.validator = new FormValidator(formSchema);
     this.suppressService = suppressionService
   }
 
