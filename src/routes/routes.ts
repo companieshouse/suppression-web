@@ -47,8 +47,8 @@ const serviceAddressController = new ServiceAddressController(suppressionService
 const contactDetailsController = new ContactDetailsController(suppressionService);
 const checkSubmissionController = new CheckSubmissionController(suppressionService);
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
-const paymentCallbackController = new PaymentCallbackController(paymentService);
-const confirmationController = new ConfirmationController();
+const paymentCallbackController = new PaymentCallbackController(suppressionService, paymentService);
+const confirmationController = new ConfirmationController(suppressionService);
 
 const healthcheckController = new HealthcheckController();
 

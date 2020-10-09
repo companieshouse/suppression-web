@@ -1,8 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
+import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
 import { CONFIRMATION_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveTableRow,
@@ -32,6 +34,14 @@ describe('ConfirmationController', () => {
 
       const app = createApp();
 
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: 'TEST-TEST'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve(testData)
+      });
+
       await request(app)
         .get(CONFIRMATION_PAGE_URI)
         .expect(response => {
@@ -52,7 +62,10 @@ describe('ConfirmationController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return undefined
+      });
+
       const app = createApp();
 
       await request(app)
@@ -64,6 +77,11 @@ describe('ConfirmationController', () => {
     });
 
     it('should render error when no application reference is present in the session', async () => {
+
+      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+        return { applicationReference: ''} as SuppressionSession
+      });
+
 
       const testData = generateTestData()
       delete testData.applicationReference;

@@ -7,7 +7,6 @@ export interface SuppressionData {
   serviceAddress?: Address;
   documentDetails: DocumentDetails;
   contactAddress: Address;
-  paymentDetails: PaymentDetails;
 }
 
 export interface ApplicantDetails {
@@ -31,9 +30,4 @@ export interface DocumentDetails {
   companyNumber: string;
   description: string;
   date: string;
-}
-
-export interface PaymentDetails {
-  stateUUID: string;
-  resourceUri: string;
 }
