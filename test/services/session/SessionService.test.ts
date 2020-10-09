@@ -2,12 +2,16 @@ import { Session } from 'ch-node-session-handler';
 import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { Request } from 'express';
 
-import { SuppressionData} from '../../../src/models/SuppressionDataModel';
-import { SUPPRESSION_DATA_KEY } from '../../../src/models/suppressionSessionModel';
+import { SuppressionSession, SUPPRESSION_DATA_KEY } from '../../../src/models/suppressionSessionModel';
 import SessionService from '../../../src/services/session/SessionService';
-import { generateTestData } from '../../TestData';
 
-const mockSuppressionData: SuppressionData = generateTestData();
+const mockSuppressionSession: SuppressionSession = {
+  applicationReference: 'TESTS-TESTS',
+  paymentDetails: {
+    stateUUID: 'mockUUID',
+    resourceUri: 'mockURI'
+  }
+}
 
 const mockRequestData = {
   session: {
@@ -21,10 +25,10 @@ describe('SessionService', () => {
 
     const mockRequest: Request = mockRequestData;
 
-    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionData);
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
     mockRequest.session!.getExtraData = mockGetExtraData;
 
-    expect(SessionService.getSuppressionSession(mockRequest)).toEqual(mockSuppressionData);
+    expect(SessionService.getSession(mockRequest)).toEqual(mockSuppressionSession);
     expect(mockGetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY);
   });
 
@@ -35,7 +39,7 @@ describe('SessionService', () => {
     const mockGetExtraData: jest.Mock = jest.fn().mockReturnValue(undefined);
     mockRequest.session!.getExtraData = mockGetExtraData;
 
-    expect(SessionService.getSuppressionSession(mockRequest)).toBeUndefined();
+    expect(SessionService.getSession(mockRequest)).toBeUndefined();
     expect(mockGetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY);
   });
 
@@ -46,10 +50,10 @@ describe('SessionService', () => {
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
-    SessionService.setSuppressionSession(mockRequest, mockSuppressionData);
+    SessionService.setSession(mockRequest, mockSuppressionSession);
 
-    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionData);
-  })
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionSession);
+  });
 
   it('should retrieve the access token from the session', () => {
 

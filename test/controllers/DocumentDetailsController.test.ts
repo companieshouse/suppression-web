@@ -63,10 +63,6 @@ describe('DocumentDetailsController', () => {
 
       const app = createApp();
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return undefined
-      });
-
       await request(app)
         .get(DOCUMENT_DETAILS_PAGE_URI)
         .expect(response => {

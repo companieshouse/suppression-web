@@ -30,8 +30,6 @@ describe('ConfirmationController', () => {
       delete testData.applicantDetails.previousName;
       delete testData.serviceAddress!.line2;
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => testData);
-
       const app = createApp();
 
       jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
@@ -82,11 +80,8 @@ describe('ConfirmationController', () => {
         return { applicationReference: ''} as SuppressionSession
       });
 
-
       const testData = generateTestData()
       delete testData.applicationReference;
-
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => testData);
       const app = createApp();
 
       await request(app)
