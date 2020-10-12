@@ -1,5 +1,3 @@
-import { PaymentStatus } from '../models/PaymentStatus';
-
 export interface SuppressionData {
   applicationReference?: string;
   applicantDetails: ApplicantDetails;
