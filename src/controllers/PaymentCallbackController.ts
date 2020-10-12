@@ -36,7 +36,7 @@ export class PaymentCallbackController {
       return next(new Error(`${PaymentCallbackController.name} - session expected but none found`));
     }
 
-    const expectedPaymentStateUUID: string | undefined = session.paymentDetails?.stateUUID;
+    const expectedPaymentStateUUID: string = session.paymentDetails!.stateUUID;
     if (state !== expectedPaymentStateUUID) {
       return next(new Error(`${PaymentCallbackController.name} - payment state mismatch`));
     }
