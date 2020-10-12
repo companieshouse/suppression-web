@@ -65,22 +65,20 @@ export class SuppressionService {
         if (response.status === StatusCodes.NO_CONTENT) {
           return;
         }
-        throw new Error('Could not update suppression resource');
       })
       .catch(this.handleResponseError('patch'))
   }
 
   private handleResponseError(operation: 'save' | 'get' | 'patch'): (_: AxiosError) => never {
     return (err: AxiosError) => {
-
-      if (err.response != null) {
+      if (err.response) {
         switch (err.response.status) {
           case StatusCodes.UNAUTHORIZED:
             throw new SuppressionUnauthorisedError(`${operation} suppression unauthorised`);
           case StatusCodes.UNPROCESSABLE_ENTITY:
             throw new SuppressionUnprocessableEntityError(`${operation} suppression on invalid suppression data`);
           case StatusCodes.NOT_FOUND:
-            throw new Error(`${operation} suppression failed. API not found`);
+            throw new Error(`${operation} suppression failed. Suppression not found`);
         }
       }
 

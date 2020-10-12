@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 
 import { ApplicantDetails, SuppressionData } from '../models/SuppressionDataModel';
-import { SuppressionSession } from '../models/suppressionSessionModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { YesNo } from '../models/YesNo';
 import { ADDRESS_TO_REMOVE_PAGE_URI, ROOT_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
@@ -34,7 +34,7 @@ export class ApplicantDetailsController {
 
     const templateData = await this.getApplicantDetails(session?.applicationReference, accessToken)
       .catch((error) => {
-      return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
+        return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
     });
 
     res.render(template, {

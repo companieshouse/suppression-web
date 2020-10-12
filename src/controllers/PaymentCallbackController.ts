@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { PaymentStatus } from '../models/PaymentStatus';
-import { SuppressionSession } from '../models/suppressionSessionModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CONFIRMATION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
 import { PaymentService } from '../services/payment/PaymentService';
 import SessionService from '../services/session/SessionService';

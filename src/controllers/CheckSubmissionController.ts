@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
-import { SuppressionSession } from '../models/suppressionSessionModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';
-import { FormValidator } from '../validators/FormValidator';
-import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
 
 const template = 'check-submission';
 const backNavigation = CONTACT_DETAILS_PAGE_URI;

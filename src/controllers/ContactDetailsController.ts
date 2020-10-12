@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes/build';
-import { Address, SuppressionData } from '../models/SuppressionDataModel';
-import { SuppressionSession } from '../models/suppressionSessionModel';
-import { CHECK_SUBMISSION_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
+import { CHECK_SUBMISSION_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';

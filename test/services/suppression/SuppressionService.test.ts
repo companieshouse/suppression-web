@@ -34,7 +34,7 @@ describe('SuppressionService', () => {
 
     });
 
-    it('should throw an error when API Key not defined', async () => {
+    it('should throw an error when Access token not defined', async () => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       for (const data of [undefined, null]) {
@@ -64,14 +64,14 @@ describe('SuppressionService', () => {
 
     it('should return error when resource not created', async() => {
 
-      mockedAxios.post.mockResolvedValue({
+      mockedAxios.post.mockReturnValue(Promise.reject({
         status: StatusCodes.CONFLICT
-      });
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('save suppression failed with message: Could not create suppression resource'));
+        expect(err).toEqual(new Error('save suppression failed with message: unknown error'));
       })
 
     });
@@ -105,13 +105,13 @@ describe('SuppressionService', () => {
     it('should return error when API not found', async() => {
 
       mockedAxios.post.mockReturnValue(Promise.reject({
-        response: { status: StatusCodes.NOT_FOUND }
+        response: { }
       }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('save suppression failed. API not found'));
+        expect(err).toEqual(new Error('save suppression failed with message: unknown error'));
       })
 
     });
@@ -142,10 +142,10 @@ describe('SuppressionService', () => {
 
     it('should retrieve full suppression', async() => {
 
-      mockedAxios.get.mockResolvedValue({
+      mockedAxios.get.mockReturnValue(Promise.resolve({
         status: StatusCodes.OK,
         data: generateTestData() as SuppressionData
-      });
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
@@ -157,10 +157,10 @@ describe('SuppressionService', () => {
 
     it('should retrieve partial suppression', async() => {
 
-      mockedAxios.get.mockResolvedValue({
+      mockedAxios.get.mockReturnValue(Promise.resolve({
         status: StatusCodes.OK,
         data: { applicantDetails: generateTestData().applicantDetails } as SuppressionData
-      });
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
@@ -172,14 +172,14 @@ describe('SuppressionService', () => {
 
     it('should return error when resource not found', async() => {
 
-      mockedAxios.get.mockResolvedValue({
-        status: StatusCodes.NOT_FOUND
-      });
+      mockedAxios.get.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.NOT_FOUND }
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('get suppression failed with message: Could not retrieve suppression resource'));
+        expect(err).toEqual(new Error('get suppression failed. Suppression not found'));
       })
 
     });
@@ -215,7 +215,7 @@ describe('SuppressionService', () => {
 
   describe('patching suppression', () => {
 
-    const mockPartialData = { applicantDetails: generateTestData().applicantDetails }
+    const mockPartialData = { applicantDetails: generateTestData().applicantDetails };
 
     it('should throw an error when application reference not defined', async() => {
       const suppressionService = new SuppressionService(mockSuppressionsUri);
@@ -249,10 +249,10 @@ describe('SuppressionService', () => {
 
     it('should return No Content when partial data saved', async() => {
 
-      mockedAxios.patch.mockResolvedValue({
+      mockedAxios.patch.mockReturnValue(Promise.resolve({
         status: StatusCodes.NO_CONTENT,
         data: true
-      });
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
@@ -273,14 +273,14 @@ describe('SuppressionService', () => {
 
     it('should return error when resource not found', async() => {
 
-      mockedAxios.patch.mockResolvedValue({
-        status: StatusCodes.NOT_FOUND
-      });
+      mockedAxios.patch.mockReturnValue(Promise.reject({
+        response: { status: StatusCodes.NOT_FOUND }
+      }));
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('patch suppression failed with message: Could not update suppression resource'));
+        expect(err).toEqual(new Error('patch suppression failed. Suppression not found'));
       })
 
     });

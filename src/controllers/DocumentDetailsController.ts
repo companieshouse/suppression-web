@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import moment from 'moment';
 
 import {  DocumentDetails, SuppressionData } from '../models/SuppressionDataModel';
-import { SuppressionSession } from '../models/suppressionSessionModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';

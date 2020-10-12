@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { SuppressionData } from '../models/SuppressionDataModel';
-import { SuppressionSession } from '../models/suppressionSessionModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';

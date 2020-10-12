@@ -1,13 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes  } from 'http-status-codes';
 
-import { Address, SuppressionData } from '../models/SuppressionDataModel'
-import { SuppressionSession } from '../models/suppressionSessionModel';
-import { CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { SuppressionData } from '../models/SuppressionDataModel'
+import { SuppressionSession } from '../models/SuppressionSessionModel';
+import { CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';
-import { FormValidator } from '../validators/FormValidator';
-import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
 
 const template = 'service-address';
 const backNavigation = DOCUMENT_DETAILS_PAGE_URI;

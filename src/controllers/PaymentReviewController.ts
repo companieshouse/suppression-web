@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid'
 
-import { PaymentStatus } from '../models/PaymentStatus';
-import { PaymentDetails, SuppressionSession } from '../models/suppressionSessionModel';
+import { PaymentDetails, SuppressionSession } from '../models/SuppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
 import { PaymentResource, PaymentService } from '../services/payment/PaymentService';

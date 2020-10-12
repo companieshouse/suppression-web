@@ -1,6 +1,5 @@
 import { Request } from 'express';
-import { SuppressionData } from '../../../models/SuppressionDataModel';
-import { SuppressionSession } from '../../../models/suppressionSessionModel';
+import { SuppressionSession } from '../../../models/SuppressionSessionModel';
 
 export default class SessionService {
 
