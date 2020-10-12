@@ -12,8 +12,8 @@ import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormWithDateValidator } from '../validators/FormWithDateValidator';
 import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchema';
 
-const template = 'applicant-details';
-const backNavigation = ROOT_URI;
+const template: string = 'applicant-details';
+const backNavigation: string = ROOT_URI;
 const missingDateErrorMessage: string = 'Date of birth is required';
 
 export class ApplicantDetailsController {
@@ -32,7 +32,7 @@ export class ApplicantDetailsController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData = await this.getApplicantDetails(session?.applicationReference, accessToken)
+    const templateData: ApplicantDetails = await this.getApplicantDetails(session?.applicationReference, accessToken)
       .catch((error) => {
         return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
     });
@@ -94,9 +94,7 @@ export class ApplicantDetailsController {
     }
 
     const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${ApplicantDetailsController.name} - ${reason} `);
-      });
+
     const applicantDetails = suppressionData.applicantDetails;
 
     const [year, month, day] = applicantDetails.dateOfBirth.split('-', 3);

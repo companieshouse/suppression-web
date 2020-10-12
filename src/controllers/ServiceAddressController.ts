@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { SuppressionData } from '../models/SuppressionDataModel'
+import { Address, SuppressionData } from '../models/SuppressionDataModel'
 import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'service-address';
-const backNavigation = DOCUMENT_DETAILS_PAGE_URI;
+const template: string = 'service-address';
+const backNavigation: string = DOCUMENT_DETAILS_PAGE_URI;
 
 export class ServiceAddressController {
 
@@ -27,7 +27,7 @@ export class ServiceAddressController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData = await this.getServiceAddress(session.applicationReference, accessToken)
+    const templateData: Address = await this.getServiceAddress(session.applicationReference, accessToken)
       .catch((error) => {
         return next(new Error(`${ServiceAddressController.name} - ${error}`));
       });
@@ -49,7 +49,7 @@ export class ServiceAddressController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+    await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
       return next(error)
     });
 
@@ -63,10 +63,7 @@ export class ServiceAddressController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${ServiceAddressController.name} - ${reason} `);
-      });
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
 
     if (!suppressionData.serviceAddress) {
       return {};

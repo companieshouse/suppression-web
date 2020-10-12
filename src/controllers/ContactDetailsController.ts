@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes/build';
-import { SuppressionData } from '../models/SuppressionDataModel';
+import { Address, SuppressionData } from '../models/SuppressionDataModel';
 import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CHECK_SUBMISSION_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
@@ -9,8 +9,8 @@ import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema';
 
-const template = 'contact-details';
-const backNavigation = SERVICE_ADDRESS_PAGE_URI;
+const template: string = 'contact-details';
+const backNavigation: string = SERVICE_ADDRESS_PAGE_URI;
 
 export class ContactDetailsController {
 
@@ -32,7 +32,7 @@ export class ContactDetailsController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData = await this.getContactAddress(session.applicationReference, accessToken)
+    const templateData: Address = await this.getContactAddress(session.applicationReference, accessToken)
       .catch((error) => {
         return next(new Error(`${ContactDetailsController.name} - ${error}`));
       });
@@ -66,7 +66,7 @@ export class ContactDetailsController {
 
       const accessToken: string = SessionService.getAccessToken(req);
 
-      await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
         return next(error);
       });
 
@@ -80,10 +80,7 @@ export class ContactDetailsController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${ContactDetailsController.name} - ${reason} `);
-      });
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
 
     if (!suppressionData.contactAddress) {
       return {};

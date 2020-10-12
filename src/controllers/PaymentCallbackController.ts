@@ -25,7 +25,7 @@ export class PaymentCallbackController {
       return next(new Error(`${PaymentCallbackController.name} - received invalid arguments`));
     }
 
-    const statusIsValid: boolean = Object.values(PaymentStatus).includes(status as PaymentStatus)
+    const statusIsValid: boolean = Object.values(PaymentStatus).includes(status as PaymentStatus);
     if (!statusIsValid) {
       return next(new Error(`${PaymentCallbackController.name} - received invalid payment status`));
     }

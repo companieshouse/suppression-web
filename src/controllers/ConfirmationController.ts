@@ -5,7 +5,7 @@ import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'confirmation';
+const template: string = 'confirmation';
 
 export class ConfirmationController {
 

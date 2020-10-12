@@ -8,8 +8,8 @@ import { PaymentResource, PaymentService } from '../services/payment/PaymentServ
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'payment-review';
-const backNavigation = CHECK_SUBMISSION_PAGE_URI;
+const template: string = 'payment-review';
+const backNavigation: string = CHECK_SUBMISSION_PAGE_URI;
 
 export class PaymentReviewController {
 

@@ -10,8 +10,8 @@ import { SuppressionService } from '../services/suppression/SuppressionService';
 import { FormWithDateValidator } from '../validators/FormWithDateValidator';
 import { schema } from '../validators/schema/DocumentDetailsSchema';
 
-const template = 'document-details';
-const backNavigation = ADDRESS_TO_REMOVE_PAGE_URI;
+const template: string = 'document-details';
+const backNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
 const missingDateErrorMessage: string = 'Document date is required';
 
 export class DocumentDetailsController {
@@ -34,7 +34,7 @@ export class DocumentDetailsController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData = await this.getDocumentDetails(session.applicationReference, accessToken)
+    const templateData: DocumentDetails = await this.getDocumentDetails(session.applicationReference, accessToken)
       .catch((error) => {
         return next(new Error(`${DocumentDetailsController.name} - ${error}`));
       });
@@ -62,26 +62,26 @@ export class DocumentDetailsController {
         validationResult,
         backNavigation
       });
-    } else {
-
-      const date = moment(req.body.date).format('YYYY-MM-DD');
-
-      const documentDetails: DocumentDetails = {
-        ...req.body,
-        date
-      } as DocumentDetails;
-
-      const partialSuppressionData: SuppressionData = { documentDetails } as SuppressionData;
-
-      const accessToken: string = SessionService.getAccessToken(req);
-
-      await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
-        return next(error)
-      });
-
-      res.redirect(SERVICE_ADDRESS_PAGE_URI);
     }
-  }
+
+    const date = moment(req.body.date).format('YYYY-MM-DD');
+
+    const documentDetails: DocumentDetails = {
+      ...req.body,
+      date
+    } as DocumentDetails;
+
+    const partialSuppressionData: SuppressionData = { documentDetails } as SuppressionData;
+
+    const accessToken: string = SessionService.getAccessToken(req);
+
+    await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
+      return next(error)
+    });
+
+    res.redirect(SERVICE_ADDRESS_PAGE_URI);
+
+  };
 
   private async getDocumentDetails(applicationReference: string | undefined, accessToken: string): Promise<any> {
 
@@ -89,18 +89,17 @@ export class DocumentDetailsController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${DocumentDetailsController.name} - ${reason} `);
-      });
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
 
-    if (!suppressionData.documentDetails) {
+    const documentDetails: DocumentDetails = suppressionData.documentDetails;
+
+    if (!documentDetails) {
       return {};
     }
 
-    const [year, month, day] = suppressionData.documentDetails.date.split('-', 3);
+    const [year, month, day] = documentDetails.date.split('-', 3);
 
-    return {...suppressionData.documentDetails, day, month, year};
+    return {...documentDetails, day, month, year};
   }
 
 }

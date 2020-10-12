@@ -6,8 +6,8 @@ import { CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/pat
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'check-submission';
-const backNavigation = CONTACT_DETAILS_PAGE_URI;
+const template: string = 'check-submission';
+const backNavigation: string = CONTACT_DETAILS_PAGE_URI;
 
 export class CheckSubmissionController {
 
@@ -27,7 +27,7 @@ export class CheckSubmissionController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference!, accessToken)
+    const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
       .catch(reason => {
         throw new Error(`${CheckSubmissionController.name} - ${reason} `);
       });

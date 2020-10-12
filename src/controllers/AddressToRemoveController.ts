@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
-import { SuppressionData } from '../models/SuppressionDataModel'
+import { Address, SuppressionData } from '../models/SuppressionDataModel'
 import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
@@ -10,8 +10,8 @@ import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema'
 
-const template = 'address-to-remove';
-const backNavigation = APPLICANT_DETAILS_PAGE_URI;
+const template: string = 'address-to-remove';
+const backNavigation: string = APPLICANT_DETAILS_PAGE_URI;
 
 export class AddressToRemoveController {
 
@@ -33,7 +33,7 @@ export class AddressToRemoveController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData = await this.getAddressToRemove(session.applicationReference, accessToken)
+    const templateData: Address = await this.getAddressToRemove(session.applicationReference, accessToken)
       .catch((error) => {
         return next(new Error(`${AddressToRemoveController.name} - ${error}`));
       });
@@ -80,10 +80,7 @@ export class AddressToRemoveController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${AddressToRemoveController.name} - ${reason} `);
-      });
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
 
     return {...suppressionData.addressToRemove};
   }
