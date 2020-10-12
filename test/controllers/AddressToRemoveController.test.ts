@@ -201,7 +201,7 @@ describe('AddressToRemoveController', () => {
       testData.line2 = '';
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
@@ -215,7 +215,7 @@ describe('AddressToRemoveController', () => {
       const testData = generateTestData().addressToRemove;
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {

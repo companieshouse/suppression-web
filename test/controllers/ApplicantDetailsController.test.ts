@@ -91,7 +91,7 @@ describe('ApplicantDetailsController', () => {
     });
 
     jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-      return Promise.resolve(true)
+      return Promise.resolve()
     });
 
     const fullNameErrorMessage = 'Full name is required';
@@ -261,7 +261,7 @@ describe('ApplicantDetailsController', () => {
     it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       const testData = generateData();

@@ -129,7 +129,7 @@ describe('ServiceAddressController', () => {
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       const testData: Address | undefined = generateTestData().serviceAddress;
@@ -150,7 +150,7 @@ describe('ServiceAddressController', () => {
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       const app = createApp();

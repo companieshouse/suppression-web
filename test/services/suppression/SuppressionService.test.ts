@@ -256,10 +256,18 @@ describe('SuppressionService', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionsUri);
 
-      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken)
-        .then((response => {
-          expect(response).toEqual(true)
-        }))
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken);
+
+      expect(mockedAxios.patch).toHaveBeenCalledWith(
+        `${mockSuppressionsUri}/suppressions/${mockGeneratedReference}`,
+        mockPartialData as SuppressionData,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + mockAccessToken
+          }
+        })
 
     });
 

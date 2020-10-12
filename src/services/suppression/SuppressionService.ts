@@ -49,7 +49,7 @@ export class SuppressionService {
       .catch(this.handleResponseError('get'))
   }
 
-  public async patch(partialSuppression: any, applicationReference: string, accessToken: string): Promise<boolean> {
+  public async patch(partialSuppression: any, applicationReference: string, accessToken: string): Promise<void> {
 
     this.checkArgumentOrThrow(partialSuppression, 'Partial suppression data is missing');
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
@@ -61,9 +61,9 @@ export class SuppressionService {
 
     return await axios
       .patch(uri, partialSuppression as SuppressionData, {headers: this.getHeaders(accessToken)})
-      .then((response: AxiosResponse<boolean>) => {
+      .then((response: AxiosResponse<void>) => {
         if (response.status === StatusCodes.NO_CONTENT) {
-          return true;
+          return;
         }
         throw new Error('Could not update suppression resource');
       })

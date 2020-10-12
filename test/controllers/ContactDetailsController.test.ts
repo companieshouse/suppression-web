@@ -206,7 +206,7 @@ describe('ContactDetailsController', () => {
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       const testData = generateTestData().contactAddress;
@@ -225,7 +225,7 @@ describe('ContactDetailsController', () => {
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       const testData = generateTestData().contactAddress;

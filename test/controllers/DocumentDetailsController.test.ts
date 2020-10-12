@@ -113,7 +113,7 @@ describe('DocumentDetailsController', () => {
     it('should redirect to the Service Address page when valid data was submitted', async () => {
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
-        return Promise.resolve(true)
+        return Promise.resolve()
       });
 
       const app = createApp();
