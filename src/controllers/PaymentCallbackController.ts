@@ -30,7 +30,7 @@ export class PaymentCallbackController {
       return next(new Error(`${PaymentCallbackController.name} - received invalid payment status`));
     }
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${PaymentCallbackController.name} - session expected but none found`));

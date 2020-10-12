@@ -65,7 +65,7 @@ describe('PaymentCallbackController', () => {
     const testQuery = { ...queryData };
     testQuery.state = 'TAMPERED';
 
-    jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
       return {
         applicationReference: '12345-12345',
         paymentDetails: {
@@ -89,7 +89,7 @@ describe('PaymentCallbackController', () => {
     const testQuery = { ...queryData };
     testQuery.status = PaymentStatus.FAILED;
 
-    jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
       return {
         applicationReference: '12345-12345',
         paymentDetails: {
@@ -110,7 +110,7 @@ describe('PaymentCallbackController', () => {
 
   it('should redirect the user to the Payment Review page if verification of successful payment status failed', async () => {
 
-    jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
       return {
         applicationReference: '12345-12345',
         paymentDetails: {
@@ -135,7 +135,7 @@ describe('PaymentCallbackController', () => {
 
   it('should redirect the user to the Confirmation page if payment was successful (and verified)', async () => {
 
-    jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
       return {
         applicationReference: '12345-12345',
         paymentDetails: {

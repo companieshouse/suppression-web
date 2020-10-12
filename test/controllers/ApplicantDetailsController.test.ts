@@ -46,7 +46,7 @@ describe('ApplicantDetailsController', () => {
 
     it('should return 200 with pre-populated data when accessing page with a valid suppression ID in session', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 

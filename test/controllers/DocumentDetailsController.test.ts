@@ -34,7 +34,7 @@ describe('DocumentDetailsController', () => {
 
     it('should return 200 and render the page', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
         return { applicationReference: ''} as SuppressionSession
       });
 
@@ -57,7 +57,7 @@ describe('DocumentDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
         return undefined
       });
 
@@ -73,7 +73,7 @@ describe('DocumentDetailsController', () => {
 
     it('should return 200 with pre-populated data when accessing page with a session', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 

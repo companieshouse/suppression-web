@@ -32,7 +32,7 @@ describe('ConfirmationController', () => {
 
       const app = createApp();
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: 'TEST-TEST'} as SuppressionSession
       });
 
@@ -60,7 +60,7 @@ describe('ConfirmationController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -76,7 +76,7 @@ describe('ConfirmationController', () => {
 
     it('should render error when no application reference is present in the session', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: ''} as SuppressionSession
       });
 

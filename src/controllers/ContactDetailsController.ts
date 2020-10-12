@@ -24,7 +24,7 @@ export class ContactDetailsController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
@@ -45,7 +45,7 @@ export class ContactDetailsController {
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${ContactDetailsController.name} - session expected but none found`));

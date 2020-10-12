@@ -24,7 +24,7 @@ export class PaymentReviewController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
@@ -42,7 +42,7 @@ export class PaymentReviewController {
 
   public continue = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
@@ -62,7 +62,7 @@ export class PaymentReviewController {
         resourceUri: paymentUrls.resourceUri
       } as PaymentDetails;
 
-      SessionService.setSession(req, session);
+      SessionService.setSuppressionSession(req, session);
 
       res.redirect(paymentUrls.redirectUrl);
 

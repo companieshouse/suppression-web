@@ -37,7 +37,7 @@ describe('CheckSubmissionController', () => {
       delete testData.applicantDetails.previousName;
       delete testData.serviceAddress!.line2;
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
@@ -79,7 +79,7 @@ describe('CheckSubmissionController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -95,7 +95,7 @@ describe('CheckSubmissionController', () => {
 
     it('should render the "Previous name" row when a previous name is present in the submission', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 

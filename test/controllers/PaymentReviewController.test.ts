@@ -24,7 +24,7 @@ describe('PaymentReviewController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -39,7 +39,7 @@ describe('PaymentReviewController', () => {
     it('should return 200 and render the Payment Review Page', async () => {
       const expectedTitle = 'Review your payment';
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: ''} as SuppressionSession
       });
 

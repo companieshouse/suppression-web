@@ -28,7 +28,7 @@ describe('SessionService', () => {
     const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
     mockRequest.session!.getExtraData = mockGetExtraData;
 
-    expect(SessionService.getSession(mockRequest)).toEqual(mockSuppressionSession);
+    expect(SessionService.getSuppressionSession(mockRequest)).toEqual(mockSuppressionSession);
     expect(mockGetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY);
   });
 
@@ -39,7 +39,7 @@ describe('SessionService', () => {
     const mockGetExtraData: jest.Mock = jest.fn().mockReturnValue(undefined);
     mockRequest.session!.getExtraData = mockGetExtraData;
 
-    expect(SessionService.getSession(mockRequest)).toBeUndefined();
+    expect(SessionService.getSuppressionSession(mockRequest)).toBeUndefined();
     expect(mockGetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY);
   });
 
@@ -50,7 +50,7 @@ describe('SessionService', () => {
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
-    SessionService.setSession(mockRequest, mockSuppressionSession);
+    SessionService.setSuppressionSession(mockRequest, mockSuppressionSession);
 
     expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionSession);
   });

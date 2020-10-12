@@ -22,7 +22,7 @@ export class ServiceAddressController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
@@ -42,7 +42,7 @@ export class ServiceAddressController {
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     if (!session) {
       return next(new Error(`${ServiceAddressController.name} - session expected but none found`));

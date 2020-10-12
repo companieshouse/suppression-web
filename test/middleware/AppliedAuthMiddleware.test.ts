@@ -68,7 +68,7 @@ describe('Applied auth middleware', () => {
 
   describe('Authenticated user: all pages', () => {
 
-    jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
       return { applicationReference: ''} as SuppressionSession
     });
 

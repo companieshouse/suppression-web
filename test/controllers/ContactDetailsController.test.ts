@@ -33,7 +33,7 @@ describe('ContactDetailsController', () => {
 
     it('should return 200 and render the Contact Details page', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: ''} as SuppressionSession
       });
 
@@ -56,7 +56,7 @@ describe('ContactDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -73,7 +73,7 @@ describe('ContactDetailsController', () => {
 
       const testData = generateTestData();
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
@@ -105,7 +105,7 @@ describe('ContactDetailsController', () => {
     const countryErrorMessage = 'Country is required';
 
     it('should throw an error if the session doesn’t exist', async () => {
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 

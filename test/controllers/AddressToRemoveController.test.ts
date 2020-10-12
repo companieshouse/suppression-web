@@ -27,7 +27,7 @@ describe('AddressToRemoveController', () => {
 
     it('should return 200 and render the Address to Remove Page', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: ''} as SuppressionSession
       });
 
@@ -52,7 +52,7 @@ describe('AddressToRemoveController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -66,7 +66,7 @@ describe('AddressToRemoveController', () => {
 
     it('should prepopulate fields when relevent data is found in the session', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
@@ -97,13 +97,13 @@ describe('AddressToRemoveController', () => {
     const countryErrorMessage = 'Country is required';
 
     beforeEach(() => {
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
         return { applicationReference: ''} as SuppressionSession
       });
     });
 
     it('should throw an error if the session doesn’t exist', async () => {
-      jest.spyOn(SessionService, 'getSession').mockImplementation(() => undefined);
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
 
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)

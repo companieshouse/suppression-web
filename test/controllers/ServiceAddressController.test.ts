@@ -33,7 +33,7 @@ describe('ServiceAddressController', () => {
 
     it('should return 200 and render the Service Address Page', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: ''} as SuppressionSession
       });
 
@@ -62,7 +62,7 @@ describe('ServiceAddressController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 
@@ -78,7 +78,7 @@ describe('ServiceAddressController', () => {
 
     it('should prepopulate fields when relevant data is found in the session', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
@@ -111,7 +111,7 @@ describe('ServiceAddressController', () => {
 
     it('should throw an error if the session doesn’t exist', async () => {
 
-      jest.spyOn(SessionService, 'getSession').mockImplementationOnce(() => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
       });
 

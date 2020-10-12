@@ -28,7 +28,7 @@ export class ApplicantDetailsController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
     const accessToken: string = SessionService.getAccessToken(req);
 
@@ -69,7 +69,7 @@ export class ApplicantDetailsController {
 
     const partialSuppressionData: SuppressionData = { applicantDetails } as SuppressionData;
 
-    const session: SuppressionSession | undefined = SessionService.getSession(req);
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
     const accessToken: string = SessionService.getAccessToken(req);
 
     try{
@@ -78,7 +78,7 @@ export class ApplicantDetailsController {
         await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
       } else {
         const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken);
-        SessionService.setSession(req, { applicationReference });
+        SessionService.setSuppressionSession(req, { applicationReference });
       }
     } catch (error) {
       return next(error)
