@@ -21,7 +21,7 @@ export class ApplicantDetailsController {
   private suppressionService: SuppressionService;
   private validator: FormWithDateValidator;
 
-  constructor(suppressionService: SuppressionService){
+  constructor(suppressionService: SuppressionService) {
     this.suppressionService = suppressionService;
     this.validator = new FormWithDateValidator(formSchema, missingDateErrorMessage);
   }
@@ -72,10 +72,10 @@ export class ApplicantDetailsController {
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
     const accessToken: string = SessionService.getAccessToken(req);
 
-    try{
+    try {
       if (session?.applicationReference) {
         console.log(session.applicationReference);
-        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken);
       } else {
         const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken);
         SessionService.setSuppressionSession(req, { applicationReference });
@@ -102,10 +102,10 @@ export class ApplicantDetailsController {
     const [year, month, day] = applicantDetails.dateOfBirth.split('-', 3);
 
     let hasPreviousName: YesNo = YesNo.no;
-    if(applicantDetails.previousName){
+    if (applicantDetails.previousName) {
       hasPreviousName = YesNo.yes
     }
 
-    return {...applicantDetails, hasPreviousName , day, month, year};
+    return {...applicantDetails, hasPreviousName, day, month, year};
   }
 }

@@ -52,7 +52,7 @@ export class PaymentReviewController {
       const accessToken: string =  SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
 
-      const paymentUrls: PaymentResource =  await this.paymentService.generatePaymentUrl(session.applicationReference, paymentStateUUID, accessToken);
+      const paymentUrls: PaymentResource = await this.paymentService.generatePaymentUrl(session.applicationReference, paymentStateUUID, accessToken);
 
       session.paymentDetails = {
         stateUUID: paymentStateUUID,

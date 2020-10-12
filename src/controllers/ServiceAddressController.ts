@@ -68,7 +68,7 @@ export class ServiceAddressController {
         throw new Error(`${ServiceAddressController.name} - ${reason} `);
       });
 
-    if (!suppressionData.serviceAddress){
+    if (!suppressionData.serviceAddress) {
       return {};
     }
 

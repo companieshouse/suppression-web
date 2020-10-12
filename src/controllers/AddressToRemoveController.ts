@@ -66,8 +66,8 @@ export class AddressToRemoveController {
 
       const accessToken: string = SessionService.getAccessToken(req);
 
-      await this.suppressionService.patch(partialSuppressionData, session?.applicationReference! , accessToken).catch(error => {
-        return next(error)
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
+        return next(error);
       });
 
       res.redirect(DOCUMENT_DETAILS_PAGE_URI);
