@@ -76,7 +76,7 @@ export class DocumentDetailsController {
     const accessToken: string = SessionService.getAccessToken(req);
 
     await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-      return next(error)
+      return next(new Error(`${DocumentDetailsController.name} - ${error}`));
     });
 
     res.redirect(SERVICE_ADDRESS_PAGE_URI);

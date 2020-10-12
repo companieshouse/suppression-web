@@ -64,7 +64,7 @@ export class PaymentReviewController {
       res.redirect(paymentUrls.redirectUrl);
 
     } catch (error) {
-      return next(error);
+      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
   };
 }

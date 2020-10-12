@@ -67,7 +67,7 @@ export class ContactDetailsController {
       const accessToken: string = SessionService.getAccessToken(req);
 
       await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-        return next(error);
+        return next(new Error(`${ContactDetailsController.name} - ${error}`));
       });
 
       res.redirect(CHECK_SUBMISSION_PAGE_URI);

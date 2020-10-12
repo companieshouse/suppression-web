@@ -50,7 +50,7 @@ export class ServiceAddressController {
     const accessToken: string = SessionService.getAccessToken(req);
 
     await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-      return next(error)
+      return next(new Error(`${ServiceAddressController.name} - ${error}`));
     });
 
     res.redirect(CONTACT_DETAILS_PAGE_URI);

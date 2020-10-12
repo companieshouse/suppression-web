@@ -74,14 +74,13 @@ export class ApplicantDetailsController {
 
     try {
       if (session?.applicationReference) {
-        console.log(session.applicationReference);
         await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken);
       } else {
         const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken);
         SessionService.setSuppressionSession(req, { applicationReference });
       }
     } catch (error) {
-      return next(error)
+      return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
     }
 
     res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
