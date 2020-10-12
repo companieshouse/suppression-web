@@ -27,17 +27,19 @@ export class ConfirmationController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${ConfirmationController.name} - ${reason} `);
+    try {
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
+
+      res.render(template, {
+        applicationReference: session.applicationReference,
+        userEmailAddress: SessionService.getUserEmail(req),
+        documentDetails: suppressionData.documentDetails,
+        processingDelayEvent,
+        paymentReceived
       });
 
-    res.render(template, {
-      applicationReference: session.applicationReference,
-      userEmailAddress: SessionService.getUserEmail(req),
-      documentDetails: suppressionData.documentDetails,
-      processingDelayEvent,
-      paymentReceived
-    });
+    } catch(err) {
+      return next(err)
+    }
   }
 }

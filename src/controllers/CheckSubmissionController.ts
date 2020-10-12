@@ -27,23 +27,25 @@ export class CheckSubmissionController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
-      .catch(reason => {
-        throw new Error(`${CheckSubmissionController.name} - ${reason} `);
+    try {
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
+
+      const templateData = {
+        applicantDetails: suppressionData.applicantDetails,
+        addressToRemove: this.addressToList(suppressionData.addressToRemove),
+        documentDetails: suppressionData.documentDetails,
+        serviceAddress: this.addressToList(suppressionData.serviceAddress),
+        contactAddress: this.addressToList(suppressionData.contactAddress)
+      };
+
+      res.render(template, {
+        ...templateData,
+        backNavigation
       });
 
-    const templateData = {
-      applicantDetails: suppressionData.applicantDetails,
-      addressToRemove: this.addressToList(suppressionData.addressToRemove),
-      documentDetails: suppressionData.documentDetails,
-      serviceAddress: this.addressToList(suppressionData.serviceAddress),
-      contactAddress: this.addressToList(suppressionData.contactAddress)
-    };
-
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
+    } catch (err) {
+      return next(err)
+    }
   }
 
   public confirm = async (req: Request, res: Response, next: NextFunction) => {
