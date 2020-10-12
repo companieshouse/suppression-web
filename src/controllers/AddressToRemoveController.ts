@@ -27,7 +27,7 @@ export class AddressToRemoveController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
     }
 
@@ -48,7 +48,7 @@ export class AddressToRemoveController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
     }
 

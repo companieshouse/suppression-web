@@ -25,7 +25,7 @@ export class PaymentReviewController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
 
@@ -43,10 +43,8 @@ export class PaymentReviewController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
-    } else if (!session.applicationReference){
-      return next(new Error(`${PaymentReviewController.name} - application reference expected but none found`));
     }
 
     try {

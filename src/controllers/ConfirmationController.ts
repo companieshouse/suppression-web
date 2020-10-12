@@ -18,10 +18,8 @@ export class ConfirmationController {
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${ConfirmationController.name} - session expected but none found`));
-    } else if (!session.applicationReference) {
-      return next(new Error(`${ConfirmationController.name} - application reference expected in session but none found`));
     }
 
     const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');

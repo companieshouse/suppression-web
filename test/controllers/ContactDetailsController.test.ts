@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
+import { SuppressionData } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import {
   CHECK_SUBMISSION_PAGE_URI,
@@ -34,7 +35,11 @@ describe('ContactDetailsController', () => {
     it('should return 200 and render the Contact Details page', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { applicationReference: ''} as SuppressionSession
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
       });
 
       await request(app)

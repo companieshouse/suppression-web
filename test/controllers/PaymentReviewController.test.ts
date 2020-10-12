@@ -1,10 +1,12 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
+import { SuppressionData } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
 import { CHECK_SUBMISSION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import { expectToHaveBackButton, expectToHaveButton, expectToHaveTitle } from '../HtmlPatternAssertions'
 
@@ -40,7 +42,11 @@ describe('PaymentReviewController', () => {
       const expectedTitle = 'Review your payment';
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { applicationReference: ''} as SuppressionSession
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
       });
 
       await request(app)

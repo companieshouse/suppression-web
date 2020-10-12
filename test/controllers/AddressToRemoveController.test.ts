@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
+import { SuppressionData } from '../../src/models/SuppressionDataModel';
 
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
@@ -28,7 +29,11 @@ describe('AddressToRemoveController', () => {
     it('should return 200 and render the Address to Remove Page', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { applicationReference: ''} as SuppressionSession
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
       });
 
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
@@ -98,7 +103,7 @@ describe('AddressToRemoveController', () => {
 
     beforeEach(() => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return { applicationReference: ''} as SuppressionSession
+        return { applicationReference: '12345-12345'} as SuppressionSession
       });
     });
 

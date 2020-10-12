@@ -28,7 +28,7 @@ export class DocumentDetailsController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
     }
 
@@ -49,7 +49,7 @@ export class DocumentDetailsController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
     }
 

@@ -5,7 +5,7 @@ export default class SessionService {
 
   static getSuppressionSession(req: Request): SuppressionSession | undefined {
     return {
-      applicationReference: '12345'
+      applicationReference: '12345-12345'
     } as SuppressionSession
   }
 

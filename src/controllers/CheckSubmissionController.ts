@@ -21,7 +21,7 @@ export class CheckSubmissionController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
     }
 

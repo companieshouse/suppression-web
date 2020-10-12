@@ -34,7 +34,11 @@ describe('ServiceAddressController', () => {
     it('should return 200 and render the Service Address Page', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { applicationReference: ''} as SuppressionSession
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
       });
 
       const app = createApp();

@@ -26,7 +26,7 @@ export class ContactDetailsController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
     }
 
@@ -47,7 +47,7 @@ export class ContactDetailsController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
+    if (!session || !session.applicationReference) {
       return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
     }
 
