@@ -2,7 +2,7 @@ import { Session } from 'ch-node-session-handler';
 import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
 import { Request } from 'express';
 
-import { SuppressionSession, SUPPRESSION_DATA_KEY } from '../../../src/models/suppressionSessionModel';
+import { SuppressionSession, SUPPRESSION_DATA_KEY } from '../../../src/models/SuppressionSessionModel';
 import SessionService from '../../../src/services/session/SessionService';
 
 const mockSuppressionSession: SuppressionSession = {
