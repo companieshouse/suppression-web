@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 
 import {
   CHECK_SUBMISSION_PAGE_URI,
