@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 
 import { CHECK_SUBMISSION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';

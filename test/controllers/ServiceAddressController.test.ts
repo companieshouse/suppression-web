@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { Address, SuppressionData } from '../../src/models/SuppressionDataModel'
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 import {
   CONTACT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,

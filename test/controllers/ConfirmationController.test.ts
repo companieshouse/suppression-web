@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 
 import { CONFIRMATION_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
