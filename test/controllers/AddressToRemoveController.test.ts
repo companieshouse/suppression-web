@@ -33,7 +33,7 @@ describe('AddressToRemoveController', () => {
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
-        return Promise.resolve({} as SuppressionData)
+        return Promise.resolve({addressToRemove: undefined} as unknown as SuppressionData)
       });
 
       await request(app).get(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
@@ -59,6 +59,51 @@ describe('AddressToRemoveController', () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return undefined
+      });
+
+      await request(app)
+        .get(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when no application reference in session', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: undefined} as unknown as SuppressionSession
+      });
+
+      await request(app)
+        .get(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when suppression service throws exception', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        throw Error('')
+      });
+
+      await request(app)
+        .get(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should throw an error if get suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        throw new Error('mocking error')
       });
 
       await request(app)
@@ -113,6 +158,30 @@ describe('AddressToRemoveController', () => {
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
         .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error if application reference not in session', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: undefined} as unknown as SuppressionSession
+      });
+
+      await request(app)
+        .post(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error if patch suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+        throw new Error('')
+      });
+
+      await request(app)
+        .post(ADDRESS_TO_REMOVE_PAGE_URI)
+        .expect(StatusCodes.UNPROCESSABLE_ENTITY);
     });
 
     it('should show four validation errors if no information is entered', async () => {
@@ -230,4 +299,4 @@ describe('AddressToRemoveController', () => {
     });
 
   });
-});
+})

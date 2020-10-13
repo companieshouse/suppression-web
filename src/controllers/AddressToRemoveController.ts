@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
-import { Address, SuppressionData } from '../models/SuppressionDataModel'
+import { SuppressionData } from '../models/SuppressionDataModel'
 import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
@@ -25,23 +25,25 @@ export class AddressToRemoveController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+    try{
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
-    }
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      }
 
-    const accessToken: string = SessionService.getAccessToken(req);
+      const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData: Address = await this.getAddressToRemove(session.applicationReference, accessToken)
-      .catch((error) => {
-        return next(new Error(`${AddressToRemoveController.name} - ${error}`));
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      res.render(template, {
+        ...suppressionData.addressToRemove,
+        backNavigation
       });
 
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
+    } catch (err) {
+      return next(new Error(`${AddressToRemoveController.name} - ${err}`));
+    }
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -61,7 +63,6 @@ export class AddressToRemoveController {
         backNavigation
       });
     } else {
-
       const partialSuppressionData: SuppressionData = { addressToRemove: req.body } as SuppressionData;
 
       const accessToken: string = SessionService.getAccessToken(req);
@@ -73,12 +74,4 @@ export class AddressToRemoveController {
       res.redirect(DOCUMENT_DETAILS_PAGE_URI);
     }
   };
-
-  private async getAddressToRemove(applicationReference: string | undefined, accessToken: string): Promise<any> {
-
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference!, accessToken);
-
-    return {...suppressionData.addressToRemove};
-  }
-
 }

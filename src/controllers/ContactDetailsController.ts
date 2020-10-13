@@ -24,23 +24,26 @@ export class ContactDetailsController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
-    }
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ContactDetailsController.name} - session expected but none found`));
+      }
 
-    const accessToken: string = SessionService.getAccessToken(req);
+      const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData: Address = await this.getContactAddress(session.applicationReference, accessToken)
-      .catch((error) => {
-        return next(new Error(`${ContactDetailsController.name} - ${error}`));
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      res.render(template, {
+        ...suppressionData.contactAddress,
+        backNavigation
       });
 
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
+    } catch(error) {
+      return next(new Error(`${ContactDetailsController.name} - ${error}`));
+    }
+
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -73,15 +76,4 @@ export class ContactDetailsController {
       res.redirect(CHECK_SUBMISSION_PAGE_URI);
     }
   };
-
-  private async getContactAddress(applicationReference: string | undefined, accessToken: string): Promise<any> {
-
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference!, accessToken);
-
-    if (!suppressionData.contactAddress) {
-      return {};
-    }
-
-    return {...suppressionData.contactAddress};
-  }
 }
