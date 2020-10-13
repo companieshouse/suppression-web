@@ -28,7 +28,7 @@ export class CheckSubmissionController {
     const accessToken: string = SessionService.getAccessToken(req);
 
     try {
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
 
       const templateData = {
         applicantDetails: suppressionData.applicantDetails,
@@ -44,7 +44,7 @@ export class CheckSubmissionController {
       });
 
     } catch (err) {
-      return next(err)
+      return next(new Error(`${CheckSubmissionController.name} - ${err}`));
     }
   }
 

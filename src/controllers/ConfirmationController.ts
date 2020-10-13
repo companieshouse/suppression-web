@@ -28,7 +28,7 @@ export class ConfirmationController {
     const accessToken: string = SessionService.getAccessToken(req);
 
     try {
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken)
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
 
       res.render(template, {
         applicationReference: session.applicationReference,
@@ -39,7 +39,7 @@ export class ConfirmationController {
       });
 
     } catch(err) {
-      return next(err)
+      return next(new Error(`${ConfirmationController.name} - ${err}`));
     }
   }
 }

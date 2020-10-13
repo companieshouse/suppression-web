@@ -96,6 +96,10 @@ export class ApplicantDetailsController {
 
     const applicantDetails = suppressionData.applicantDetails;
 
+    if (!applicantDetails) {
+      return {};
+    }
+
     const [year, month, day] = applicantDetails.dateOfBirth.split('-', 3);
 
     let hasPreviousName: YesNo = YesNo.no;

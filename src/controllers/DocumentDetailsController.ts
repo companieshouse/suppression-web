@@ -85,11 +85,7 @@ export class DocumentDetailsController {
 
   private async getDocumentDetails(applicationReference: string | undefined, accessToken: string): Promise<any> {
 
-    if (!applicationReference) {
-      return {};
-    }
-
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference!, accessToken);
 
     const documentDetails: DocumentDetails = suppressionData.documentDetails;
 

@@ -59,11 +59,7 @@ export class ServiceAddressController {
 
   private async getServiceAddress(applicationReference: string | undefined, accessToken: string): Promise<any> {
 
-    if (!applicationReference) {
-      return {};
-    }
-
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference!, accessToken);
 
     if (!suppressionData.serviceAddress) {
       return {};
