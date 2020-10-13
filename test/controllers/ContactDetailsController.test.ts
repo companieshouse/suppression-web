@@ -159,8 +159,11 @@ describe('ContactDetailsController', () => {
         return undefined
       });
 
+      const testData = generateTestData().contactAddress;
+
       await request(app)
         .post(CONTACT_DETAILS_PAGE_URI)
+        .send(testData)
         .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
@@ -169,8 +172,11 @@ describe('ContactDetailsController', () => {
         return {applicationReference: undefined} as unknown as SuppressionSession
       });
 
+      const testData = generateTestData().contactAddress;
+
       await request(app)
         .post(CONTACT_DETAILS_PAGE_URI)
+        .send(testData)
         .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
@@ -183,9 +189,12 @@ describe('ContactDetailsController', () => {
         throw new Error('')
       });
 
+      const testData = generateTestData().contactAddress;
+
       await request(app)
         .post(CONTACT_DETAILS_PAGE_URI)
-        .expect(StatusCodes.UNPROCESSABLE_ENTITY);
+        .send(testData)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
     it('should show four validation errors if no information is entered', async () => {

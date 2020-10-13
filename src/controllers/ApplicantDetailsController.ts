@@ -28,19 +28,23 @@ export class ApplicantDetailsController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+    try {
 
-    const accessToken: string = SessionService.getAccessToken(req);
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    const templateData: ApplicantDetails = await this.getApplicantDetails(session?.applicationReference, accessToken)
-      .catch((error) => {
-        return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
-    });
+      const accessToken: string = SessionService.getAccessToken(req);
 
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
+      const templateData: ApplicantDetails = await this.getApplicantDetails(session?.applicationReference, accessToken)
+
+      res.render(template, {
+        ...templateData,
+        backNavigation
+      });
+
+    } catch (err) {
+      return next(new Error(`${ApplicantDetailsController.name} - ${err}`));
+    }
+
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -92,7 +96,7 @@ export class ApplicantDetailsController {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken)
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
 
     const applicantDetails = suppressionData.applicantDetails;
 

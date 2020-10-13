@@ -155,8 +155,11 @@ describe('AddressToRemoveController', () => {
     it('should throw an error if the session doesn’t exist', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
 
+      const testData = generateTestData().addressToRemove;
+
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
+        .send(testData)
         .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
@@ -165,8 +168,11 @@ describe('AddressToRemoveController', () => {
         return {applicationReference: undefined} as unknown as SuppressionSession
       });
 
+      const testData = generateTestData().addressToRemove;
+
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
+        .send(testData)
         .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
@@ -179,9 +185,12 @@ describe('AddressToRemoveController', () => {
         throw new Error('')
       });
 
+      const testData = generateTestData().addressToRemove;
+
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
-        .expect(StatusCodes.UNPROCESSABLE_ENTITY);
+        .send(testData)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
     it('should show four validation errors if no information is entered', async () => {

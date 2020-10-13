@@ -19,15 +19,15 @@ export class CheckSubmissionController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
-
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
-    }
-
-    const accessToken: string = SessionService.getAccessToken(req);
-
     try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
+      }
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
       const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
 
       const templateData = {

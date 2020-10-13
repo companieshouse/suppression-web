@@ -1,10 +1,15 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import { ApplicantDetails } from '../../src/models/SuppressionDataModel';
+import { ApplicantDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
-import { ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../../src/routes/paths';
+import {
+  ADDRESS_TO_REMOVE_PAGE_URI,
+  APPLICANT_DETAILS_PAGE_URI,
+  ROOT_URI
+} from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionUnauthorisedError } from '../../src/services/suppression/errors';
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
@@ -26,11 +31,42 @@ describe('ApplicantDetailsController', () => {
 
   describe('on GET', () => {
 
-    jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
-      return Promise.resolve(generateTestData())
+    it('should render error when suppression service throws exception', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        throw Error('')
+      });
+
+      await request(app)
+        .get(APPLICANT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should throw an error if get suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        throw new Error('mocking error')
+      });
+
+      await request(app)
+        .get(APPLICANT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
     });
 
     it('should return 200 and render the Applicant Details Page', async () => {
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
+      });
+
       await request(app).get(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.OK);
         expectToHaveTitle(response.text, pageTitle);
@@ -274,6 +310,23 @@ describe('ApplicantDetailsController', () => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
         });
+    });
+
+    it('should throw an error if patch suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
+        throw new Error('')
+      });
+
+      const testData = generateData();
+
+      await request(app)
+        .post(APPLICANT_DETAILS_PAGE_URI)
+        .send(testData)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });

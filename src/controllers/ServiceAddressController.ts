@@ -19,52 +19,47 @@ export class ServiceAddressController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
-    }
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+      }
 
-    const accessToken: string = SessionService.getAccessToken(req);
+      const accessToken: string = SessionService.getAccessToken(req);
 
-    const templateData: Address = await this.getServiceAddress(session.applicationReference, accessToken)
-      .catch((error) => {
-        return next(new Error(`${ServiceAddressController.name} - ${error}`));
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      res.render(template, {
+        ...suppressionData.serviceAddress,
+        backNavigation
       });
 
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
+    } catch (err) {
+      return next(new Error(`${ServiceAddressController.name} - ${err}`));
+    }
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+      }
+
+      const partialSuppressionData: SuppressionData = { serviceAddress: req.body } as SuppressionData;
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+
+      res.redirect(CONTACT_DETAILS_PAGE_URI);
+
+    } catch (err) {
+      return next(new Error(`${ServiceAddressController.name} - ${err}`));
     }
-
-    const partialSuppressionData: SuppressionData = { serviceAddress: req.body } as SuppressionData;
-
-    const accessToken: string = SessionService.getAccessToken(req);
-
-    await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-      return next(new Error(`${ServiceAddressController.name} - ${error}`));
-    });
-
-    res.redirect(CONTACT_DETAILS_PAGE_URI);
 
   };
-
-  private async getServiceAddress(applicationReference: string | undefined, accessToken: string): Promise<any> {
-
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference!, accessToken);
-
-    if (!suppressionData.serviceAddress) {
-      return {};
-    }
-
-    return {...suppressionData.serviceAddress};
-  }
 }

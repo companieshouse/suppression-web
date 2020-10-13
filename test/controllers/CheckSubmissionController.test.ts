@@ -3,7 +3,6 @@ import request from 'supertest';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
 import {
-  ADDRESS_TO_REMOVE_PAGE_URI,
   CHECK_SUBMISSION_PAGE_URI,
   CONTACT_DETAILS_PAGE_URI,
   PAYMENT_REVIEW_PAGE_URI

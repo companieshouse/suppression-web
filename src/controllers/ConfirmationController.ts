@@ -16,18 +16,20 @@ export class ConfirmationController {
   }
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
-
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${ConfirmationController.name} - session expected but none found`));
-    }
-
-    const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');
-    const paymentReceived = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
-
-    const accessToken: string = SessionService.getAccessToken(req);
 
     try {
+
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ConfirmationController.name} - session expected but none found`));
+      }
+
+      const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');
+      const paymentReceived = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
       const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
 
       res.render(template, {

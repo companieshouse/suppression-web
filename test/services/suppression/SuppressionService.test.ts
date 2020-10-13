@@ -102,20 +102,6 @@ describe('SuppressionService', () => {
       })
     });
 
-    it('should return error when API not found', async() => {
-
-      mockedAxios.post.mockReturnValue(Promise.reject({
-        response: { }
-      }));
-
-      const suppressionService = new SuppressionService(mockSuppressionsUri);
-
-      await suppressionService.save({} as ApplicantDetails, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('save suppression failed with message: unknown error'));
-      })
-
-    });
-
   });
 
   describe('get suppression', () => {
@@ -195,20 +181,6 @@ describe('SuppressionService', () => {
       await suppressionService.get(mockGeneratedReference, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('get suppression unauthorised'));
       })
-    });
-
-    it('should return error when API not found', async() => {
-
-      mockedAxios.get.mockReturnValue(Promise.reject({
-        response: { status: StatusCodes.NOT_FOUND }
-      }));
-
-      const suppressionService = new SuppressionService(mockSuppressionsUri);
-
-      await suppressionService.get(mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('get suppression failed. API not found'));
-      })
-
     });
 
   });
@@ -309,20 +281,6 @@ describe('SuppressionService', () => {
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('patch suppression unauthorised'));
       })
-    });
-
-    it('should return error when API not found', async() => {
-
-      mockedAxios.patch.mockReturnValue(Promise.reject({
-        response: { status: StatusCodes.NOT_FOUND }
-      }));
-
-      const suppressionService = new SuppressionService(mockSuppressionsUri);
-
-      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken).catch((err) => {
-        expect(err).toEqual(new Error('patch suppression failed. API not found'));
-      })
-
     });
 
   });

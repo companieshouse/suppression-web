@@ -26,23 +26,37 @@ export class DocumentDetailsController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+    try {
 
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${DocumentDetailsController.name} - session expected but none found`));
+      }
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+      const documentDetails: DocumentDetails = suppressionData.documentDetails;
+
+      if (documentDetails) {
+        const [year, month, day] = documentDetails.date.split('-', 3);
+
+        res.render(template, {
+          ...documentDetails, day, month, year,
+          backNavigation
+        });
+
+      } else {
+        res.render(template, {
+          backNavigation
+        });
+      }
+
+    } catch (err) {
+      return next(new Error(`${DocumentDetailsController.name} - ${err}`));
     }
 
-    const accessToken: string = SessionService.getAccessToken(req);
-
-    const templateData: DocumentDetails = await this.getDocumentDetails(session.applicationReference, accessToken)
-      .catch((error) => {
-        return next(new Error(`${DocumentDetailsController.name} - ${error}`));
-      });
-
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
@@ -75,27 +89,14 @@ export class DocumentDetailsController {
 
     const accessToken: string = SessionService.getAccessToken(req);
 
-    await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-      return next(new Error(`${DocumentDetailsController.name} - ${error}`));
-    });
+    try {
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+    } catch (err) {
+      return next(new Error(`${DocumentDetailsController.name} - ${err}`));
+    }
 
     res.redirect(SERVICE_ADDRESS_PAGE_URI);
 
   };
-
-  private async getDocumentDetails(applicationReference: string | undefined, accessToken: string): Promise<any> {
-
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference!, accessToken);
-
-    const documentDetails: DocumentDetails = suppressionData.documentDetails;
-
-    if (!documentDetails) {
-      return {};
-    }
-
-    const [year, month, day] = documentDetails.date.split('-', 3);
-
-    return {...documentDetails, day, month, year};
-  }
 
 }

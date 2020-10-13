@@ -48,30 +48,34 @@ export class AddressToRemoveController {
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+    try{
 
-    if (!session || !session.applicationReference) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      }
+
+      const validationResult: ValidationResult = await this.validator.validate(req);
+      if (validationResult.errors.length > 0) {
+        res.status(StatusCodes.UNPROCESSABLE_ENTITY);
+        return res.render(template, {
+          ...req.body,
+          validationResult,
+          backNavigation
+        });
+      } else {
+        const partialSuppressionData: SuppressionData = {addressToRemove: req.body} as SuppressionData;
+
+        const accessToken: string = SessionService.getAccessToken(req);
+
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+
+        res.redirect(DOCUMENT_DETAILS_PAGE_URI);
+      }
+    } catch (err) {
+      return next(new Error(`${AddressToRemoveController.name} - ${err}`));
     }
 
-    const validationResult: ValidationResult = await this.validator.validate(req);
-    if (validationResult.errors.length > 0) {
-      res.status(StatusCodes.UNPROCESSABLE_ENTITY);
-      return res.render(template, {
-        ...req.body,
-        validationResult,
-        backNavigation
-      });
-    } else {
-      const partialSuppressionData: SuppressionData = { addressToRemove: req.body } as SuppressionData;
-
-      const accessToken: string = SessionService.getAccessToken(req);
-
-      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-        return next(new Error(`${AddressToRemoveController.name} - ${error}`));
-      });
-
-      res.redirect(DOCUMENT_DETAILS_PAGE_URI);
-    }
-  };
+  }
 }

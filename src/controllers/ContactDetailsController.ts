@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes/build';
-import { Address, SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionData } from '../models/SuppressionDataModel';
 import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CHECK_SUBMISSION_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
@@ -69,9 +69,11 @@ export class ContactDetailsController {
 
       const accessToken: string = SessionService.getAccessToken(req);
 
-      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken).catch(error => {
-        return next(new Error(`${ContactDetailsController.name} - ${error}`));
-      });
+      try {
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+      } catch (err) {
+        return next(new Error(`${ContactDetailsController.name} - ${err}`));
+      }
 
       res.redirect(CHECK_SUBMISSION_PAGE_URI);
     }

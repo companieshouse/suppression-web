@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
-import { CONFIRMATION_PAGE_URI } from '../../src/routes/paths';
+import { CONFIRMATION_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
@@ -23,6 +23,57 @@ describe('ConfirmationController', () => {
   const pageTitle = 'Confirmation page';
 
   describe('on GET', () => {
+
+    it('should render error when no application reference in session', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: undefined} as unknown as SuppressionSession
+      });
+
+      const app = createApp();
+
+      await request(app)
+        .get(CONFIRMATION_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when suppression service throws exception', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        throw Error('')
+      });
+
+      const app = createApp();
+
+      await request(app)
+        .get(CONFIRMATION_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should throw an error if get suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        throw new Error('mocking error')
+      });
+
+      const app = createApp();
+
+      await request(app)
+        .get(CONFIRMATION_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
 
     it('should return 200 and render the Confirmation page', async () => {
 
