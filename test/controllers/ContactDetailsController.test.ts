@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 import {
   CHECK_SUBMISSION_PAGE_URI,
   CONTACT_DETAILS_PAGE_URI,

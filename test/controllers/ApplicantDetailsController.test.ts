@@ -2,14 +2,13 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { ApplicantDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
   ROOT_URI
 } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
-import { SuppressionUnauthorisedError } from '../../src/services/suppression/errors';
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {

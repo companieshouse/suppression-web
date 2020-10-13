@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
