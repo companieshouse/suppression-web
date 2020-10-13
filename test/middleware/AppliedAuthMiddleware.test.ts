@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
 import * as authMiddleware from 'web-security-node';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
-import { SuppressionSession } from '../../src/models/suppressionSessionModel';
 
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
@@ -12,7 +11,6 @@ import {
   ROOT_URI,
   SERVICE_ADDRESS_PAGE_URI
 } from '../../src/routes/paths';
-import SessionService from '../../src/services/session/SessionService';
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import { generateTestData } from '../TestData';
