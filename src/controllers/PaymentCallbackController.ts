@@ -1,15 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { PaymentStatus } from '../models/PaymentStatus';
-import { SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CONFIRMATION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
 import { PaymentService } from '../services/payment/PaymentService';
 import SessionService from '../services/session/SessionService';
+import { SuppressionService } from '../services/suppression/SuppressionService';
 
 export class PaymentCallbackController {
 
-  constructor(private readonly paymentService: PaymentService) {
+  private suppressionService: SuppressionService;
+
+  constructor(suppressionService: SuppressionService, private readonly paymentService: PaymentService) {
     this.paymentService = paymentService;
+    this.suppressionService = suppressionService
   }
 
   public checkPaymentStatus = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,24 +25,25 @@ export class PaymentCallbackController {
       return next(new Error(`${PaymentCallbackController.name} - received invalid arguments`));
     }
 
-    const statusIsValid: boolean = Object.values(PaymentStatus).includes(status as PaymentStatus)
+    const statusIsValid: boolean = Object.values(PaymentStatus).includes(status as PaymentStatus);
     if (!statusIsValid) {
       return next(new Error(`${PaymentCallbackController.name} - received invalid payment status`));
     }
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
-    if (!suppressionData) {
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+    if (!session || !session.applicationReference) {
       return next(new Error(`${PaymentCallbackController.name} - session expected but none found`));
     }
 
-    const expectedPaymentStateUUID: string = suppressionData.paymentDetails.stateUUID;
+    const expectedPaymentStateUUID: string = session.paymentDetails!.stateUUID;
     if (state !== expectedPaymentStateUUID) {
       return next(new Error(`${PaymentCallbackController.name} - payment state mismatch`));
     }
 
     let redirectURI: string;
     if (status === PaymentStatus.PAID) {
-      const paymentResourceUri: string = suppressionData.paymentDetails.resourceUri;
+      const paymentResourceUri: string = session.paymentDetails!.resourceUri;
       const accessToken: string =  SessionService.getAccessToken(req);
       const verifiedStatus: PaymentStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken);
       if (verifiedStatus === PaymentStatus.PAID) {
@@ -50,9 +55,6 @@ export class PaymentCallbackController {
     } else {
       redirectURI = PAYMENT_REVIEW_PAGE_URI;
     }
-
-    suppressionData.paymentDetails.status = status;
-    SessionService.setSuppressionSession(req, suppressionData);
 
     return res.redirect(redirectURI);
   }

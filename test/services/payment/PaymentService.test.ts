@@ -6,7 +6,7 @@ import { failure, success } from '@companieshouse/api-sdk-node/dist/services/res
 import { StatusCodes } from 'http-status-codes';
 import { PaymentStatus } from '../../../src/models/PaymentStatus';
 
-import { PaymentResource, PaymentService } from '../../../src/services/payment/PaymentService';
+import { PaymentService } from '../../../src/services/payment/PaymentService';
 
 const MockedAPIClient = ApiClient as jest.Mock<ApiClient>;
 const apiClientMock = new MockedAPIClient() as jest.Mocked<ApiClient>;

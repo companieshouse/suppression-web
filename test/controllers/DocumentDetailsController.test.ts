@@ -2,14 +2,22 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { DocumentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
-import {ADDRESS_TO_REMOVE_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI} from '../../src/routes/paths';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
+import {
+  ADDRESS_TO_REMOVE_PAGE_URI,
+  DOCUMENT_DETAILS_PAGE_URI,
+  SERVICE_ADDRESS_PAGE_URI
+} from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionUnauthorisedError } from '../../src/services/suppression/errors';
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
   expectToHaveErrorMessages, expectToHaveErrorSummaryContaining, expectToHaveInput,
   expectToHavePopulatedInput, expectToHaveTitle
 } from '../HtmlPatternAssertions'
+import { generateTestData } from '../TestData';
 
 const expectedTitle: string = 'Document details';
 const missingCompanyNameErrorMessage: string = 'Company name is required';
@@ -21,11 +29,23 @@ const invalidDateErrorMessage: string = 'Enter a real date';
 
 jest.mock('../../src/services/session/SessionService');
 
+beforeEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe('DocumentDetailsController', () => {
 
   describe('on GET', () => {
 
     it('should return 200 and render the page', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
+      });
 
       const app = createApp();
 
@@ -46,11 +66,60 @@ describe('DocumentDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+
       const app = createApp();
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return undefined
+      await request(app)
+        .get(DOCUMENT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when no application reference in session', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: undefined as any } as SuppressionSession
       });
+
+      const app = createApp();
+
+      await request(app)
+        .get(DOCUMENT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when suppression service throws exception', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        throw Error('')
+      });
+
+      const app = createApp();
+
+      await request(app)
+        .get(DOCUMENT_DETAILS_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should throw an error if get suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345' as any } as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
+        throw new Error('mocking error')
+      });
+
+      const app = createApp();
 
       await request(app)
         .get(DOCUMENT_DETAILS_PAGE_URI)
@@ -62,13 +131,13 @@ describe('DocumentDetailsController', () => {
 
     it('should return 200 with pre-populated data when accessing page with a session', async () => {
 
-      const app = createApp();
-
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return {
-          documentDetails
-        } as SuppressionData
+        return { applicationReference: '12345-12345'} as SuppressionSession
       });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => Promise.resolve(generateTestData()));
+
+      const app = createApp();
 
       const documentDetails = {
         companyName: 'company-name-test',
@@ -97,7 +166,48 @@ describe('DocumentDetailsController', () => {
 
   describe('on POST', () => {
 
+    it('should throw an error if application reference not in session', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: undefined as any } as SuppressionSession
+      });
+
+      const app = createApp();
+
+      await request(app)
+        .post(DOCUMENT_DETAILS_PAGE_URI)
+        .send(generateTestData().documentDetails)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error if patch suppression service throws exception', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
+        throw new SuppressionUnauthorisedError(`patch suppression unauthorised`);
+      });
+
+      const documentDetails = {
+        companyName: 'company-name-test',
+        companyNumber: 'NI000000',
+        description: 'This is a document',
+        day: '01',
+        month: '01',
+        year: '2020'
+      }
+
+      const app = createApp();
+
+      await request(app)
+        .post(DOCUMENT_DETAILS_PAGE_URI)
+        .send(documentDetails)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
     it('should redirect to the Service Address page when valid data was submitted', async () => {
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => Promise.resolve());
 
       const app = createApp();
 

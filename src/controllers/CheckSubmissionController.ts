@@ -1,33 +1,51 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
+import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'check-submission';
-const backNavigation = CONTACT_DETAILS_PAGE_URI;
+const template: string = 'check-submission';
+const backNavigation: string = CONTACT_DETAILS_PAGE_URI;
 
 export class CheckSubmissionController {
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  private suppressionService: SuppressionService;
 
-    if (!suppressionData) {
-      return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
+  constructor(suppressionService: SuppressionService) {
+    this.suppressionService = suppressionService
+  }
+
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${CheckSubmissionController.name} - session expected but none found`));
+      }
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      const templateData = {
+        applicantDetails: suppressionData.applicantDetails,
+        addressToRemove: this.addressToList(suppressionData.addressToRemove),
+        documentDetails: suppressionData.documentDetails,
+        serviceAddress: this.addressToList(suppressionData.serviceAddress),
+        contactAddress: this.addressToList(suppressionData.contactAddress)
+      };
+
+      res.render(template, {
+        ...templateData,
+        backNavigation
+      });
+
+    } catch (err) {
+      return next(new Error(`${CheckSubmissionController.name} - ${err}`));
     }
-
-    const templateData = {
-      applicantDetails: suppressionData.applicantDetails,
-      addressToRemove: this.addressToList(suppressionData.addressToRemove),
-      documentDetails: suppressionData.documentDetails,
-      serviceAddress: this.addressToList(suppressionData.serviceAddress),
-      contactAddress: this.addressToList(suppressionData.contactAddress)
-    };
-
-    res.render(template, {
-      ...templateData,
-      backNavigation
-    });
   }
 
   public confirm = async (req: Request, res: Response, next: NextFunction) => {

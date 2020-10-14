@@ -1,37 +1,65 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes  } from 'http-status-codes';
 
 import { Address, SuppressionData } from '../models/SuppressionDataModel'
-import { CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
+import { CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
+import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'service-address';
-const backNavigation = DOCUMENT_DETAILS_PAGE_URI;
+const template: string = 'service-address';
+const backNavigation: string = DOCUMENT_DETAILS_PAGE_URI;
 
 export class ServiceAddressController {
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  private suppressionService: SuppressionService;
 
-    if (!suppressionData) {
-      return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+  constructor(suppressionService: SuppressionService) {
+    this.suppressionService = suppressionService
+  }
+
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+      }
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      res.render(template, {
+        ...suppressionData.serviceAddress,
+        backNavigation
+      });
+
+    } catch (err) {
+      return next(new Error(`${ServiceAddressController.name} - ${err}`));
     }
-
-    res.render(template, {
-      ...suppressionData.serviceAddress,
-      backNavigation
-    });
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
 
-    if (!suppressionData) {
-      return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ServiceAddressController.name} - session expected but none found`));
+      }
+
+      const partialSuppressionData: SuppressionData = { serviceAddress: req.body } as SuppressionData;
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+
+      res.redirect(CONTACT_DETAILS_PAGE_URI);
+
+    } catch (err) {
+      return next(new Error(`${ServiceAddressController.name} - ${err}`));
     }
 
-    suppressionData.serviceAddress = req.body as Address;
-    SessionService.setSuppressionSession(req, suppressionData);
-    res.redirect(CONTACT_DETAILS_PAGE_URI);
   };
 }

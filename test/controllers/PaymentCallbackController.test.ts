@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import { PaymentStatus } from '../../src/models/PaymentStatus';
-import { PaymentDetails, SuppressionData } from '../../src/models/SuppressionDataModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 import { CONFIRMATION_PAGE_URI, PAYMENT_CALLBACK_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';
 import SessionService from '../../src/services/session/SessionService';
@@ -25,13 +25,6 @@ describe('PaymentCallbackController', () => {
       status: PaymentStatus.PAID,
       ref: 'TESTA_TESTA'
   };
-
-  const suppressionData = {
-    paymentDetails: {
-      stateUUID: 'LEGIT1234',
-      resourceUri: 'payments/TEST123456'
-    } as PaymentDetails
-  } as SuppressionData;
 
   it('should render error when the required query parameters are not sent', async () => {
     await request(app)
@@ -58,7 +51,7 @@ describe('PaymentCallbackController', () => {
 
   it('should render error when no session present', async () => {
 
-    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
     await request(app)
       .get(PAYMENT_CALLBACK_URI)
@@ -74,7 +67,15 @@ describe('PaymentCallbackController', () => {
     const testQuery = { ...queryData };
     testQuery.state = 'TAMPERED';
 
-    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => suppressionData);
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+      return {
+        applicationReference: '12345-12345',
+        paymentDetails: {
+          stateUUID: 'LEGIT1234',
+          resourceUri: 'payments/TEST123456'
+        }
+      } as SuppressionSession
+    });
 
     await request(app)
       .get(PAYMENT_CALLBACK_URI)
@@ -90,7 +91,15 @@ describe('PaymentCallbackController', () => {
     const testQuery = { ...queryData };
     testQuery.status = PaymentStatus.FAILED;
 
-    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => suppressionData);
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+      return {
+        applicationReference: '12345-12345',
+        paymentDetails: {
+          stateUUID: 'LEGIT1234',
+          resourceUri: 'payments/TEST123456'
+        }
+      } as SuppressionSession
+    });
 
     await request(app)
       .get(PAYMENT_CALLBACK_URI)
@@ -103,7 +112,15 @@ describe('PaymentCallbackController', () => {
 
   it('should redirect the user to the Payment Review page if verification of successful payment status failed', async () => {
 
-    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => suppressionData);
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+      return {
+        applicationReference: '12345-12345',
+        paymentDetails: {
+          stateUUID: 'LEGIT1234',
+          resourceUri: 'payments/TEST123456'
+        }
+      } as SuppressionSession
+    });
 
     jest.spyOn(PaymentService.prototype, 'getPaymentStatus').mockImplementationOnce(async () => {
       return Promise.resolve(PaymentStatus.FAILED);
@@ -120,7 +137,15 @@ describe('PaymentCallbackController', () => {
 
   it('should redirect the user to the Confirmation page if payment was successful (and verified)', async () => {
 
-    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => suppressionData);
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+      return {
+        applicationReference: '12345-12345',
+        paymentDetails: {
+          stateUUID: 'LEGIT1234',
+          resourceUri: 'payments/TEST123456'
+        }
+      } as SuppressionSession
+    });
 
     jest.spyOn(PaymentService.prototype, 'getPaymentStatus').mockImplementationOnce(async () => {
       return Promise.resolve(PaymentStatus.PAID);

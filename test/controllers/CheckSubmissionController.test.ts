@@ -1,8 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 
-import { CHECK_SUBMISSION_PAGE_URI, CONTACT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
+import {
+  CHECK_SUBMISSION_PAGE_URI,
+  CONTACT_DETAILS_PAGE_URI,
+  PAYMENT_REVIEW_PAGE_URI
+} from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
@@ -30,7 +36,13 @@ describe('CheckSubmissionController', () => {
       delete testData.applicantDetails.previousName;
       delete testData.serviceAddress!.line2;
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => testData);
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve(testData)
+      });
 
       const app = createApp();
 
@@ -64,9 +76,28 @@ describe('CheckSubmissionController', () => {
         });
     });
 
+    it('should render error when no session present', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
+
+      const app = createApp();
+
+      await request(app)
+        .get(CHECK_SUBMISSION_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
     it('should render the "Previous name" row when a previous name is present in the submission', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => generateTestData());
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => Promise.resolve(generateTestData()));
+
       const app = createApp();
 
       await request(app)
@@ -76,19 +107,6 @@ describe('CheckSubmissionController', () => {
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, CONTACT_DETAILS_PAGE_URI);
           expectToHaveSummaryRow(response.text, 'Previous name', 'Jane Doe');
-        });
-    });
-
-    it('should render error when no session present ', async () => {
-
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
-      const app = createApp();
-
-      await request(app)
-        .get(CHECK_SUBMISSION_PAGE_URI)
-        .expect(response => {
-          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-          expect(response.text).toContain('Sorry, there is a problem with the service')
         });
     });
 
