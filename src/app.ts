@@ -1,5 +1,5 @@
+import { SessionMiddleware, SessionStore } from '@companieshouse/node-session-handler';
 import bodyParser from 'body-parser';
-import { SessionMiddleware, SessionStore } from 'ch-node-session-handler';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import IORedis from 'ioredis';

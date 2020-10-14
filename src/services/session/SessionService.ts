@@ -1,7 +1,7 @@
-import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey'
-import { ISignInInfo } from 'ch-node-session-handler/lib/session/model/SessionInterfaces';
+import { SessionKey} from '@companieshouse/node-session-handler/lib/session/keys/SessionKey';
+import { ISignInInfo } from '@companieshouse/node-session-handler/lib/session/model/SessionInterfaces';
 import { Request } from 'express';
-import {SuppressionData, SUPPRESSION_DATA_KEY} from '../../models/SuppressionDataModel';
+import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../models/SuppressionDataModel';
 
 export default class SessionService {
 

@@ -1,7 +1,7 @@
-import { createApiClient } from 'ch-sdk-node';
-import ApiClient from 'ch-sdk-node/dist/client';
-import { CreatePaymentRequest, Payment } from 'ch-sdk-node/dist/services/payment';
-import { ApiResponse, ApiResult } from 'ch-sdk-node/dist/services/resource';
+import { createApiClient } from '@companieshouse/api-sdk-node';
+import ApiClient from '@companieshouse/api-sdk-node/dist/client';
+import { CreatePaymentRequest, Payment } from '@companieshouse/api-sdk-node/dist/services/payment';
+import { ApiResponse, ApiResult } from '@companieshouse/api-sdk-node/dist/services/resource';
 
 import { PaymentStatus } from '../../models/PaymentStatus';
 import { getConfigValue } from '../../modules/config-handler/ConfigHandler';
