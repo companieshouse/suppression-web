@@ -78,9 +78,7 @@ describe('CheckSubmissionController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
       const app = createApp();
 
@@ -98,9 +96,7 @@ describe('CheckSubmissionController', () => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
-      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
-        return Promise.resolve(generateTestData())
-      });
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => Promise.resolve(generateTestData()));
 
       const app = createApp();
 

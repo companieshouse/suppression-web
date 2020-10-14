@@ -66,9 +66,7 @@ describe('DocumentDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
 
       const app = createApp();
 
@@ -83,7 +81,7 @@ describe('DocumentDetailsController', () => {
     it('should render error when no application reference in session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return { applicationReference: undefined as any } as SuppressionSession
       });
 
       const app = createApp();
@@ -114,7 +112,7 @@ describe('DocumentDetailsController', () => {
 
     it('should throw an error if get suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return { applicationReference: '12345-12345' as any } as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
@@ -137,9 +135,7 @@ describe('DocumentDetailsController', () => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
-      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
-        return Promise.resolve(generateTestData())
-      });
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => Promise.resolve(generateTestData()));
 
       const app = createApp();
 
@@ -172,7 +168,7 @@ describe('DocumentDetailsController', () => {
 
     it('should throw an error if application reference not in session', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return { applicationReference: undefined as any } as SuppressionSession
       });
 
       const app = createApp();
@@ -185,7 +181,7 @@ describe('DocumentDetailsController', () => {
 
     it('should throw an error if patch suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return {applicationReference: '12345-12345'} as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
@@ -211,9 +207,7 @@ describe('DocumentDetailsController', () => {
 
     it('should redirect to the Service Address page when valid data was submitted', async () => {
 
-      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
-        return Promise.resolve()
-      });
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => Promise.resolve());
 
       const app = createApp();
 

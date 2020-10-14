@@ -51,9 +51,7 @@ describe('PaymentCallbackController', () => {
 
   it('should render error when no session present', async () => {
 
-    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-      return undefined
-    });
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
     await request(app)
       .get(PAYMENT_CALLBACK_URI)

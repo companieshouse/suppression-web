@@ -46,7 +46,7 @@ describe('ApplicantDetailsController', () => {
 
     it('should throw an error if get suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return {applicationReference: '12345-12345'} as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
@@ -85,9 +85,7 @@ describe('ApplicantDetailsController', () => {
         return { applicationReference: '12345-12345'} as SuppressionSession
       });
 
-      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
-        return Promise.resolve(generateTestData())
-      });
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => Promise.resolve(generateTestData()));
 
       const applicantDetails: ApplicantDetails = generateTestData().applicantDetails;
 
@@ -121,13 +119,9 @@ describe('ApplicantDetailsController', () => {
       };
     }
 
-    jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
-      return Promise.resolve('12345-12345')
-    });
+    jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => Promise.resolve('12345-12345'));
 
-    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-      return Promise.resolve()
-    });
+    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
 
     const fullNameErrorMessage = 'Full name is required';
     const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
@@ -295,9 +289,7 @@ describe('ApplicantDetailsController', () => {
 
     it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
 
-      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve()
-      });
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
 
       const testData = generateData();
       testData.hasPreviousName = 'no';
@@ -313,7 +305,7 @@ describe('ApplicantDetailsController', () => {
 
     it('should throw an error if patch suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return {applicationReference: '12345-12345'} as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {

@@ -39,7 +39,7 @@ describe('ContactDetailsController', () => {
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
-        return Promise.resolve({addressToRemove: undefined} as unknown as SuppressionData)
+        return Promise.resolve({ addressToRemove: undefined as any } as SuppressionData)
       });
 
       await request(app)
@@ -61,9 +61,7 @@ describe('ContactDetailsController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
       await request(app)
         .get(CONTACT_DETAILS_PAGE_URI)
@@ -77,7 +75,7 @@ describe('ContactDetailsController', () => {
     it('should render error when no application reference in session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return { applicationReference: undefined as any } as SuppressionSession
       });
 
       await request(app)
@@ -104,7 +102,7 @@ describe('ContactDetailsController', () => {
 
     it('should throw an error if get suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return { applicationReference: '12345-12345' } as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
@@ -155,9 +153,7 @@ describe('ContactDetailsController', () => {
     const countryErrorMessage = 'Country is required';
 
     it('should throw an error if the session doesn’t exist', async () => {
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
       const testData = generateTestData().contactAddress;
 
@@ -169,7 +165,7 @@ describe('ContactDetailsController', () => {
 
     it('should throw an error if application reference not in session', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return {applicationReference: undefined as any } as SuppressionSession
       });
 
       const testData = generateTestData().contactAddress;
@@ -182,7 +178,7 @@ describe('ContactDetailsController', () => {
 
     it('should throw an error if patch suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return {applicationReference: '12345-12345'} as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => {
@@ -284,13 +280,9 @@ describe('ContactDetailsController', () => {
 
     it('should accept address details without data for Address Line 2, and redirect', async () => {
 
-      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
-        return Promise.resolve('12345-12345')
-      });
+      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => Promise.resolve('12345-12345'));
 
-      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve()
-      });
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
 
       const testData = generateTestData().contactAddress;
       testData.line2 = '';
@@ -303,13 +295,9 @@ describe('ContactDetailsController', () => {
 
     it('should redirect if the information provided by the user is valid', async () => {
 
-      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
-        return Promise.resolve('12345-12345')
-      });
+      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => Promise.resolve('12345-12345'));
 
-      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
-        return Promise.resolve()
-      });
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
 
       const testData = generateTestData().contactAddress;
 

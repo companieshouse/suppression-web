@@ -16,7 +16,7 @@ jest.mock('../../src/services/session/SessionService');
 
 afterEach(() => {
   jest.restoreAllMocks();
-})
+});
 
 describe('ConfirmationController', () => {
 
@@ -27,7 +27,7 @@ describe('ConfirmationController', () => {
     it('should render error when no application reference in session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return { applicationReference: undefined as any } as SuppressionSession
       });
 
       const app = createApp();
@@ -58,7 +58,7 @@ describe('ConfirmationController', () => {
 
     it('should throw an error if get suppression service throws exception', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: '12345-12345'} as unknown as SuppressionSession
+        return { applicationReference: '12345-12345' as any } as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(() => {
@@ -87,9 +87,7 @@ describe('ConfirmationController', () => {
         return { applicationReference: 'TEST-TEST'} as SuppressionSession
       });
 
-      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
-        return Promise.resolve(testData)
-      });
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => Promise.resolve(testData));
 
       await request(app)
         .get(CONFIRMATION_PAGE_URI)
@@ -111,9 +109,7 @@ describe('ConfirmationController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
       const app = createApp();
 
@@ -128,11 +124,9 @@ describe('ConfirmationController', () => {
     it('should render error when no application reference is present in the session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { applicationReference: ''} as SuppressionSession
+        return { applicationReference: undefined as any} as SuppressionSession
       });
 
-      const testData = generateTestData()
-      delete testData.applicationReference;
       const app = createApp();
 
       await request(app)

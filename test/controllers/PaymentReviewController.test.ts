@@ -26,9 +26,7 @@ describe('PaymentReviewController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return undefined
-      });
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
       await request(app)
         .get(PAYMENT_REVIEW_PAGE_URI)
@@ -41,7 +39,7 @@ describe('PaymentReviewController', () => {
     it('should render error when no application reference in session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return { applicationReference: undefined as any } as SuppressionSession
       });
 
       await request(app)
@@ -93,7 +91,7 @@ describe('PaymentReviewController', () => {
 
     it('should throw an error if application reference not in session', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return {applicationReference: undefined} as unknown as SuppressionSession
+        return { applicationReference: undefined as any } as SuppressionSession
       });
 
       await request(app)
@@ -123,9 +121,7 @@ describe('PaymentReviewController', () => {
 
     it('should return status code 500 and redirect to error page', async () => {
 
-      jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => {
-        return Promise.reject(new Error());
-      });
+      jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => Promise.reject(new Error()));
 
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)
