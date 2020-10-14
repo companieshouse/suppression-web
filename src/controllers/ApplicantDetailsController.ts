@@ -76,8 +76,6 @@ export class ApplicantDetailsController {
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
     const accessToken: string = SessionService.getAccessToken(req);
 
-    console.log(session)
-
     try {
       if (session?.applicationReference) {
         await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken);
