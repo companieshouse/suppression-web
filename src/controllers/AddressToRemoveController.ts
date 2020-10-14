@@ -25,7 +25,7 @@ export class AddressToRemoveController {
 
   public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    try{
+    try {
       const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
       if (!session || !session.applicationReference) {
