@@ -21,7 +21,6 @@
       "member-variable-declaration"
     ],
     "promise-function-async": true,
-    "no-async-without-await": true,
-    "esModuleInterop": true
+    "no-async-without-await": true
   }
 }
