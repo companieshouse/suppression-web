@@ -76,7 +76,7 @@ describe('CheckSubmissionController', () => {
         });
     });
 
-    it('should render error when no session present ', async () => {
+    it('should render error when no session present', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
