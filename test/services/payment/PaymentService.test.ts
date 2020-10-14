@@ -1,8 +1,8 @@
-import * as nodeSdk from 'ch-sdk-node';
-import ApiClient from 'ch-sdk-node/dist/client';
-import { Payment } from 'ch-sdk-node/dist/services/payment'
-import { ApiResponse } from 'ch-sdk-node/dist/services/resource';
-import { failure, success } from 'ch-sdk-node/dist/services/result';
+import * as nodeSdk from '@companieshouse/api-sdk-node';
+import ApiClient from '@companieshouse/api-sdk-node/dist/client';
+import { Payment } from '@companieshouse/api-sdk-node/dist/services/payment'
+import { ApiResponse } from '@companieshouse/api-sdk-node/dist/services/resource';
+import { failure, success } from '@companieshouse/api-sdk-node/dist/services/result';
 import { StatusCodes } from 'http-status-codes';
 import { PaymentStatus } from '../../../src/models/PaymentStatus';
 

@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes/build';
 import request from 'supertest';
-import * as authMiddleware from 'web-security-node';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
+import * as authMiddleware from '@companieshouse/web-security-node';
 
 import {
   ADDRESS_TO_REMOVE_PAGE_URI,
