@@ -119,9 +119,13 @@ describe('ApplicantDetailsController', () => {
       };
     }
 
-    jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => Promise.resolve('12345-12345'));
+    afterEach(() => {
+      jest.clearAllMocks()
+    });
 
-    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
+    jest.spyOn(SuppressionService.prototype, 'save').mockImplementation(() => Promise.resolve('12345-12345'));
+
+    jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => Promise.resolve());
 
     const fullNameErrorMessage = 'Full name is required';
     const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
@@ -279,15 +283,27 @@ describe('ApplicantDetailsController', () => {
     it('should redirect to the next page if the information provided by the user is valid (yes to previousNames)', async () => {
       const testData = generateData();
 
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
+
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
+          expect(SuppressionService.prototype.save).not.toHaveBeenCalled();
+          expect(SuppressionService.prototype.patch).toHaveBeenCalled();
           expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
         });
     });
 
     it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return {applicationReference: '12345-12345'} as SuppressionSession
+      });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => Promise.resolve());
 
@@ -299,16 +315,57 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
+          expect(SuppressionService.prototype.save).not.toHaveBeenCalled();
+          expect(SuppressionService.prototype.patch).toHaveBeenCalled();
+          expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
+        });
+    });
+
+    it('should redirect to the next page if the information provided by the user is valid and no application reference is present', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: undefined as any } as SuppressionSession
+      });
+
+      const testData = generateData();
+      testData.hasPreviousName = 'no';
+      delete testData.previousName;
+
+      await request(app).post(APPLICANT_DETAILS_PAGE_URI)
+        .send(testData)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
+          expect(SuppressionService.prototype.save).toHaveBeenCalled();
+          expect(SuppressionService.prototype.patch).not.toHaveBeenCalled();
           expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
         });
     });
 
     it('should throw an error if patch suppression service throws exception', async () => {
+
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return {applicationReference: '12345-12345'} as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'patch').mockImplementationOnce(() => {
+        throw new Error('')
+      });
+
+      const testData = generateData();
+
+      await request(app)
+        .post(APPLICANT_DETAILS_PAGE_URI)
+        .send(testData)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error if save suppression service throws exception', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: undefined as any } as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'save').mockImplementationOnce(() => {
         throw new Error('')
       });
 
