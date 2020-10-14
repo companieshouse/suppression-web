@@ -1,5 +1,5 @@
-import { Session } from 'ch-node-session-handler';
-import { SessionKey } from 'ch-node-session-handler/lib/session/keys/SessionKey';
+import { Session } from '@companieshouse/node-session-handler';
+import { SessionKey } from '@companieshouse/node-session-handler/lib/session/keys/SessionKey';
 import { Request } from 'express';
 
 import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../../src/models/SuppressionDataModel';

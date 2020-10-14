@@ -1,5 +1,5 @@
+import { authMiddleware, AuthOptions } from '@companieshouse/web-security-node';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import { authMiddleware, AuthOptions } from 'web-security-node';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import { newUriFactory } from '../utils/UriFactory';
