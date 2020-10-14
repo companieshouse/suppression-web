@@ -40,15 +40,15 @@ const paymentService: PaymentService = new PaymentService();
  * Controllers (route handlers).
  */
 const startPageController = new StartPageController();
-const applicantDetailsController = new ApplicantDetailsController();
-const addressToRemoveController = new AddressToRemoveController();
-const documentDetailsController = new DocumentDetailsController();
-const serviceAddressController = new ServiceAddressController();
-const contactDetailsController = new ContactDetailsController();
-const checkSubmissionController = new CheckSubmissionController();
+const applicantDetailsController = new ApplicantDetailsController(suppressionService);
+const addressToRemoveController = new AddressToRemoveController(suppressionService);
+const documentDetailsController = new DocumentDetailsController(suppressionService);
+const serviceAddressController = new ServiceAddressController(suppressionService);
+const contactDetailsController = new ContactDetailsController(suppressionService);
+const checkSubmissionController = new CheckSubmissionController(suppressionService);
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
-const paymentCallbackController = new PaymentCallbackController(paymentService);
-const confirmationController = new ConfirmationController();
+const paymentCallbackController = new PaymentCallbackController(suppressionService, paymentService);
+const confirmationController = new ConfirmationController(suppressionService);
 
 const healthcheckController = new HealthcheckController();
 

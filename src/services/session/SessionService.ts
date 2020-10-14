@@ -1,15 +1,15 @@
-import { SessionKey} from '@companieshouse/node-session-handler/lib/session/keys/SessionKey';
+import { SessionKey } from '@companieshouse/node-session-handler/lib/session/keys/SessionKey';
 import { ISignInInfo } from '@companieshouse/node-session-handler/lib/session/model/SessionInterfaces';
 import { Request } from 'express';
-import { SuppressionData, SUPPRESSION_DATA_KEY } from '../../models/SuppressionDataModel';
+import { SuppressionSession, SUPPRESSION_DATA_KEY } from '../../models/SuppressionSessionModel';
 
 export default class SessionService {
 
-  static getSuppressionSession(req: Request): SuppressionData | undefined {
-    return req.session!.getExtraData<SuppressionData>(SUPPRESSION_DATA_KEY);
+  static getSuppressionSession(req: Request): SuppressionSession | undefined {
+    return req.session!.getExtraData<SuppressionSession>(SUPPRESSION_DATA_KEY);
   }
 
-  static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
+  static setSuppressionSession(req: Request, updatedSession: SuppressionSession): void {
     req.session!.setExtraData(SUPPRESSION_DATA_KEY, updatedSession);
   }
 

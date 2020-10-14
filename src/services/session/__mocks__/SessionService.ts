@@ -1,21 +1,15 @@
 import { Request } from 'express';
-import { SuppressionData } from '../../../models/SuppressionDataModel';
+import { SuppressionSession } from '../../../models/SuppressionSessionModel';
 
 export default class SessionService {
-  static getSuppressionSession(req: Request): SuppressionData | undefined {
+
+  static getSuppressionSession(req: Request): SuppressionSession | undefined {
     return {
-      addressToRemove: {
-        line1: '1 Test Street',
-        line2: '',
-        town: 'Test Town',
-        county: 'Test Midlands',
-        postcode: 'TE10 6ST',
-        country: 'United Kingdom'
-      }
-    } as SuppressionData;
+      applicationReference: '12345-12345'
+    } as SuppressionSession
   }
 
-  static setSuppressionSession(req: Request, updatedSession: SuppressionData): void {
+  static setSuppressionSession(req: Request): void {
     return;
   }
 

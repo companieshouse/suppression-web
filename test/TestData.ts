@@ -2,7 +2,6 @@ import {
   Address,
   ApplicantDetails,
   DocumentDetails,
-  PaymentDetails,
   SuppressionData
 } from '../src/models/SuppressionDataModel';
 
@@ -43,11 +42,6 @@ export function generateTestData(): SuppressionData {
       postcode: 'NY',
       country: 'USA'
     } as Address,
-    paymentDetails: {
-      stateUUID: 'asdfghjkl',
-      status: 'created',
-      resourceUri: 'payments/TEST12345678'
-    } as PaymentDetails,
     applicationReference: 'TEST-TEST'
   } as SuppressionData;
 }

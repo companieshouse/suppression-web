@@ -1,54 +1,81 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes  } from 'http-status-codes';
 
-import { Address, SuppressionData } from '../models/SuppressionDataModel'
+import { SuppressionData } from '../models/SuppressionDataModel'
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { APPLICANT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService'
+import { SuppressionService } from '../services/suppression/SuppressionService';
 import { ValidationResult } from '../utils/validation/ValidationResult';
 import { FormValidator } from '../validators/FormValidator';
 import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema'
 
-const template = 'address-to-remove';
-const backNavigation = APPLICANT_DETAILS_PAGE_URI;
+const template: string = 'address-to-remove';
+const backNavigation: string = APPLICANT_DETAILS_PAGE_URI;
 
 export class AddressToRemoveController {
 
-  constructor(private validator: FormValidator = new FormValidator(formSchema)) {}
+  private suppressionService: SuppressionService;
+  private validator: FormValidator;
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
+  constructor(suppressionService: SuppressionService) {
+    this.validator = new FormValidator(formSchema);
+    this.suppressionService = suppressionService
+  }
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!suppressionData) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      }
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      res.render(template, {
+        ...suppressionData.addressToRemove,
+        backNavigation
+      });
+
+    } catch (err) {
+      return next(new Error(`${AddressToRemoveController.name} - ${err}`));
     }
-
-    res.render(template, {
-      ...suppressionData.addressToRemove,
-      backNavigation
-    });
   };
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    try {
 
-    if (!suppressionData) {
-      return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${AddressToRemoveController.name} - session expected but none found`));
+      }
+
+      const validationResult: ValidationResult = await this.validator.validate(req);
+      if (validationResult.errors.length > 0) {
+        res.status(StatusCodes.UNPROCESSABLE_ENTITY);
+        return res.render(template, {
+          ...req.body,
+          validationResult,
+          backNavigation
+        });
+      } else {
+        const partialSuppressionData: SuppressionData = {addressToRemove: req.body} as SuppressionData;
+
+        const accessToken: string = SessionService.getAccessToken(req);
+
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+
+        res.redirect(DOCUMENT_DETAILS_PAGE_URI);
+      }
+    } catch (err) {
+      return next(new Error(`${AddressToRemoveController.name} - ${err}`));
     }
 
-    const validationResult: ValidationResult = await this.validator.validate(req);
-    if (validationResult.errors.length > 0) {
-      res.status(StatusCodes.UNPROCESSABLE_ENTITY);
-      return res.render(template, {
-        ...req.body,
-        validationResult,
-        backNavigation
-      });
-    } else {
-      suppressionData.addressToRemove = req.body as Address;
-      SessionService.setSuppressionSession(req, suppressionData);
-      res.redirect(DOCUMENT_DETAILS_PAGE_URI);
-    }
-  };
+  }
 }

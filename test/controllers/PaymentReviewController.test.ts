@@ -1,9 +1,12 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
+import { SuppressionData } from '../../src/models/SuppressionDataModel';
+import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 
 import { CHECK_SUBMISSION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../../src/routes/paths';
 import { PaymentService } from '../../src/services/payment/PaymentService';
 import SessionService from '../../src/services/session/SessionService';
+import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
 import { expectToHaveBackButton, expectToHaveButton, expectToHaveTitle } from '../HtmlPatternAssertions'
 
@@ -23,8 +26,34 @@ describe('PaymentReviewController', () => {
 
     it('should render error when no session present ', async () => {
 
-      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
-        return undefined
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
+
+      await request(app)
+        .get(PAYMENT_REVIEW_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when no application reference in session', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: undefined as any } as SuppressionSession
+      });
+
+      await request(app)
+        .get(PAYMENT_REVIEW_PAGE_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(response.text).toContain('Sorry, there is a problem with the service')
+        });
+    });
+
+    it('should render error when suppression service throws exception', async () => {
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        throw Error('')
       });
 
       await request(app)
@@ -37,6 +66,14 @@ describe('PaymentReviewController', () => {
 
     it('should return 200 and render the Payment Review Page', async () => {
       const expectedTitle = 'Review your payment';
+
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: '12345-12345'} as SuppressionSession
+      });
+
+      jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => {
+        return Promise.resolve({} as SuppressionData)
+      });
 
       await request(app)
         .get(PAYMENT_REVIEW_PAGE_URI)
@@ -51,6 +88,16 @@ describe('PaymentReviewController', () => {
   });
 
   describe('on POST', () => {
+
+    it('should throw an error if application reference not in session', async () => {
+      jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+        return { applicationReference: undefined as any } as SuppressionSession
+      });
+
+      await request(app)
+        .post(PAYMENT_REVIEW_PAGE_URI)
+        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
 
     it('should return status code 302 and redirect to GOV Pay', async () => {
 
@@ -74,9 +121,7 @@ describe('PaymentReviewController', () => {
 
     it('should return status code 500 and redirect to error page', async () => {
 
-      jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => {
-        return Promise.reject(new Error());
-      });
+      jest.spyOn(PaymentService.prototype, 'generatePaymentUrl').mockImplementationOnce(async () => Promise.reject(new Error()));
 
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)

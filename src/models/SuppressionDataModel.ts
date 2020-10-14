@@ -1,7 +1,3 @@
-import { PaymentStatus } from '../models/PaymentStatus';
-
-export const SUPPRESSION_DATA_KEY: string = 'suppression';
-
 export interface SuppressionData {
   applicationReference?: string;
   applicantDetails: ApplicantDetails;
@@ -9,7 +5,6 @@ export interface SuppressionData {
   serviceAddress?: Address;
   documentDetails: DocumentDetails;
   contactAddress: Address;
-  paymentDetails: PaymentDetails;
 }
 
 export interface ApplicantDetails {
@@ -33,10 +28,4 @@ export interface DocumentDetails {
   companyNumber: string;
   description: string;
   date: string;
-}
-
-export interface PaymentDetails {
-  status: PaymentStatus;
-  stateUUID: string;
-  resourceUri: string;
 }

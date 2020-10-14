@@ -1,16 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid'
 
-import { PaymentStatus } from '../models/PaymentStatus';
-import { PaymentDetails, SuppressionData } from '../models/SuppressionDataModel';
+import { PaymentDetails, SuppressionSession } from '../models/SuppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { CHECK_SUBMISSION_PAGE_URI } from '../routes/paths';
 import { PaymentResource, PaymentService } from '../services/payment/PaymentService';
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'payment-review';
-const backNavigation = CHECK_SUBMISSION_PAGE_URI;
+const template: string = 'payment-review';
+const backNavigation: string = CHECK_SUBMISSION_PAGE_URI;
 
 export class PaymentReviewController {
 
@@ -24,53 +23,51 @@ export class PaymentReviewController {
 
   public renderView = (req: Request, res: Response, next: NextFunction) => {
 
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+    try {
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!suppressionData) {
-      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
+      }
+
+      const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
+      const totalFee = documentAmendmentFee;
+
+      res.render(template, {
+        documentAmendmentFee,
+        totalFee,
+        backNavigation
+      });
+    } catch (err) {
+      return next(new Error(`${PaymentReviewController.name} - ${err}`));
     }
-
-    const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
-    const totalFee = documentAmendmentFee;
-
-    res.render(template, {
-      documentAmendmentFee,
-      totalFee,
-      backNavigation
-    });
   };
 
   public continue = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
-
-    if (!suppressionData) {
-      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
-    }
-
-    let applicationReference: string;
-
     try {
+
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
+      }
 
       const accessToken: string =  SessionService.getAccessToken(req);
       const paymentStateUUID: string = uuidv4();
 
-      applicationReference = suppressionData.applicationReference = await this.suppressionService.save(suppressionData, accessToken);
+      const paymentUrls: PaymentResource = await this.paymentService.generatePaymentUrl(session.applicationReference, paymentStateUUID, accessToken);
 
-      const paymentUrls: PaymentResource =  await this.paymentService.generatePaymentUrl(applicationReference, paymentStateUUID, accessToken);
-
-      suppressionData.paymentDetails = {
+      session.paymentDetails = {
         stateUUID: paymentStateUUID,
-        status: PaymentStatus.CREATED,
         resourceUri: paymentUrls.resourceUri
-      } as PaymentDetails
+      } as PaymentDetails;
 
-      SessionService.setSuppressionSession(req, suppressionData);
+      SessionService.setSuppressionSession(req, session);
 
       res.redirect(paymentUrls.redirectUrl);
 
     } catch (error) {
-      return next(error);
+      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
     }
   };
 }

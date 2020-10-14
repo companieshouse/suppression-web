@@ -1,32 +1,47 @@
 import { NextFunction, Request, Response } from 'express';
-
 import { SuppressionData } from '../models/SuppressionDataModel';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import SessionService from '../services/session/SessionService'
+import { SuppressionService } from '../services/suppression/SuppressionService';
 
-const template = 'confirmation';
+const template: string = 'confirmation';
 
 export class ConfirmationController {
 
-  public renderView = (req: Request, res: Response, next: NextFunction) => {
-    const suppressionData: SuppressionData | undefined = SessionService.getSuppressionSession(req);
+  private suppressionService: SuppressionService;
 
-    if (!suppressionData) {
-      return next(new Error(`${ConfirmationController.name} - session expected but none found`));
-    } else if (!suppressionData.applicationReference) {
-      return next(new Error(`${ConfirmationController.name} - application reference expected in session but none found`));
+  constructor(suppressionService: SuppressionService){
+    this.suppressionService = suppressionService;
+  }
+
+  public renderView = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+
+      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+      if (!session || !session.applicationReference) {
+        return next(new Error(`${ConfirmationController.name} - session expected but none found`));
+      }
+
+      const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');
+      const paymentReceived = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
+
+      const accessToken: string = SessionService.getAccessToken(req);
+
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+
+      res.render(template, {
+        applicationReference: session.applicationReference,
+        userEmailAddress: SessionService.getUserEmail(req),
+        documentDetails: suppressionData.documentDetails,
+        processingDelayEvent,
+        paymentReceived
+      });
+
+    } catch(err) {
+      return next(new Error(`${ConfirmationController.name} - ${err}`));
     }
-
-    const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');
-    const documentAmendmentFee = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
-    const paymentReceived = documentAmendmentFee;
-
-    res.render(template, {
-      applicationReference: suppressionData.applicationReference,
-      userEmailAddress: SessionService.getUserEmail(req),
-      documentDetails: suppressionData.documentDetails,
-      processingDelayEvent,
-      paymentReceived
-    });
   }
 }
