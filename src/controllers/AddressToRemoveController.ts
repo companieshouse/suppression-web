@@ -48,7 +48,7 @@ export class AddressToRemoveController {
 
   public processForm = async (req: Request, res: Response, next: NextFunction) => {
 
-    try{
+    try {
 
       const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
