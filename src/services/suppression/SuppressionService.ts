@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { StatusCodes } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes';
 import { ApplicantDetails, SuppressionData } from '../../models/SuppressionDataModel';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 

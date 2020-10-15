@@ -1,5 +1,5 @@
 import * as authMiddleware from '@companieshouse/web-security-node';
-import { StatusCodes } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
 
