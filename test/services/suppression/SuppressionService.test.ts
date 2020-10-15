@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { StatusCodes } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes';
 import { ApplicantDetails, SuppressionData } from '../../../src/models/SuppressionDataModel';
 import {
   SuppressionUnauthorisedError,

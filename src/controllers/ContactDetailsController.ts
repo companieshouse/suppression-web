@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes';
 import { SuppressionData } from '../models/SuppressionDataModel';
 import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { CHECK_SUBMISSION_PAGE_URI, SERVICE_ADDRESS_PAGE_URI } from '../routes/paths';

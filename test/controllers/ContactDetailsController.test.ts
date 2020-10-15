@@ -1,4 +1,4 @@
-import { StatusCodes } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/SuppressionSessionModel';

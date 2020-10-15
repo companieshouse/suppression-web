@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes/build';
+import { StatusCodes } from 'http-status-codes';
 
 export function defaultHandler(err: any, req: Request, res: Response, next: NextFunction): void {
   console.error(`${err.constructor.name} - ${err.message}`);
