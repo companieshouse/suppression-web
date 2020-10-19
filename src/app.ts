@@ -41,7 +41,6 @@ app.set('port', getConfigValue('PORT'));
 const viewPath = path.join(__dirname, 'views');
 
 // set up usage statistics
-
 app.locals.piwik = {
   url: getConfigValue('PIWIK_URL'),
   siteId: getConfigValue('PIWIK_SITE_ID')
