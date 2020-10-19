@@ -12,7 +12,9 @@ export const configValidationSchema = Joi.object({
   CACHE_SERVER: Joi.string().required(),
   COOKIE_EXPIRATION_IN_SECONDS: Joi.string().required(),
   DOCUMENT_AMENDMENT_FEE: Joi.number().required(),
-  PROCESSING_DELAY_EVENT: Joi.string()
+  PROCESSING_DELAY_EVENT: Joi.string(),
+  PIWIK_URL: Joi.string(),
+  PIWIK_SITE_ID: Joi.string()
 }).options({
   allowUnknown: true
 });
