@@ -44,7 +44,8 @@ const viewPath = path.join(__dirname, 'views');
 
 app.locals.piwik = {
   url: getConfigValue('PIWIK_URL'),
-  siteId: getConfigValue('PIWIK_SITE_ID')
+  siteId: getConfigValue('PIWIK_SITE_ID'),
+  landingPageStartGoalId: getConfigValue('PIWIK_LANDING_PAGE_START_GOAL_ID')
 };
 
 // set up the template engine
