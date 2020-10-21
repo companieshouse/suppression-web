@@ -1,5 +1,5 @@
 export function expectToHaveLink(body: string, href: string, linkText: string): void {
-  const patternStr = `<a.* href="${href}">\\s*${linkText}\\s*<\/a>`;
+  const patternStr = `<a.* href="${href}"\( target="_blank"\|\)>\\s*${linkText}\\s*<\/a>`;
   const pattern = new RegExp(patternStr, 's');
   expect(body).toMatch(pattern);
 }
