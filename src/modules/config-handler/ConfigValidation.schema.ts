@@ -13,9 +13,9 @@ export const configValidationSchema = Joi.object({
   COOKIE_EXPIRATION_IN_SECONDS: Joi.string().required(),
   DOCUMENT_AMENDMENT_FEE: Joi.number().required(),
   PROCESSING_DELAY_EVENT: Joi.string(),
-  PIWIK_URL: Joi.string(),
-  PIWIK_SITE_ID: Joi.string(),
-  PIWIK_LANDING_PAGE_START_GOAL_ID: Joi.string()
+  PIWIK_URL: Joi.string().required(),
+  PIWIK_SITE_ID: Joi.string().required(),
+  PIWIK_LANDING_PAGE_START_GOAL_ID: Joi.string().required()
 }).options({
   allowUnknown: true
 });
