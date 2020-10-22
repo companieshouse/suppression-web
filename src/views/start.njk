@@ -54,7 +54,7 @@
           attributes: {
             id: 'start-now',
             'data-event-id': 'start-now-button' if piwik,
-            onclick: '_paq.push(["trackGoal", ' + piwik.startGoalID + ']);'
+            onclick: '_paq.push(["trackGoal", ' + piwik.startGoalID + ']);' if piwik
           }
         })
       }}
