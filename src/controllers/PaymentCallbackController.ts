@@ -6,6 +6,7 @@ import { CONFIRMATION_PAGE_URI, PAYMENT_REVIEW_PAGE_URI } from '../routes/paths'
 import { PaymentService } from '../services/payment/PaymentService';
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
+import { loggerInstance } from '../utils/Logger';
 
 export class PaymentCallbackController {
 
@@ -49,7 +50,7 @@ export class PaymentCallbackController {
       if (verifiedStatus === PaymentStatus.PAID) {
         redirectURI = CONFIRMATION_PAGE_URI;
       } else {
-        console.log(`${PaymentCallbackController.name} - WARN: Could not verify user-reported payment status. Mitigating.`);
+        loggerInstance().info(`${PaymentCallbackController.name} - WARN: Could not verify user-reported payment status. Mitigating.`);
         redirectURI = PAYMENT_REVIEW_PAGE_URI;
       }
     } else {
