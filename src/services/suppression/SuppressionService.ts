@@ -98,5 +98,5 @@ export class SuppressionService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + accessToken
     };
-  }
+  };
 }
