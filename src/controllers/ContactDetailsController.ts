@@ -11,6 +11,7 @@ import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema
 
 const template: string = 'contact-details';
 const backNavigation: string = SERVICE_ADDRESS_PAGE_URI;
+const backNavigationnext: string = SERVICE_ADDRESS_PAGE_URI;
 
 export class ContactDetailsController {
 
