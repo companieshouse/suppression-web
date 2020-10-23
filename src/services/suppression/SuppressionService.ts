@@ -15,7 +15,7 @@ export class SuppressionService {
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
 
     const uri: string = `${this.uri}/suppressions`;
-
+    const testing = "test_sonar";
     console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
     return await axios
