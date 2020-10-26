@@ -14,8 +14,8 @@ export default class SessionService {
     return;
   }
 
-  static appendNavigationPermissions(req: Request, permissions: string): string [] {
-    return [permissions]
+  static appendNavigationPermissions(req: Request, permissions: string): void {
+    return;
   }
 
   static getAccessToken(req: Request): string {

@@ -13,7 +13,7 @@ export default class SessionService {
     req.session!.setExtraData(SUPPRESSION_DATA_KEY, updatedSession);
   }
 
-  static appendNavigationPermissions(req: Request, permission: string): string[] {
+  static appendNavigationPermissions(req: Request, permission: string): void {
     const session: SuppressionSession = this.getSuppressionSession(req)!;
     const navigationPermissions: string[] | undefined = session.navigationPermissions;
 
@@ -24,8 +24,6 @@ export default class SessionService {
     }
 
     this.setSuppressionSession(req, session);
-    return session.navigationPermissions
-
   }
 
   static getAccessToken(req: Request): string {

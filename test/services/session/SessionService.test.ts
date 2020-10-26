@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { SuppressionSession, SUPPRESSION_DATA_KEY } from '../../../src/models/SuppressionSessionModel';
 import SessionService from '../../../src/services/session/SessionService';
 
-const mockSuppressionSession: SuppressionSession = {
+const mockSuppressionSessionData: SuppressionSession = {
   applicationReference: 'TESTS-TESTS',
   navigationPermissions: [],
   paymentDetails: {
@@ -26,10 +26,10 @@ describe('SessionService', () => {
 
     const mockRequest: Request = mockRequestData;
 
-    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSessionData);
     mockRequest.session!.getExtraData = mockGetExtraData;
 
-    expect(SessionService.getSuppressionSession(mockRequest)).toEqual(mockSuppressionSession);
+    expect(SessionService.getSuppressionSession(mockRequest)).toEqual(mockSuppressionSessionData);
     expect(mockGetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY);
   });
 
@@ -51,9 +51,89 @@ describe('SessionService', () => {
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
-    SessionService.setSuppressionSession(mockRequest, mockSuppressionSession);
+    SessionService.setSuppressionSession(mockRequest, mockSuppressionSessionData);
 
-    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionSession);
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionSessionData);
+  });
+
+  it('should initialise the navigation permissions and set the supplied permission when the permission list doesn’t exist yet', () => {
+
+    const mockRequest: Request = mockRequestData;
+
+    const mockSuppressionSession = {
+      applicationReference: mockSuppressionSessionData.applicationReference,
+      paymentDetails: mockSuppressionSessionData.paymentDetails
+    } as SuppressionSession
+
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
+    mockRequest.session!.getExtraData = mockGetExtraData;
+    const mockSetExtraData: jest.Mock = jest.fn();
+    mockRequest.session!.setExtraData = mockSetExtraData;
+
+    SessionService.appendNavigationPermissions(mockRequest, 'TEST_URI')
+
+    const expectedUpdatedSession = {
+      ...mockSuppressionSession,
+      navigationPermissions: [ 'TEST_URI' ]
+    } as SuppressionSession;
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, expectedUpdatedSession);
+  });
+
+  it('should only append a new permission to the navigation permissions if the new permission isn’t already present', () => {
+
+    const mockRequest: Request = mockRequestData;
+
+    const mockSuppressionSession: SuppressionSession = { ...mockSuppressionSessionData }
+    mockSuppressionSession.navigationPermissions = [ 'TEST_URI' ]
+
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
+    mockRequest.session!.getExtraData = mockGetExtraData;
+    const mockSetExtraData: jest.Mock = jest.fn();
+    mockRequest.session!.setExtraData = mockSetExtraData;
+
+    SessionService.appendNavigationPermissions(mockRequest, 'TEST_URI')
+
+    const expectedUpdatedSession: SuppressionSession = { ...mockSuppressionSession };
+    expectedUpdatedSession.navigationPermissions = [ 'TEST_URI' ];
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, expectedUpdatedSession);
+  });
+
+  it('should not append a new permission to the navigation permissions if the new permission is already present', () => {
+
+    const mockRequest: Request = mockRequestData;
+
+    const mockSuppressionSession: SuppressionSession = { ...mockSuppressionSessionData }
+    mockSuppressionSession.navigationPermissions = [ 'TEST_URI' ]
+
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
+    mockRequest.session!.getExtraData = mockGetExtraData;
+    const mockSetExtraData: jest.Mock = jest.fn();
+    mockRequest.session!.setExtraData = mockSetExtraData;
+
+    SessionService.appendNavigationPermissions(mockRequest, 'TEST_URI')
+
+    const expectedUpdatedSession: SuppressionSession = { ...mockSuppressionSession };
+    expectedUpdatedSession.navigationPermissions = [ 'TEST_URI' ];
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, expectedUpdatedSession);
+  });
+
+  it('should append a new permission to the navigation permissions if the new permission isn’t already present', () => {
+
+    const mockRequest: Request = mockRequestData;
+
+    const mockSuppressionSession: SuppressionSession = { ...mockSuppressionSessionData }
+    mockSuppressionSession.navigationPermissions = [ 'FIRST_TEST_URI' ]
+
+    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
+    mockRequest.session!.getExtraData = mockGetExtraData;
+    const mockSetExtraData: jest.Mock = jest.fn();
+    mockRequest.session!.setExtraData = mockSetExtraData;
+
+    SessionService.appendNavigationPermissions(mockRequest, 'SECOND_TEST_URI')
+
+    const expectedUpdatedSession: SuppressionSession = { ...mockSuppressionSession };
+    expectedUpdatedSession.navigationPermissions = [ 'FIRST_TEST_URI', 'SECOND_TEST_URI' ];
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, expectedUpdatedSession);
   });
 
   it('should retrieve the access token from the session', () => {
