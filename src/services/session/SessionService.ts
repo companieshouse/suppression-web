@@ -13,6 +13,20 @@ export default class SessionService {
     req.session!.setExtraData(SUPPRESSION_DATA_KEY, updatedSession);
   }
 
+  static getNavigationPermissions(req: Request): string[] | undefined {
+    const session: SuppressionSession | undefined = this.getSuppressionSession(req);
+    return session?.navigationPermissions;
+  }
+
+  // appendNavigation
+
+  static setNavigationPermission(req: Request, permissionList: string []): void {
+    const session: SuppressionSession = this.getSuppressionSession(req)!;
+    console.log('OI', session)
+    session.navigationPermissions = permissionList;
+    this.setSuppressionSession(req, session!)
+  }
+
   static getAccessToken(req: Request): string {
     const signInInfo = req.session!.get<ISignInInfo>(SessionKey.SignInInfo)!;
     return signInInfo.access_token!.access_token!

@@ -13,6 +13,14 @@ export default class SessionService {
     return;
   }
 
+  static getNavigationPermissions(req: Request): string [] {
+    return [];
+  }
+
+  static setNavigationPermission(req: Request, permissionList: string []): void {
+    return;
+  }
+
   static getAccessToken(req: Request): string {
     return 'mock-token';
   }
