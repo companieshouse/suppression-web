@@ -1,7 +1,7 @@
 import { authMiddleware, AuthOptions } from '@companieshouse/web-security-node';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
-import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
+import { ACCESSIBILITY_STATEMENT_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import { newUriFactory } from '../utils/UriFactory';
 
 export function AuthMiddleware(): RequestHandler {
@@ -9,7 +9,8 @@ export function AuthMiddleware(): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): any => {
 
     const url: string = req.originalUrl;
-    if (url === ROOT_URI || url === ROOT_URI + '/') {
+    const exemptions: string[] = [ ROOT_URI, `${ROOT_URI}/`, ACCESSIBILITY_STATEMENT_URI ];
+    if (exemptions.includes(url)) {
       return next();
     }
 
