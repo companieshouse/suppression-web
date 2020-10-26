@@ -85,8 +85,10 @@ export class ApplicantDetailsController {
 
         SessionService.setSuppressionSession(req, {
           applicationReference,
-          navigationPermissions: session?.navigationPermissions.concat([nextNavigation])!
+          navigationPermissions: session?.navigationPermissions!
         });
+
+        SessionService.appendNavigationPermissions(req, nextNavigation);
       }
     } catch (error) {
       return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
