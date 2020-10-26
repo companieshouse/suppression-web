@@ -65,6 +65,7 @@ describe('Applied Navigation Middleware', () => {
       { name: 'Payment Review', uri: PAYMENT_REVIEW_PAGE_URI },
     ];
 
+
     jest.spyOn(SuppressionService.prototype, 'get').mockImplementation(async () => {
       return Promise.resolve( generateTestData() as SuppressionData)
     });
@@ -78,6 +79,24 @@ describe('Applied Navigation Middleware', () => {
           .expect(response => {
             expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
             expect(response.header.location).toContain(APPLICANT_DETAILS_PAGE_URI);
+          });
+      });
+    }
+
+    for (const page of pageList.slice(1)) {
+      it(`should redirect from ${page.name} to the most recent page in the permissions stack when the appropriate permission is not set`, async () => {
+
+        const app = createApp(false, true)
+        jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+          return {
+            navigationPermissions: [ ADDRESS_TO_REMOVE_PAGE_URI ]
+          } as SuppressionSession;
+        });
+
+        await request(app).get(page.uri)
+          .expect(response => {
+            expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
+            expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
           });
       });
     }
