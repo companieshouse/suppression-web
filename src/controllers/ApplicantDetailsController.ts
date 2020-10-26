@@ -94,8 +94,6 @@ export class ApplicantDetailsController {
       return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
     }
 
-    console.log(SessionService.getSuppressionSession(req));
-
     res.redirect(continueNavigation);
   };
 
