@@ -152,6 +152,8 @@ describe('AddressToRemoveController', () => {
       });
     });
 
+    jest.spyOn(SessionService, 'appendNavigationPermissions');
+
     it('should throw an error if the session doesn’t exist', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => undefined);
 
@@ -160,7 +162,10 @@ describe('AddressToRemoveController', () => {
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if application reference not in session', async () => {
@@ -173,7 +178,10 @@ describe('AddressToRemoveController', () => {
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if patch suppression service throws exception', async () => {
@@ -190,13 +198,17 @@ describe('AddressToRemoveController', () => {
       await request(app)
         .post(ADDRESS_TO_REMOVE_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should show four validation errors if no information is entered', async () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
@@ -215,6 +227,7 @@ describe('AddressToRemoveController', () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [addressLine1ErrorMessage]);
@@ -229,6 +242,7 @@ describe('AddressToRemoveController', () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [townOrCityErrorMessage]);
@@ -243,6 +257,7 @@ describe('AddressToRemoveController', () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countyErrorMessage]);
@@ -257,6 +272,7 @@ describe('AddressToRemoveController', () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
@@ -271,6 +287,7 @@ describe('AddressToRemoveController', () => {
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countryErrorMessage]);
@@ -288,6 +305,7 @@ describe('AddressToRemoveController', () => {
       });
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
+        expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
         expect(response.header.location).toContain(DOCUMENT_DETAILS_PAGE_URI);
       });
@@ -302,6 +320,7 @@ describe('AddressToRemoveController', () => {
       });
 
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
+        expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
         expect(response.header.location).toContain(DOCUMENT_DETAILS_PAGE_URI);
       });
