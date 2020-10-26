@@ -22,9 +22,12 @@ describe('StartPageController', () => {
           expectToHaveLink(response.text,
             'https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information',
             'Restricting the disclosure of your information');
-         expectToHaveLink(response.text,
-          'https:\/\/beta.companieshouse.gov.uk\/',
-          'Companies House register');
+          expectToHaveLink(response.text,
+            'https:\/\/beta.companieshouse.gov.uk\/',
+            'Companies House register');
+          expectToHaveLink(response.text,
+            '\/suppress-my-details\/accessibility-statement',
+            'Accessibility statement');
         });
     });
   });
