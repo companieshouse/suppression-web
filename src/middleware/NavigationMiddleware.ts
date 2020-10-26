@@ -1,4 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { ACCESSIBILITY_STATEMENT_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { urlMatches } from '../utils/UriMatcher';
@@ -15,12 +16,18 @@ export function NavigationMiddleware(): RequestHandler {
       return next()
     }
 
-    const navigationPermissions: string[] | undefined = SessionService.getSuppressionSession(req)?.navigationPermissions;
+    const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+
+    if (!session) {
+      return next(new Error(`${NavigationMiddleware.name} - session expected but none found`));
+    }
+
+    const navigationPermissions: string[] | undefined = session.navigationPermissions;
 
     if (!navigationPermissions || navigationPermissions.length === 0) {
       return res.redirect(APPLICANT_DETAILS_PAGE_URI)
 
-    } else if (!navigationPermissions.includes(req.originalUrl)) {
+    } else if (!navigationPermissions.includes(url)) {
       return res.redirect(navigationPermissions![navigationPermissions!.length - 1])
     }
 
