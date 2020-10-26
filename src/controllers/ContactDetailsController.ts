@@ -11,6 +11,7 @@ import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema
 
 const template: string = 'contact-details';
 const backNavigation: string = SERVICE_ADDRESS_PAGE_URI;
+const continueNavigation: string = CHECK_SUBMISSION_PAGE_URI;
 
 export class ContactDetailsController {
 
@@ -75,7 +76,9 @@ export class ContactDetailsController {
         return next(new Error(`${ContactDetailsController.name} - ${err}`));
       }
 
-      res.redirect(CHECK_SUBMISSION_PAGE_URI);
+      SessionService.appendNavigationPermissions(req, continueNavigation);
+
+      res.redirect(continueNavigation);
     }
   };
 }

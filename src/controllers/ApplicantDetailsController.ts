@@ -14,7 +14,7 @@ import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchem
 
 const template: string = 'applicant-details';
 const backNavigation: string = ROOT_URI;
-const nextNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
+const continueNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
 const missingDateErrorMessage: string = 'Date of birth is required';
 
 export class ApplicantDetailsController {
@@ -88,7 +88,7 @@ export class ApplicantDetailsController {
           navigationPermissions: session?.navigationPermissions!
         });
 
-        SessionService.appendNavigationPermissions(req, nextNavigation);
+        SessionService.appendNavigationPermissions(req, continueNavigation);
       }
     } catch (error) {
       return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
@@ -96,7 +96,7 @@ export class ApplicantDetailsController {
 
     console.log(SessionService.getSuppressionSession(req));
 
-    res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
+    res.redirect(continueNavigation);
   };
 
   private async getApplicantDetails(applicationReference: string | undefined, accessToken: string): Promise<any> {
