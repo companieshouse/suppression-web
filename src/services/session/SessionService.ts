@@ -13,11 +13,6 @@ export default class SessionService {
     req.session!.setExtraData(SUPPRESSION_DATA_KEY, updatedSession);
   }
 
-  static getNavigationPermissions(req: Request): string[] | undefined {
-    const session: SuppressionSession | undefined = this.getSuppressionSession(req);
-    return session?.navigationPermissions;
-  }
-
   static appendNavigationPermissions(req: Request, permission: string): string[] {
     const session: SuppressionSession = this.getSuppressionSession(req)!;
     const navigationPermissions: string[] | undefined = session.navigationPermissions;
@@ -31,12 +26,6 @@ export default class SessionService {
     this.setSuppressionSession(req, session);
     return session.navigationPermissions
 
-  }
-
-  static setNavigationPermission(req: Request, permissionList: string []): void {
-    const session: SuppressionSession = this.getSuppressionSession(req)!;
-    session.navigationPermissions = permissionList;
-    this.setSuppressionSession(req, session!)
   }
 
   static getAccessToken(req: Request): string {

@@ -5,7 +5,8 @@ export default class SessionService {
 
   static getSuppressionSession(req: Request): SuppressionSession | undefined {
     return {
-      applicationReference: '12345-12345'
+      applicationReference: '12345-12345',
+      navigationPermissions: []
     } as SuppressionSession
   }
 
@@ -13,12 +14,8 @@ export default class SessionService {
     return;
   }
 
-  static getNavigationPermissions(req: Request): string [] {
-    return [];
-  }
-
-  static setNavigationPermission(req: Request, permissionList: string []): void {
-    return;
+  static appendNavigationPermissions(req: Request, permissions: string): string [] {
+    return [permissions]
   }
 
   static getAccessToken(req: Request): string {

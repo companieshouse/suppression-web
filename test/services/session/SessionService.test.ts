@@ -7,6 +7,7 @@ import SessionService from '../../../src/services/session/SessionService';
 
 const mockSuppressionSession: SuppressionSession = {
   applicationReference: 'TESTS-TESTS',
+  navigationPermissions: [],
   paymentDetails: {
     stateUUID: 'mockUUID',
     resourceUri: 'mockURI'
