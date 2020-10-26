@@ -35,7 +35,7 @@ app.use(SessionMiddleware({
 
 app.use(AuthMiddleware());
 
-app.use(NavigationMiddleware());
+app.get('*', NavigationMiddleware());
 
 // set up app variables from the environment
 app.set('port', getConfigValue('PORT'));
