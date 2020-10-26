@@ -6,34 +6,36 @@ export function NavigationMiddleware(): RequestHandler {
 
   return (req: Request, res: Response, next: NextFunction): any => {
 
-    console.log('Navigation Middleware Intercepted Request');
+    if (req.method !== 'GET'){
+      return next()
+    }
+
+    console.log(`Navigation Middleware Intercepted ${req.method} Request`);
 
     if (req.originalUrl.startsWith(APPLICANT_DETAILS_PAGE_URI) || req.originalUrl === ROOT_URI){
       console.log(`${req.originalUrl} is exempt from navigation rules` );
       return next()
     }
 
-    let navigationPermissions = SessionService.getNavigationPermissions(req);
+    let navigationPermissions = SessionService.getSuppressionSession(req)?.navigationPermissions;
 
-    if (navigationPermissions === undefined){
+    if (!navigationPermissions){
+      console.log('navigationPermissions is undefined');
       SessionService.setNavigationPermission(req, []);
-      navigationPermissions = [];
+      navigationPermissions = SessionService.getNavigationPermissions(req)
     }
 
-    console.log('------------------');
-    console.log('Original URL: ', req.originalUrl);
-    console.log('Navigation Permissions: ', navigationPermissions);
-    console.log('------------------');
-
-    const permissionMatchesDestination = (element) => req.originalUrl.startsWith(element);
-
-    if (navigationPermissions!.some((permissionMatchesDestination))) {
+    if (navigationPermissions!.includes(req.originalUrl)) {
       return next()
+
     } else {
-      if (navigationPermissions === []){
-        res.redirect(APPLICANT_DETAILS_PAGE_URI)
+      if (navigationPermissions!.length === 0){
+        console.log('navigationPermissions is empty, redirecting to applicant details page');
+        return res.redirect(APPLICANT_DETAILS_PAGE_URI)
       }
-      res.redirect(navigationPermissions![navigationPermissions!.length-1])
+
+      console.log('redirecting to last page');
+      return res.redirect(navigationPermissions![navigationPermissions!.length-1])
     }
 
   }

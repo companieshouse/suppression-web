@@ -18,11 +18,8 @@ export default class SessionService {
     return session?.navigationPermissions;
   }
 
-  // appendNavigation
-
   static setNavigationPermission(req: Request, permissionList: string []): void {
     const session: SuppressionSession = this.getSuppressionSession(req)!;
-    console.log('OI', session)
     session.navigationPermissions = permissionList;
     this.setSuppressionSession(req, session!)
   }
