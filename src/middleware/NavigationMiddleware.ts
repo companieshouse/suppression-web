@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
+import { ACCESSIBILITY_STATEMENT_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { urlMatches } from '../utils/UriMatcher';
 
@@ -9,10 +9,10 @@ export function NavigationMiddleware(): RequestHandler {
 
     console.log(`Navigation Middleware Intercepted ${req.method} Request`);
 
-    // TODO: Add Accessibility Statement to exemptions
     const url: string = req.originalUrl;
-    const exemptions: string[] = [ ROOT_URI, APPLICANT_DETAILS_PAGE_URI ];
+    const exemptions: string[] = [ ROOT_URI, APPLICANT_DETAILS_PAGE_URI , ACCESSIBILITY_STATEMENT_URI ];
     const exempt: boolean = exemptions.some(exemption => urlMatches(exemption, url));
+
     if (exempt){
       console.log(`${req.originalUrl} is exempt from navigation rules` );
       return next()
