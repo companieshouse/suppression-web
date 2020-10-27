@@ -18,13 +18,9 @@ export function NavigationMiddleware(): RequestHandler {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
-    if (!session) {
-      return next(new Error(`${NavigationMiddleware.name} - session expected but none found`));
-    }
+    const navigationPermissions: string[] | undefined = session?.navigationPermissions;
 
-    const navigationPermissions: string[] | undefined = session.navigationPermissions;
-
-    if (!navigationPermissions || navigationPermissions.length === 0) {
+    if (!session || !navigationPermissions || navigationPermissions.length === 0) {
       return res.redirect(APPLICANT_DETAILS_PAGE_URI);
 
     } else if (!navigationPermissions.includes(url)) {
