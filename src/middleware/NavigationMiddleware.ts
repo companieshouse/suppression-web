@@ -25,7 +25,7 @@ export function NavigationMiddleware(): RequestHandler {
     const navigationPermissions: string[] | undefined = session.navigationPermissions;
 
     if (!navigationPermissions || navigationPermissions.length === 0) {
-      return res.redirect(APPLICANT_DETAILS_PAGE_URI)
+      return res.redirect(APPLICANT_DETAILS_PAGE_URI);
 
     } else if (!navigationPermissions.includes(url)) {
       return res.redirect(navigationPermissions![navigationPermissions!.length - 1])
