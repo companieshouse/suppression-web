@@ -12,8 +12,8 @@ export function NavigationMiddleware(): RequestHandler {
     const exemptions: string[] = [ ROOT_URI, APPLICANT_DETAILS_PAGE_URI , ACCESSIBILITY_STATEMENT_URI ];
     const exempt: boolean = exemptions.some(exemption => urlMatches(exemption, url));
 
-    if (exempt){
-      return next()
+    if (exempt) {
+      return next();
     }
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
@@ -31,6 +31,6 @@ export function NavigationMiddleware(): RequestHandler {
       return res.redirect(navigationPermissions![navigationPermissions!.length - 1])
     }
 
-    return next()
+    return next();
   }
 }
