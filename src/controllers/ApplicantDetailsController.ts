@@ -83,12 +83,12 @@ export class ApplicantDetailsController {
       } else {
         const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken);
 
+        const navigationPermissions: string[] = session?.navigationPermissions || [];
+
         SessionService.setSuppressionSession(req, {
           applicationReference,
-          navigationPermissions: session?.navigationPermissions!
+          navigationPermissions: [...navigationPermissions, continueNavigation]
         });
-
-        SessionService.appendNavigationPermissions(req, continueNavigation);
       }
     } catch (error) {
       return next(new Error(`${ApplicantDetailsController.name} - ${error}`));

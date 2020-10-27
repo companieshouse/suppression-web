@@ -127,8 +127,6 @@ describe('ApplicantDetailsController', () => {
 
     jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => Promise.resolve());
 
-    jest.spyOn(SessionService, 'appendNavigationPermissions');
-
     const fullNameErrorMessage = 'Full name is required';
     const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
     const previousNameMissingMessage = 'Enter previous full names, used for business purposes';
@@ -141,7 +139,6 @@ describe('ApplicantDetailsController', () => {
     it('should show four validation errors if no information is entered', async () => {
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).expect(response => {
-        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
@@ -168,7 +165,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage]);
@@ -185,7 +181,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [hasPreviousNameMissingMessage]);
@@ -201,7 +196,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [previousNameMissingMessage]);
@@ -217,7 +211,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [emailMissingErrorMessage]);
@@ -233,7 +226,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [emailInvalidErrorMessage]);
@@ -251,7 +243,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [missingDateOfBirthErrorMessage]);
@@ -266,7 +257,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send(testData)
         .expect(response => {
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
@@ -282,7 +272,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send(testData)
         .expect(response => {
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
@@ -304,7 +293,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expect(SuppressionService.prototype.save).not.toHaveBeenCalled();
           expect(SuppressionService.prototype.patch).toHaveBeenCalled();
           expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
@@ -327,7 +315,6 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
-          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expect(SuppressionService.prototype.save).not.toHaveBeenCalled();
           expect(SuppressionService.prototype.patch).toHaveBeenCalled();
           expect(response.header.location).toContain(ADDRESS_TO_REMOVE_PAGE_URI);
@@ -347,7 +334,6 @@ describe('ApplicantDetailsController', () => {
       await request(app).post(APPLICANT_DETAILS_PAGE_URI)
         .send(testData)
         .expect(response => {
-          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(SuppressionService.prototype.save).toHaveBeenCalled();
           expect(SuppressionService.prototype.patch).not.toHaveBeenCalled();
