@@ -10,6 +10,7 @@ import { defaultHandler } from '../src/middleware/ErrorHandler';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { dateFilter } from '../src/modules/nunjucks/DateFilter'
+import * as Paths from '../src/routes/paths';
 import { routes } from '../src/routes/routes';
 
 export function createApp(authEnabled?: boolean) {
@@ -34,6 +35,8 @@ export function createApp(authEnabled?: boolean) {
 
   app.set('views', viewPath);
   app.set('view engine', 'njk');
+
+  app.locals.paths = Paths;
 
   const redis = require('redis-mock');
   const sessionStore = new SessionStore(redis.createClient())

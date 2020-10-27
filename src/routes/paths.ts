@@ -9,5 +9,6 @@ export const CHECK_SUBMISSION_PAGE_URI = `${ROOT_URI}/check-your-answers`;
 export const PAYMENT_REVIEW_PAGE_URI = `${ROOT_URI}/payment-review`;
 export const PAYMENT_CALLBACK_URI = `${ROOT_URI}/payment-callback`;
 export const CONFIRMATION_PAGE_URI = `${ROOT_URI}/confirmation`;
+export const ACCESSIBILITY_STATEMENT_URI = `${ROOT_URI}/accessibility-statement`;
 
 export const HEALTHCHECK_URI = `/healthcheck`;

@@ -4,6 +4,7 @@ import request from 'supertest';
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
 
 import {
+  ACCESSIBILITY_STATEMENT_URI,
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
   DOCUMENT_DETAILS_PAGE_URI,
@@ -43,6 +44,18 @@ describe('Applied auth middleware', () => {
             expect(response.status).toEqual(StatusCodes.OK);
           });
       }
+    });
+  });
+
+  describe('Unauthenticated user: accessibility statement', () => {
+
+    it('should not redirect user to sign in page', async () => {
+      const app = createApp(true);
+
+      await request(app).get(ACCESSIBILITY_STATEMENT_URI)
+        .expect(response => {
+          expect(response.status).toEqual(StatusCodes.OK);
+        });
     });
   });
 
