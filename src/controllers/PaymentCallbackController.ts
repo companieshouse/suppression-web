@@ -50,7 +50,7 @@ export class PaymentCallbackController {
       if (verifiedStatus === PaymentStatus.PAID) {
         redirectURI = CONFIRMATION_PAGE_URI;
       } else {
-        loggerInstance().info(`${PaymentCallbackController.name} - WARN: Could not verify user-reported payment status. Mitigating.`);
+        loggerInstance().infoRequest(req, `${PaymentCallbackController.name} - WARN: Could not verify user-reported payment status. Mitigating.`);
         redirectURI = PAYMENT_REVIEW_PAGE_URI;
       }
     } else {
