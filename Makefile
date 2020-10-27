@@ -21,6 +21,10 @@ build:	package-install lint
 lint:
 	npm run lint
 
+.PHONY: audit
+audit:
+        npm audit
+
 .PHONY: test
 test: test-unit
 
