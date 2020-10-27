@@ -28,7 +28,7 @@ export function NavigationMiddleware(): RequestHandler {
       return res.redirect(APPLICANT_DETAILS_PAGE_URI);
 
     } else if (!navigationPermissions.includes(url)) {
-      return res.redirect(navigationPermissions![navigationPermissions!.length - 1])
+      return res.redirect(navigationPermissions[navigationPermissions.length - 1]);
     }
 
     return next();
