@@ -17,7 +17,6 @@ export function NavigationMiddleware(): RequestHandler {
     }
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
-
     const navigationPermissions: string[] | undefined = session?.navigationPermissions;
 
     if (!session || !navigationPermissions || navigationPermissions.length === 0) {
