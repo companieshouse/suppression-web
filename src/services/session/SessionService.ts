@@ -15,12 +15,10 @@ export default class SessionService {
 
   static appendNavigationPermissions(req: Request, permission: string): void {
     const session: SuppressionSession = this.getSuppressionSession(req)!;
-    const navigationPermissions: string[] | undefined = session.navigationPermissions;
+    const navigationPermissions: string[] = session.navigationPermissions || [];
 
-    if (!navigationPermissions) {
-      session.navigationPermissions = [permission]
-    } else if (!navigationPermissions.includes(permission)) {
-      session.navigationPermissions = session.navigationPermissions.concat([permission])
+    if (!navigationPermissions.includes(permission)) {
+      session.navigationPermissions = [...navigationPermissions, permission];
     }
 
     this.setSuppressionSession(req, session);
