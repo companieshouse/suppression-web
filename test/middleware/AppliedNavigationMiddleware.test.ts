@@ -1,6 +1,17 @@
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
-import { ACCESSIBILITY_STATEMENT_URI, ADDRESS_TO_REMOVE_PAGE_URI, APPLICANT_DETAILS_PAGE_URI, CHECK_SUBMISSION_PAGE_URI, CONTACT_DETAILS_PAGE_URI, DOCUMENT_DETAILS_PAGE_URI, PAYMENT_REVIEW_PAGE_URI, ROOT_URI, SERVICE_ADDRESS_PAGE_URI } from '../../src/routes/paths';
+import {
+  ACCESSIBILITY_STATEMENT_URI,
+  ADDRESS_TO_REMOVE_PAGE_URI,
+  APPLICANT_DETAILS_PAGE_URI,
+  CHECK_SUBMISSION_PAGE_URI,
+  CONFIRMATION_PAGE_URI,
+  CONTACT_DETAILS_PAGE_URI,
+  DOCUMENT_DETAILS_PAGE_URI,
+  PAYMENT_REVIEW_PAGE_URI,
+  ROOT_URI,
+  SERVICE_ADDRESS_PAGE_URI
+} from '../../src/routes/paths';
 
 import { SuppressionData } from '../../src/models/SuppressionDataModel';
 import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
@@ -130,5 +141,20 @@ describe('Applied Navigation Middleware', () => {
       });
     }
 
+  });
+
+  it('should not redirect from the Confirmation page if previousApplicationReference is present in the session', async () => {
+
+    const app = createApp(false, true);
+    jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+      return {
+        previousApplicationReference: 'TEST1-TEST1'
+      } as SuppressionSession;
+    });
+
+    await request(app).get(CONFIRMATION_PAGE_URI)
+      .expect(response => {
+        expect(response.status).toEqual(StatusCodes.OK);
+      });
   });
 });

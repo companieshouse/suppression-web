@@ -48,6 +48,7 @@ export class PaymentCallbackController {
       const accessToken: string =  SessionService.getAccessToken(req);
       const verifiedStatus: PaymentStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken);
       if (verifiedStatus === PaymentStatus.PAID) {
+        SessionService.resetSuppressionSession(req);
         redirectURI = CONFIRMATION_PAGE_URI;
       } else {
         loggerInstance().infoRequest(req, `${PaymentCallbackController.name} - WARN: Could not verify user-reported payment status. Mitigating.`);

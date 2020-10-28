@@ -1,6 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { SuppressionSession } from '../models/SuppressionSessionModel';
-import { ACCESSIBILITY_STATEMENT_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
+import {
+  ACCESSIBILITY_STATEMENT_URI,
+  APPLICANT_DETAILS_PAGE_URI,
+  CONFIRMATION_PAGE_URI,
+  ROOT_URI
+} from '../routes/paths';
 import SessionService from '../services/session/SessionService';
 import { urlMatches } from '../utils/UriMatcher';
 
@@ -18,6 +23,13 @@ export function NavigationMiddleware(): RequestHandler {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
     const navigationPermissions: string[] | undefined = session?.navigationPermissions;
+
+    if (urlMatches(CONFIRMATION_PAGE_URI, url)) {
+      const applicationReference: string | undefined = session?.previousApplicationReference;
+      if (applicationReference) {
+        return next();
+      }
+    }
 
     if (!navigationPermissions || navigationPermissions.length === 0) {
       return res.redirect(APPLICANT_DETAILS_PAGE_URI);

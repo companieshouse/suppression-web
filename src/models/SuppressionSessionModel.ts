@@ -4,6 +4,7 @@ export interface SuppressionSession {
   applicationReference: string;
   navigationPermissions: string [];
   paymentDetails?: PaymentDetails;
+  previousApplicationReference?: string;
 }
 
 export interface PaymentDetails {
