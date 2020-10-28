@@ -21,7 +21,6 @@ export class ConfirmationController {
     try {
 
       const session: SuppressionSession = SessionService.getSuppressionSession(req)!;
-      loggerInstance().info(`${ConfirmationController.name} - Session: ${JSON.stringify(session)}`);
       const applicationReference: string = session.previousApplicationReference!;
 
       const accessToken: string = SessionService.getAccessToken(req);

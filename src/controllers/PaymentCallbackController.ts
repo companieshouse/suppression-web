@@ -21,7 +21,6 @@ export class PaymentCallbackController {
     const state: string = req.query.state as string;
     const status: PaymentStatus = req.query.status as PaymentStatus;
     const reference: string = req.query.ref as string;
-    loggerInstance().info(`${PaymentCallbackController.name} - Query: { state: ${req.query.state}, status: ${req.query.status}, reference: ${req.query.ref}`);
 
     if (!(state && status && reference)) {
       return next(new Error(`${PaymentCallbackController.name} - received invalid arguments`));
