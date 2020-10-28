@@ -4,6 +4,7 @@ import { SuppressionSession } from '../models/SuppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import SessionService from '../services/session/SessionService'
 import { SuppressionService } from '../services/suppression/SuppressionService';
+import {loggerInstance} from '../utils/Logger';
 
 const template: string = 'confirmation';
 
@@ -20,7 +21,7 @@ export class ConfirmationController {
     try {
 
       const session: SuppressionSession = SessionService.getSuppressionSession(req)!;
-      console.log(`Session at Confirmation Controller: ${JSON.stringify(session)}`);
+      loggerInstance().info(`${ConfirmationController.name} - Session: ${JSON.stringify(session)}`);
       const applicationReference: string = session.previousApplicationReference!;
 
       const accessToken: string = SessionService.getAccessToken(req);
