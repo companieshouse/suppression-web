@@ -7,7 +7,7 @@ import {
   ROOT_URI
 } from '../routes/paths';
 import SessionService from '../services/session/SessionService';
-import {loggerInstance} from '../utils/Logger';
+import { loggerInstance } from '../utils/Logger';
 import { urlMatches } from '../utils/UriMatcher';
 
 export function NavigationMiddleware(): RequestHandler {

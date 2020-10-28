@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import { SuppressionSession } from '../../src/models/SuppressionSessionModel';
 
-import { APPLICANT_DETAILS_PAGE_URI, CONFIRMATION_PAGE_URI} from '../../src/routes/paths';
+import { APPLICANT_DETAILS_PAGE_URI, CONFIRMATION_PAGE_URI } from '../../src/routes/paths';
 import SessionService from '../../src/services/session/SessionService'
 import { SuppressionService } from '../../src/services/suppression/SuppressionService';
 import { createApp } from '../ApplicationFactory';
