@@ -152,10 +152,6 @@ describe('ContactDetailsController', () => {
     const postcodeErrorMessage = 'Postcode is required';
     const countryErrorMessage = 'Country is required';
 
-    afterEach(() => {
-      jest.clearAllMocks()
-    });
-
     beforeEach(() => {
       jest.spyOn(SessionService, 'appendNavigationPermissions');
     });
