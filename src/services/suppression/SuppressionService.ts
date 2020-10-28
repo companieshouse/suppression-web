@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { ApplicantDetails, SuppressionData } from '../../models/SuppressionDataModel';
+import { loggerInstance } from '../../utils/Logger';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 
 export class SuppressionService {
@@ -16,7 +17,7 @@ export class SuppressionService {
 
     const uri: string = `${this.uri}/suppressions`;
 
-    console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
+    loggerInstance().info(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
     return await axios
       .post(uri, applicantDetails, {headers: this.getHeaders(accessToken)})
@@ -36,7 +37,7 @@ export class SuppressionService {
 
     const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
-    console.log(`${SuppressionService.name} - Making a GET request to ${uri}`);
+    loggerInstance().info(`${SuppressionService.name} - Making a GET request to ${uri}`);
 
     return await axios
       .get(uri, {headers: this.getHeaders(accessToken)})
@@ -57,7 +58,7 @@ export class SuppressionService {
 
     const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
-    console.log(`${SuppressionService.name} - Making a PATCH request to ${uri}`);
+    loggerInstance().info(`${SuppressionService.name} - Making a PATCH request to ${uri}`);
 
     return await axios
       .patch(uri, partialSuppression as SuppressionData, {headers: this.getHeaders(accessToken)})
