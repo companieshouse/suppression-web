@@ -12,6 +12,7 @@ import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema
 
 const template: string = 'address-to-remove';
 const backNavigation: string = APPLICANT_DETAILS_PAGE_URI;
+const continueNavigation: string = DOCUMENT_DETAILS_PAGE_URI;
 
 export class AddressToRemoveController {
 
@@ -69,9 +70,11 @@ export class AddressToRemoveController {
 
         const accessToken: string = SessionService.getAccessToken(req);
 
-        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken);
 
-        res.redirect(DOCUMENT_DETAILS_PAGE_URI);
+        SessionService.appendNavigationPermissions(req, continueNavigation);
+
+        res.redirect(continueNavigation);
       }
     } catch (err) {
       return next(new Error(`${AddressToRemoveController.name} - ${err}`));

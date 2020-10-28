@@ -280,7 +280,7 @@ describe('ApplicantDetailsController', () => {
         });
     });
 
-    it('should redirect to the next page if the information provided by the user is valid (yes to previousNames)', async () => {
+    it('should redirect to the next page if the information provided by the user is valid with previous session (yes to previousNames)', async () => {
       const testData = generateData();
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
@@ -299,7 +299,7 @@ describe('ApplicantDetailsController', () => {
         });
     });
 
-    it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
+    it('should redirect to the next page if the information provided by the user is valid with previous session (no to previousName)', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return {applicationReference: '12345-12345'} as SuppressionSession

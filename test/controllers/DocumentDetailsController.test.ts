@@ -166,6 +166,10 @@ describe('DocumentDetailsController', () => {
 
   describe('on POST', () => {
 
+    beforeEach(() => {
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+    });
+
     it('should throw an error if application reference not in session', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: undefined as any } as SuppressionSession
@@ -176,7 +180,10 @@ describe('DocumentDetailsController', () => {
       await request(app)
         .post(DOCUMENT_DETAILS_PAGE_URI)
         .send(generateTestData().documentDetails)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if patch suppression service throws exception', async () => {
@@ -202,7 +209,10 @@ describe('DocumentDetailsController', () => {
       await request(app)
         .post(DOCUMENT_DETAILS_PAGE_URI)
         .send(documentDetails)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should redirect to the Service Address page when valid data was submitted', async () => {
@@ -224,6 +234,7 @@ describe('DocumentDetailsController', () => {
         .post(DOCUMENT_DETAILS_PAGE_URI)
         .send(documentDetails)
         .expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toEqual(SERVICE_ADDRESS_PAGE_URI)
         });
@@ -238,6 +249,7 @@ describe('DocumentDetailsController', () => {
         .send({})
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingCompanyNameErrorMessage,
             missingCompanyNumberErrorMessage, missingDocumentDescErrorMessage, missingDocumentDateErrorMessage]);
@@ -261,6 +273,7 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingDocumentDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingDocumentDateErrorMessage]);
@@ -284,6 +297,7 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingYearErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingYearErrorMessage]);
@@ -308,6 +322,7 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [invalidDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [invalidDateErrorMessage]);
