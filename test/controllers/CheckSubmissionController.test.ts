@@ -118,9 +118,12 @@ describe('CheckSubmissionController', () => {
 
       const app = createApp();
 
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+
       await request(app)
         .post(CHECK_SUBMISSION_PAGE_URI)
         .send({}).expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toContain(PAYMENT_REVIEW_PAGE_URI);
         });

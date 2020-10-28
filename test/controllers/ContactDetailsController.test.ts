@@ -152,6 +152,10 @@ describe('ContactDetailsController', () => {
     const postcodeErrorMessage = 'Postcode is required';
     const countryErrorMessage = 'Country is required';
 
+    beforeEach(() => {
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+    });
+
     it('should throw an error if the session doesn’t exist', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
@@ -173,7 +177,10 @@ describe('ContactDetailsController', () => {
       await request(app)
         .post(CONTACT_DETAILS_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if patch suppression service throws exception', async () => {
@@ -190,13 +197,17 @@ describe('ContactDetailsController', () => {
       await request(app)
         .post(CONTACT_DETAILS_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should show four validation errors if no information is entered', async () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
@@ -215,6 +226,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [addressLine1ErrorMessage]);
@@ -229,6 +241,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [townOrCityErrorMessage]);
@@ -243,6 +256,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countyErrorMessage]);
@@ -257,6 +271,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
@@ -271,6 +286,7 @@ describe('ContactDetailsController', () => {
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
+        expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         expectToHaveTitle(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countryErrorMessage]);
@@ -288,6 +304,7 @@ describe('ContactDetailsController', () => {
       testData.line2 = '';
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
+        expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
         expect(response.header.location).toContain(CHECK_SUBMISSION_PAGE_URI);
       });
@@ -302,6 +319,7 @@ describe('ContactDetailsController', () => {
       const testData = generateTestData().contactAddress;
 
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
+        expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
         expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
         expect(response.header.location).toContain(CHECK_SUBMISSION_PAGE_URI);
       });

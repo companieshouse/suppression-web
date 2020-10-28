@@ -8,6 +8,7 @@ import * as path from 'path';
 
 import { AuthMiddleware } from './middleware/AuthMiddleware';
 import { defaultHandler } from './middleware/ErrorHandler';
+import { NavigationMiddleware } from './middleware/NavigationMiddleware';
 import {
   getConfigValue,
   loadEnvironmentVariables
@@ -33,6 +34,8 @@ app.use(SessionMiddleware({
 }, sessionStore));
 
 app.use(AuthMiddleware());
+
+app.get('*', NavigationMiddleware());
 
 // set up app variables from the environment
 app.set('port', getConfigValue('PORT'));

@@ -12,6 +12,7 @@ import { schema } from '../validators/schema/DocumentDetailsSchema';
 
 const template: string = 'document-details';
 const backNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
+const continueNavigation: string = SERVICE_ADDRESS_PAGE_URI;
 const missingDateErrorMessage: string = 'Document date is required';
 
 export class DocumentDetailsController {
@@ -95,7 +96,9 @@ export class DocumentDetailsController {
       return next(new Error(`${DocumentDetailsController.name} - ${err}`));
     }
 
-    res.redirect(SERVICE_ADDRESS_PAGE_URI);
+    SessionService.appendNavigationPermissions(req, continueNavigation);
+
+    res.redirect(continueNavigation);
 
   };
 
