@@ -15,6 +15,7 @@ import {
 } from './modules/config-handler/ConfigHandler';
 import { configValidationSchema } from './modules/config-handler/ConfigValidation.schema';
 import { dateFilter } from './modules/nunjucks/DateFilter';
+import { pageTitleFilter } from './modules/nunjucks/PageTitleFilter';
 import * as Paths from './routes/paths';
 import { routes } from './routes/routes';
 
@@ -61,6 +62,7 @@ const env = nunjucks.configure([
 });
 
 env.addFilter('date', dateFilter);
+env.addFilter('pageTitle', pageTitleFilter);
 
 app.set('views', viewPath);
 app.set('view engine', 'njk');

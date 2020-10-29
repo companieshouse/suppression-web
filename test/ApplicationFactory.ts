@@ -11,6 +11,7 @@ import { NavigationMiddleware } from '../src/middleware/NavigationMiddleware';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { dateFilter } from '../src/modules/nunjucks/DateFilter'
+import { pageTitleFilter } from '../src/modules/nunjucks/PageTitleFilter';
 import * as Paths from '../src/routes/paths';
 import { routes } from '../src/routes/routes';
 
@@ -33,6 +34,7 @@ export function createApp(authEnabled?: boolean, navEnabled?: boolean) {
   });
 
   env.addFilter('date', dateFilter);
+  env.addFilter('pageTitle', pageTitleFilter);
 
   app.set('views', viewPath);
   app.set('view engine', 'njk');

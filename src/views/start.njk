@@ -2,6 +2,7 @@
 
 {% from 'govuk/components/warning-text/macro.njk' import govukWarningText %}
 {% from 'govuk/components/button/macro.njk'       import govukButton %}
+{% from 'govuk/components/inset-text/macro.njk'   import govukInsetText %}
 
 {% block pageTitle %}
   {{ serviceName }}
@@ -12,7 +13,7 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">{{ serviceName }}</h1>
       <p class="govuk-body-l">
-        Use this service to apply to remove your home address, or part of it, from the Companies House public register (SR01).
+        Use this service to apply to remove your home address, or part of it, from the Companies House public register.
       </p>
 
       {{
@@ -22,28 +23,30 @@
         })
       }}
 
-      <p class="govuk-body">It costs £32 to remove your home address from a document. If you want to remove your home address from more than one document, you must pay this fee for each document.</p>
-      <h2 class="govuk-body govuk-!-font-weight-bold">You can use this service if you are, or were:</h2>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>a company officer</li>
-        <li>a person with significant control (PSC)</li>
-        <li>a subscriber or member of a company, Limited Liability Partnership (LLP), Societas Europaea (SE) or eligible Scottish partnership</li>
-        <li>an officer or permanent representative of an overseas company</li>
-      </ul>
+      {{ govukInsetText({
+          text: 'It costs £32 to remove your home address from each document. For now, you can only remove your home address from one document at a time using this online service.'
+        })
+      }}
+
+      <p class="govuk-body">If you want to remove your home address from more than one document, you’ll need to start a new online application for each document or
+        <a class="govuk-link" href="https://www.gov.uk/government/publications/apply-to-remove-your-home-address-from-the-public-register-sr01">complete a paper application (SR01)</a>.
+      </p>
       <h2 class="govuk-body govuk-!-font-weight-bold">You'll need to know which document contains your home address by checking the
-        <a target="_blank" href="https://beta.companieshouse.gov.uk/">Companies House register</a>, and make a note of:
+        <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">Companies House register</a>. Make a note of:
       </h2>
       <ul class="govuk-list govuk-list--bullet">
         <li>the date it was added to the register</li>
-        <li>the document name (shown on the PDF of the document)</li>
-        <li>the document description (shown in the filing history)</li>
+        <li>the document name, which is shown on the PDF of the document</li>
+        <li>the document description as it appears in the company filing history</li>
       </ul>
       <h2 class="govuk-body govuk-!-font-weight-bold">You'll also need:</h2>
       <ul class="govuk-list govuk-list--bullet">
-        <li>a different address to replace your home address, unless the company is closed or you are no longer acting for the company</li>
+        <li>the applicant’s name, date of birth and any previous names used on the Companies House register in the last 20 years</li>
+        <li>a different address to replace the home address, unless the company is closed or the applicant is no longer acting for the company</li>
         <li>the company name and number</li>
         <li>a credit or debit card</li>
       </ul>
+      <p class="govuk-body">It takes around 10 minutes to complete this application.</p>
 
       <form method="post">
       {{

@@ -59,10 +59,8 @@ export function expectToHaveTitle(body: string, expectedTitle: string): void {
   expect(body).toMatch(pattern);
 }
 
-export function expectNotToHaveTitle(body: string, invalidTitle: string): void {
-  const patternStr = `<title>\\s*${invalidTitle}\\s*<\/title>`;
-  const pattern = new RegExp(patternStr, 's');
-  expect(body).not.toMatch(pattern);
+export function expectToHaveTitleWithError(body: string, expectedTitle: string): void {
+  expectToHaveTitle(body, `Error: ${expectedTitle}`);
 }
 
 export function expectToHaveButton(body: string, buttonText: string): void {

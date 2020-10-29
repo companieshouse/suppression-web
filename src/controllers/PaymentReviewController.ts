@@ -3,14 +3,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { PaymentDetails, SuppressionSession } from '../models/SuppressionSessionModel';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
-import { CHECK_SUBMISSION_PAGE_URI, CONFIRMATION_PAGE_URI } from '../routes/paths';
+import { CHECK_SUBMISSION_PAGE_URI, PAYMENT_CALLBACK_URI } from '../routes/paths';
 import { PaymentResource, PaymentService } from '../services/payment/PaymentService';
 import SessionService from '../services/session/SessionService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 
 const template: string = 'payment-review';
 const backNavigation: string = CHECK_SUBMISSION_PAGE_URI;
-const continueNavigation: string = CONFIRMATION_PAGE_URI;
 
 export class PaymentReviewController {
 
@@ -64,7 +63,7 @@ export class PaymentReviewController {
       } as PaymentDetails;
 
       SessionService.setSuppressionSession(req, session);
-      SessionService.appendNavigationPermissions(req, continueNavigation);
+      SessionService.appendNavigationPermissions(req, PAYMENT_CALLBACK_URI);
 
       res.redirect(paymentUrls.redirectUrl);
 

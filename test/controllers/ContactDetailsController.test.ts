@@ -15,7 +15,8 @@ import {
   expectToHaveErrorMessages,
   expectToHaveErrorSummaryContaining,
   expectToHaveInput, expectToHavePopulatedInput,
-  expectToHaveTitle
+  expectToHaveTitle,
+  expectToHaveTitleWithError
 } from '../HtmlPatternAssertions';
 import { generateTestData } from '../TestData';
 
@@ -146,11 +147,11 @@ describe('ContactDetailsController', () => {
 
   describe('on POST', () => {
 
-    const addressLine1ErrorMessage = 'Building and street is required';
-    const townOrCityErrorMessage = 'Town or city is required';
-    const countyErrorMessage = 'County is required';
-    const postcodeErrorMessage = 'Postcode is required';
-    const countryErrorMessage = 'Country is required';
+    const addressLine1ErrorMessage = 'Enter the building and street';
+    const townOrCityErrorMessage = 'Enter the town or city';
+    const countyErrorMessage = 'Enter the county';
+    const postcodeErrorMessage = 'Enter the postcode';
+    const countryErrorMessage = 'Enter the country';
 
     beforeEach(() => {
       jest.spyOn(SessionService, 'appendNavigationPermissions');
@@ -208,7 +209,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
           addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage, countryErrorMessage
@@ -227,7 +228,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [addressLine1ErrorMessage]);
         expectToHaveErrorMessages(response.text, [addressLine1ErrorMessage]);
@@ -242,7 +243,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [townOrCityErrorMessage]);
         expectToHaveErrorMessages(response.text, [townOrCityErrorMessage]);
@@ -257,7 +258,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countyErrorMessage]);
         expectToHaveErrorMessages(response.text, [countyErrorMessage]);
@@ -272,7 +273,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
         expectToHaveErrorMessages(response.text, [postcodeErrorMessage]);
@@ -287,7 +288,7 @@ describe('ContactDetailsController', () => {
       await request(app).post(CONTACT_DETAILS_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, SERVICE_ADDRESS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countryErrorMessage]);
         expectToHaveErrorMessages(response.text, [countryErrorMessage]);
