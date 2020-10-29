@@ -6,12 +6,12 @@ import { assertValidationErrors } from './ValidationAssertions';
 
 const invalidMonthErrorMessage: string = 'You must enter a month';
 const invalidYearErrorMessage: string = 'You must enter a year';
-const missingDateErrorMessage: string = 'Document date is required';
+const missingDateErrorMessage: string = 'Enter the date the document was added to the register';
 
 describe('FormWithDate validator', () => {
 
   const documentDetailsValidator = new FormWithDateValidator(
-    schema, 'Document date is required'
+    schema, 'Enter the date the document was added to the register'
   );
 
   it('should allow a form with a valid date', async () => {

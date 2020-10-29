@@ -22,7 +22,7 @@ jest.mock('../../src/services/session/SessionService');
 
 describe('AddressToRemoveController', () => {
 
-  const pageTitle = 'Address details';
+  const pageTitle = 'What home address would you like to remove\\?';
   const app = createApp();
 
   describe('on GET', () => {

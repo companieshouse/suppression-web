@@ -15,15 +15,15 @@ import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
   expectToHaveErrorMessages, expectToHaveErrorSummaryContaining, expectToHaveInput,
-  expectToHavePopulatedInput, expectToHaveTitle
+  expectToHavePopulatedInput, expectToHaveTitle, expectToHaveTitleWithError
 } from '../HtmlPatternAssertions'
 import { generateTestData } from '../TestData';
 
-const expectedTitle: string = 'Document details';
-const missingCompanyNameErrorMessage: string = 'Company name is required';
-const missingCompanyNumberErrorMessage: string = 'Company number is required';
-const missingDocumentDescErrorMessage: string = 'Document description is required';
-const missingDocumentDateErrorMessage: string = 'Document date is required';
+const expectedTitle: string = 'What are the document details\\?';
+const missingCompanyNameErrorMessage: string = 'Enter the company name';
+const missingCompanyNumberErrorMessage: string = 'Enter the company number';
+const missingDocumentDescErrorMessage: string = 'Enter the document name and description';
+const missingDocumentDateErrorMessage: string = 'Enter the date the document was added to the register';
 const missingYearErrorMessage: string = 'You must enter a year';
 const invalidDateErrorMessage: string = 'Enter a real date';
 
@@ -57,7 +57,7 @@ describe('DocumentDetailsController', () => {
           expectToHaveBackButton(response.text, ADDRESS_TO_REMOVE_PAGE_URI);
           expectToHaveInput(response.text, 'companyName', 'Company name');
           expectToHaveInput(response.text, 'companyNumber', 'Company number');
-          expectToHaveInput(response.text, 'description', 'Document description');
+          expectToHaveInput(response.text, 'description', 'Document name and description');
           expectToHaveInput(response.text, 'day', 'Day');
           expectToHaveInput(response.text, 'month', 'Month');
           expectToHaveInput(response.text, 'year', 'Year');
@@ -250,7 +250,7 @@ describe('DocumentDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-          expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingCompanyNameErrorMessage,
             missingCompanyNumberErrorMessage, missingDocumentDescErrorMessage, missingDocumentDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingCompanyNameErrorMessage,
@@ -274,7 +274,7 @@ describe('DocumentDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-          expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingDocumentDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingDocumentDateErrorMessage]);
         });
@@ -298,7 +298,7 @@ describe('DocumentDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-          expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingYearErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingYearErrorMessage]);
         });
@@ -323,7 +323,7 @@ describe('DocumentDetailsController', () => {
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
           expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-          expectToHaveTitle(response.text, expectedTitle);
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [invalidDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [invalidDateErrorMessage]);
         });

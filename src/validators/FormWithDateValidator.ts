@@ -40,11 +40,11 @@ export class FormWithDateValidator extends FormValidator {
 
       if (dateError && dateError.text === this.missingDateErrorMessage) {
         if (dayError && monthError && yearError) {
-          this.removeValidationError(validationResult, dayError);
-          this.removeValidationError(validationResult, monthError);
-          this.removeValidationError(validationResult, yearError);
+          FormWithDateValidator.removeValidationError(validationResult, dayError);
+          FormWithDateValidator.removeValidationError(validationResult, monthError);
+          FormWithDateValidator.removeValidationError(validationResult, yearError);
         } else {
-          this.removeValidationError(validationResult, dateError);
+          FormWithDateValidator.removeValidationError(validationResult, dateError);
         }
       }
 
@@ -57,7 +57,7 @@ export class FormWithDateValidator extends FormValidator {
     return validationResult;
   }
 
-  private removeValidationError(validationResult: ValidationResult, validationError: ValidationError): void {
+  private static removeValidationError(validationResult: ValidationResult, validationError: ValidationError): void {
     validationResult.errors.splice(validationResult.errors.indexOf(validationError), 1);
   }
 }
