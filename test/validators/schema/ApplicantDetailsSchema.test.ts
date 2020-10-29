@@ -25,9 +25,9 @@ describe('Applicant Details schema', () => {
 
   describe('invalid values', () => {
 
-    const fullNameErrorMessage = 'Full name is required';
-    const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
-    const previousNameMissingMessage = 'Enter previous full names, used for business purposes';
+    const fullNameErrorMessage = 'Enter the applicant’s full name';
+    const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name on the Companies house register in the last 20 years';
+    const previousNameMissingMessage = 'Enter previous full name';
     const emailMissingErrorMessage = 'Email address is required';
     const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com';
 
@@ -35,7 +35,7 @@ describe('Applicant Details schema', () => {
     const invalidMonthErrorMessage = 'You must enter a month';
     const invalidYearErrorMessage = 'You must enter a year';
 
-    const missingDateErrorMessage = 'Date of birth is required';
+    const missingDateErrorMessage = 'Enter the applicant’s date of birth';
     const invalidDateErrorMessage = 'Enter a real date';
 
     const expectedValidationErrors = [

@@ -2,9 +2,9 @@ import Joi from 'joi';
 import { YesNo } from '../../models/YesNo';
 import { basicString } from './BasicStringSchemaItem';
 
-const fullNameErrorMessage = 'Full name is required';
-const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
-const previousNameMissingMessage = 'Enter previous full names, used for business purposes';
+const fullNameErrorMessage = 'Enter the applicant’s full name';
+const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name on the Companies house register in the last 20 years';
+const previousNameMissingMessage = 'Enter previous full name';
 const emailMissingErrorMessage = 'Email address is required';
 const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com';
 
@@ -12,7 +12,7 @@ const invalidDayErrorMessage: string = 'You must enter a day';
 const invalidMonthErrorMessage: string = 'You must enter a month';
 const invalidYearErrorMessage: string = 'You must enter a year';
 
-const missingDateErrorMessage: string = 'Date of birth is required';
+const missingDateErrorMessage: string = 'Enter the applicant’s date of birth';
 const invalidDateErrorMessage: string = 'Enter a real date';
 
 const dayMonthRegex: RegExp = /^[0-9]{1,2}$/;
