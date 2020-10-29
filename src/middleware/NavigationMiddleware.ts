@@ -37,12 +37,16 @@ export function NavigationMiddleware(): RequestHandler {
       loggerInstance().info(`${NavigationMiddleware.name} - user has no navigation permissions. Redirecting to service start.`);
       return res.redirect(APPLICANT_DETAILS_PAGE_URI);
 
-    } else if (!navigationPermissions.includes(url)) {
-      const redirectUrl: string = navigationPermissions[navigationPermissions.length - 1]
-      loggerInstance().info(`${NavigationMiddleware.name} - user has insufficient permissions for ${url}. Redirecting back to ${redirectUrl}.`);
-      return res.redirect(redirectUrl);
+    } else {
+      const permitted: boolean = navigationPermissions.some(permission => urlMatches(permission, url));
+      if (!permitted) {
+        const redirectUrl: string = navigationPermissions[navigationPermissions.length - 1]
+        loggerInstance().info(`${NavigationMiddleware.name} - user has insufficient permissions for ${url}. Redirecting back to ${redirectUrl}.`);
+        return res.redirect(redirectUrl);
+      }
+      else {
+        return next();
+      }
     }
-
-    return next();
   }
 }
