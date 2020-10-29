@@ -68,7 +68,7 @@ describe('SessionService', () => {
     SessionService.resetSuppressionSession(mockRequest);
 
     const expectedUpdatedSession = {
-      previousApplicationReference: mockSuppressionSession.applicationReference
+      submittedApplicationReference: mockSuppressionSession.applicationReference
     } as SuppressionSession;
     expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, expectedUpdatedSession);
   });

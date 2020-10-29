@@ -148,7 +148,7 @@ describe('Applied Navigation Middleware', () => {
     const app = createApp(false, true);
     jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
       return {
-        previousApplicationReference: 'TEST1-TEST1'
+        submittedApplicationReference: 'TEST1-TEST1'
       } as SuppressionSession;
     });
 

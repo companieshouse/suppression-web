@@ -2,7 +2,6 @@ import { SessionKey } from '@companieshouse/node-session-handler/lib/session/key
 import { ISignInInfo } from '@companieshouse/node-session-handler/lib/session/model/SessionInterfaces';
 import { Request } from 'express';
 import { SuppressionSession, SUPPRESSION_DATA_KEY } from '../../models/SuppressionSessionModel';
-import { loggerInstance } from '../../utils/Logger';
 
 export default class SessionService {
 
@@ -18,7 +17,7 @@ export default class SessionService {
     const currentSuppressionSession: SuppressionSession = this.getSuppressionSession(req)!;
     const applicationReference: string = currentSuppressionSession.applicationReference;
     const newSuppressionSession = {
-      previousApplicationReference: applicationReference
+      submittedApplicationReference: applicationReference
     } as SuppressionSession;
     this.setSuppressionSession(req, newSuppressionSession);
   }

@@ -27,7 +27,7 @@ describe('ConfirmationController', () => {
     it('should redirect user to journey beginning when no application reference in session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { previousApplicationReference: undefined as any } as SuppressionSession
+        return { submittedApplicationReference: undefined as any } as SuppressionSession
       });
 
       const app = createApp(false, true);
@@ -84,7 +84,7 @@ describe('ConfirmationController', () => {
       const app = createApp();
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-        return { previousApplicationReference: 'TEST-TEST'} as SuppressionSession
+        return { submittedApplicationReference: 'TEST-TEST'} as SuppressionSession
       });
 
       jest.spyOn(SuppressionService.prototype, 'get').mockImplementationOnce(() => Promise.resolve(testData));

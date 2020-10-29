@@ -19,7 +19,7 @@ export function NavigationMiddleware(): RequestHandler {
     const exempt: boolean = exemptions.some(exemption => urlMatches(exemption, url));
 
     if (exempt) {
-      loggerInstance().info(`${NavigationMiddleware.name} - ${url} exempt from navigation protection. Passing through.`);
+      loggerInstance().infoRequest(req,`${NavigationMiddleware.name} - ${url} exempt from navigation protection. Passing through.`);
       return next();
     }
 
@@ -27,21 +27,21 @@ export function NavigationMiddleware(): RequestHandler {
     const navigationPermissions: string[] | undefined = session?.navigationPermissions;
 
     if (urlMatches(CONFIRMATION_PAGE_URI, url)) {
-      const applicationReference: string | undefined = session?.previousApplicationReference;
+      const applicationReference: string | undefined = session?.submittedApplicationReference;
       if (applicationReference) {
         return next();
       }
     }
 
     if (!navigationPermissions || navigationPermissions.length === 0) {
-      loggerInstance().info(`${NavigationMiddleware.name} - user has no navigation permissions. Redirecting to service start.`);
+      loggerInstance().infoRequest(req,`${NavigationMiddleware.name} - user has no navigation permissions. Redirecting to ${APPLICANT_DETAILS_PAGE_URI}.`);
       return res.redirect(APPLICANT_DETAILS_PAGE_URI);
 
     } else {
       const permitted: boolean = navigationPermissions.some(permission => urlMatches(permission, url));
       if (!permitted) {
         const redirectUrl: string = navigationPermissions[navigationPermissions.length - 1]
-        loggerInstance().info(`${NavigationMiddleware.name} - user has insufficient permissions for ${url}. Redirecting back to ${redirectUrl}.`);
+        loggerInstance().infoRequest(req,`${NavigationMiddleware.name} - user has insufficient permissions for ${url}. Redirecting back to ${redirectUrl}.`);
         return res.redirect(redirectUrl);
       }
       else {
