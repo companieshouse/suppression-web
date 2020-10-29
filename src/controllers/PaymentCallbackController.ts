@@ -18,10 +18,10 @@ export class PaymentCallbackController {
   }
 
   public checkPaymentStatus = async (req: Request, res: Response, next: NextFunction) => {
-
     const state: string = req.query.state as string;
     const status: PaymentStatus = req.query.status as PaymentStatus;
     const reference: string = req.query.ref as string;
+
     if (!(state && status && reference)) {
       return next(new Error(`${PaymentCallbackController.name} - received invalid arguments`));
     }
@@ -48,6 +48,7 @@ export class PaymentCallbackController {
       const accessToken: string =  SessionService.getAccessToken(req);
       const verifiedStatus: PaymentStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken);
       if (verifiedStatus === PaymentStatus.PAID) {
+        SessionService.resetSuppressionSession(req);
         redirectURI = CONFIRMATION_PAGE_URI;
       } else {
         loggerInstance().infoRequest(req, `${PaymentCallbackController.name} - WARN: Could not verify user-reported payment status. Mitigating.`);

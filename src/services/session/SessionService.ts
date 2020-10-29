@@ -13,6 +13,15 @@ export default class SessionService {
     req.session!.setExtraData(SUPPRESSION_DATA_KEY, updatedSession);
   }
 
+  static resetSuppressionSession(req: Request): void {
+    const currentSuppressionSession: SuppressionSession = this.getSuppressionSession(req)!;
+    const applicationReference: string = currentSuppressionSession.applicationReference;
+    const newSuppressionSession = {
+      submittedApplicationReference: applicationReference
+    } as SuppressionSession;
+    this.setSuppressionSession(req, newSuppressionSession);
+  }
+
   static appendNavigationPermissions(req: Request, permission: string): void {
     const session: SuppressionSession = this.getSuppressionSession(req)!;
     const navigationPermissions: string[] = session.navigationPermissions || [];

@@ -10,7 +10,11 @@ export default class SessionService {
     } as SuppressionSession
   }
 
-  static setSuppressionSession(req: Request): void {
+  static setSuppressionSession(req: Request, updatedSession: SuppressionSession): void {
+    return;
+  }
+
+  static resetSuppressionSession(req: Request): void {
     return;
   }
 
