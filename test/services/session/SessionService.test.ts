@@ -56,6 +56,23 @@ describe('SessionService', () => {
     expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, mockSuppressionSessionData);
   });
 
+  it('should reset the session by stashing the application reference and clearing all other data', () => {
+
+    const mockRequest: Request = mockRequestData;
+    const mockSuppressionSession: SuppressionSession = mockSuppressionSessionData;
+
+    mockRequest.session!.getExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
+    const mockSetExtraData: jest.Mock = jest.fn();
+    mockRequest.session!.setExtraData = mockSetExtraData;
+
+    SessionService.resetSuppressionSession(mockRequest);
+
+    const expectedUpdatedSession = {
+      submittedApplicationReference: mockSuppressionSession.applicationReference
+    } as SuppressionSession;
+    expect(mockSetExtraData).toHaveBeenCalledWith(SUPPRESSION_DATA_KEY, expectedUpdatedSession);
+  });
+
   it('should initialise the navigation permissions and set the supplied permission when the permission list doesn’t exist yet', () => {
 
     const mockRequest: Request = mockRequestData;
@@ -65,8 +82,7 @@ describe('SessionService', () => {
       paymentDetails: mockSuppressionSessionData.paymentDetails
     } as SuppressionSession
 
-    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
-    mockRequest.session!.getExtraData = mockGetExtraData;
+    mockRequest.session!.getExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
@@ -86,8 +102,7 @@ describe('SessionService', () => {
     const mockSuppressionSession: SuppressionSession = { ...mockSuppressionSessionData }
     mockSuppressionSession.navigationPermissions = [ 'TEST_URI' ]
 
-    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
-    mockRequest.session!.getExtraData = mockGetExtraData;
+    mockRequest.session!.getExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
@@ -105,8 +120,7 @@ describe('SessionService', () => {
     const mockSuppressionSession: SuppressionSession = { ...mockSuppressionSessionData }
     mockSuppressionSession.navigationPermissions = [ 'TEST_URI' ]
 
-    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
-    mockRequest.session!.getExtraData = mockGetExtraData;
+    mockRequest.session!.getExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
@@ -124,8 +138,7 @@ describe('SessionService', () => {
     const mockSuppressionSession: SuppressionSession = { ...mockSuppressionSessionData }
     mockSuppressionSession.navigationPermissions = [ 'FIRST_TEST_URI' ]
 
-    const mockGetExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
-    mockRequest.session!.getExtraData = mockGetExtraData;
+    mockRequest.session!.getExtraData = jest.fn().mockReturnValue(mockSuppressionSession);
     const mockSetExtraData: jest.Mock = jest.fn();
     mockRequest.session!.setExtraData = mockSetExtraData;
 
