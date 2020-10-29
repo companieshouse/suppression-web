@@ -4,10 +4,12 @@
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
 {% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
+{% from "govuk/components/details/macro.njk"       import govukDetails %}
 {% from 'components/date-input.njk'                import dateInput %}
 
+
 {% block pageTitle %}
-  Document details
+  {{ 'What are the document details?' | pageTitle(validationResult) }}
 {% endblock %}
 
 {% block backLink %}
@@ -25,20 +27,24 @@
 
       {{
         govukErrorSummary ({
-          titleText: 'There is a problem with the details you gave us',
+          titleText: 'There is a problem',
           errorList: validationResult.errors
         }) if validationResult and validationResult.errors.length > 0
       }}
 
       <h1 class="govuk-heading-l">
-        What are the document details?
+        Which document would you like to remove your home address from?
       </h1>
 
-      <p class="govuk-body">You can check which documents contain your home address on the <a href="https://beta.companieshouse.gov.uk" class="govuk-link" rel="noreferrer noopener" target="_blank">Companies House Register</a></p>
+      <p class="govuk-body">
+        You can check which documents contain your home address on the
+          <a href="https://beta.companieshouse.gov.uk" class="govuk-link" rel="noreferrer noopener" target="_blank">
+            Companies House Register (opens in new tab)</a>.
+      </p>
       <p class="govuk-body">You'll need:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>the name of the document (shown on the PDF of the document)</li>
-        <li>the document description as it appears on the company filing history</li>
+        <li>the document name, which is shown on the PDF of the document</li>
+        <li>the document description as it appears in the company filing history</li>
         <li>the date the document was added to the register</li>
       </ul>
 
@@ -66,7 +72,7 @@
               isPageHeading: false
             },
             errorMessage: validationResult.getErrorForField('companyNumber') if validationResult,
-            classes: 'govuk-input--width-20',
+            classes: 'govuk-input--width-10',
             id: 'company-number',
             name: 'companyNumber',
             value: companyNumber,
@@ -76,12 +82,12 @@
         {{
           govukInput({
             label: {
-              text: 'Document description',
+              text: 'Document name and description',
               classes: 'govuk-label--s',
               isPageHeading: false
             },
             hint: {
-              text: 'Tell us the name and description of the document you want to remove your home address from. For example, CH01 - Director\'s details changed for Mr John Smith on 2 January 2020'
+              text: 'For example, CH01 - Director’s details changed for Mr John Smith on 12 November 2019'
             },
             errorMessage: validationResult.getErrorForField('description') if validationResult,
             classes: 'govuk-input--width-20',
@@ -91,11 +97,30 @@
             autocomplete: 'description'
           })
         }}
+
+        {% set hintHtml %}
+          <div id="document-date-hint" class="govuk-hint">
+            For example, 18 11 2019
+          </div>
+
+          {% set hintDisclosedHtml %}
+            You can find it in the date column of the filing history on the
+            <a href="https://beta.companieshouse.gov.uk/" class="govuk-link" rel="noreferrer noopener" target="_blank">
+              Companies House register (opens in new tab)</a>.
+          {% endset %}
+          {{
+            govukDetails({
+              summaryText: 'Where can I find the document date?',
+              html: hintDisclosedHtml
+            })
+          }}
+        {% endset %}
+
         {{
           dateInput({
             idPrefix: 'document',
-            labelText: 'Document date',
-            hintText: 'For example, 12 11 2007',
+            labelText: 'Date the document was added to the register',
+            hint: { html: hintHtml },
             validationResult: validationResult,
             values: {
               day: day,
