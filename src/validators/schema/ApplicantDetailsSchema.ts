@@ -4,7 +4,7 @@ import { basicString } from './BasicStringSchemaItem';
 
 const fullNameErrorMessage = 'Enter the applicant’s full name';
 const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name on the Companies house register in the last 20 years';
-const previousNameMissingMessage = 'Enter previous full names, used for business purposes';
+const previousNameMissingMessage = 'Enter previous full name';
 const emailMissingErrorMessage = 'Email address is required';
 const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com';
 
