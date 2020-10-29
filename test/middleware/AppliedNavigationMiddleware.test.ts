@@ -80,8 +80,8 @@ describe('Applied Navigation Middleware', () => {
     });
 
     for (const page of pageList) {
-      it(`should redirect from ${page.name} to the Applicant Details page when no permissions are set`, async () => {
 
+      it(`should redirect from ${page.name} to the Applicant Details page when no permissions are set`, async () => {
         const app = createApp(false, true);
 
         await request(app).get(page.uri)
@@ -90,25 +90,50 @@ describe('Applied Navigation Middleware', () => {
             expect(response.header.location).toContain(APPLICANT_DETAILS_PAGE_URI);
           });
       });
-    }
 
-    for (const page of pageList) {
       it(`should redirect from ${page.name} to the Applicant Details page when no session is set`, async () => {
-        jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
-
         const app = createApp(false, true);
+        jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
 
         await request(app).get(page.uri)
           .expect(response => {
             expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
             expect(response.header.location).toContain(APPLICANT_DETAILS_PAGE_URI);
+          });
+      });
+
+      it(`should not redirect from ${page.name} if the appropriate permission is set`, async () => {
+        const app = createApp(false, true);
+        jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+          return {
+            navigationPermissions: [ page.uri ]
+          } as SuppressionSession;
+        });
+
+        await request(app).get(page.uri)
+          .expect(response => {
+            expect(response.status).toEqual(StatusCodes.OK);
+          });
+      });
+
+      it(`should not be impacted by query params in the url`, async () => {
+        const app = createApp(false, true);
+        jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
+          return {
+            navigationPermissions: [ page.uri ]
+          } as SuppressionSession;
+        });
+
+        await request(app).get(`${page.uri}?test-param=1`)
+          .expect(response => {
+            expect(response.status).toEqual(StatusCodes.OK);
           });
       });
     }
 
     for (const page of pageList.slice(1)) {
-      it(`should redirect from ${page.name} to the most recent page in the permissions stack when the appropriate permission is not set`, async () => {
 
+      it(`should redirect from ${page.name} to the most recent page in the permissions stack when the appropriate permission is not set`, async () => {
         const app = createApp(false, true);
         jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
           return {
@@ -123,24 +148,6 @@ describe('Applied Navigation Middleware', () => {
           });
       });
     }
-
-    for (const page of pageList) {
-      it(`should not redirect from ${page.name} if the appropriate permission is set`, async () => {
-
-        const app = createApp(false, true);
-        jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
-          return {
-            navigationPermissions: [ page.uri ]
-          } as SuppressionSession;
-        });
-
-        await request(app).get(page.uri)
-          .expect(response => {
-            expect(response.status).toEqual(StatusCodes.OK);
-          });
-      });
-    }
-
   });
 
   it('should not redirect from the Confirmation page if previousApplicationReference is present in the session', async () => {
