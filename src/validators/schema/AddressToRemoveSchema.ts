@@ -3,10 +3,10 @@ import Joi from 'joi';
 import { basicString } from './BasicStringSchemaItem'
 
 export const schema = Joi.object({
-  line1: basicString('Building and street is required'),
+  line1: basicString('Enter the building and street'),
   line2: Joi.string().allow(null, ''),
-  town: basicString('Town or city is required'),
-  county: basicString('County is required'),
-  postcode: basicString('Postcode is required'),
-  country: basicString('Country is required')
+  town: basicString('Enter the town or city'),
+  county: basicString('Enter the county'),
+  postcode: basicString('Enter the postcode'),
+  country: basicString('Enter the country')
 });

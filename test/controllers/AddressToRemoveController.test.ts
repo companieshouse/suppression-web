@@ -13,7 +13,8 @@ import {
   expectToHaveErrorSummaryContaining,
   expectToHaveInput,
   expectToHavePopulatedInput,
-  expectToHaveTitle
+  expectToHaveTitle,
+  expectToHaveTitleWithError
 } from '../HtmlPatternAssertions'
 import { generateTestData } from '../TestData';
 
@@ -140,11 +141,11 @@ describe('AddressToRemoveController', () => {
 
   describe('on POST', () => {
 
-    const addressLine1ErrorMessage = 'Building and street is required';
-    const townOrCityErrorMessage = 'Town or city is required';
-    const countyErrorMessage = 'County is required';
-    const postcodeErrorMessage = 'Postcode is required';
-    const countryErrorMessage = 'Country is required';
+    const addressLine1ErrorMessage = 'Enter the building and street';
+    const townOrCityErrorMessage = 'Enter the town or city';
+    const countyErrorMessage = 'Enter the county';
+    const postcodeErrorMessage = 'Enter the postcode';
+    const countryErrorMessage = 'Enter the country';
 
     beforeEach(() => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementation(() => {
@@ -209,7 +210,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [
           addressLine1ErrorMessage, townOrCityErrorMessage, countyErrorMessage, postcodeErrorMessage, countryErrorMessage
@@ -228,7 +229,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [addressLine1ErrorMessage]);
         expectToHaveErrorMessages(response.text, [addressLine1ErrorMessage]);
@@ -243,7 +244,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [townOrCityErrorMessage]);
         expectToHaveErrorMessages(response.text, [townOrCityErrorMessage]);
@@ -258,7 +259,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countyErrorMessage]);
         expectToHaveErrorMessages(response.text, [countyErrorMessage]);
@@ -273,7 +274,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [postcodeErrorMessage]);
         expectToHaveErrorMessages(response.text, [postcodeErrorMessage]);
@@ -288,7 +289,7 @@ describe('AddressToRemoveController', () => {
       await request(app).post(ADDRESS_TO_REMOVE_PAGE_URI).send(testData).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
         expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, APPLICANT_DETAILS_PAGE_URI);
         expectToHaveErrorSummaryContaining(response.text, [countryErrorMessage]);
         expectToHaveErrorMessages(response.text, [countryErrorMessage]);
