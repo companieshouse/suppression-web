@@ -33,8 +33,12 @@
               { text: documentDetails.companyName }
             ],
             [
-              { text: 'Document description' },
+              { text: 'Document name and description' },
               { text: documentDetails.description }
+            ],
+            [
+              { text: 'Date the document was added to the register' },
+              { text: documentDetails.date | date }
             ],
             [
               { text: 'Payment received' },
