@@ -2,12 +2,13 @@
 
 {% from 'govuk/components/error-summary/macro.njk' import govukErrorSummary %}
 {% from 'govuk/components/input/macro.njk'         import govukInput %}
+{% from 'govuk/components/inset-text/macro.njk'    import govukInsetText %}
 {% from 'govuk/components/button/macro.njk'        import govukButton %}
 {% from "govuk/components/fieldset/macro.njk"      import govukFieldset %}
 {% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
 
 {% block pageTitle %}
-  Address details
+  {{ 'Address details' | pageTitle(validationResult) }}
 {% endblock %}
 
 {% block backLink %}
@@ -24,7 +25,7 @@
     <div class="govuk-grid-column-two-thirds">
       {{
         govukErrorSummary ({
-          titleText: 'There is a problem with the details you gave us',
+          titleText: 'There is a problem',
           errorList: validationResult.errors
         }) if validationResult and validationResult.errors.length > 0
       }}
@@ -33,13 +34,19 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
             <h1 class="govuk-fieldset__heading">
-              What home address would you like to remove?
+              What is the home address you want to remove from the document?
             </h1>
           </legend>
 
-          <span class="govuk-hint">
-            You cannot remove a registered office address from the public register, even if it’s your home address.
-          </span>
+          <p class="govuk-body">
+            Enter the home address exactly as it is shown on the document on the Companies House register.
+          </p>
+
+          {{
+            govukInsetText({
+              text: 'You cannot remove a registered office address from the public register, even if it’s your home address.'
+            })
+          }}
 
           {{
             govukInput({

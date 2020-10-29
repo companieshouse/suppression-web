@@ -146,11 +146,11 @@ describe('ContactDetailsController', () => {
 
   describe('on POST', () => {
 
-    const addressLine1ErrorMessage = 'Building and street is required';
-    const townOrCityErrorMessage = 'Town or city is required';
-    const countyErrorMessage = 'County is required';
-    const postcodeErrorMessage = 'Postcode is required';
-    const countryErrorMessage = 'Country is required';
+    const addressLine1ErrorMessage = 'Enter the building and street';
+    const townOrCityErrorMessage = 'Enter the town or city';
+    const countyErrorMessage = 'Enter the county';
+    const postcodeErrorMessage = 'Enter the postcode';
+    const countryErrorMessage = 'Enter the country';
 
     beforeEach(() => {
       jest.spyOn(SessionService, 'appendNavigationPermissions');

@@ -11,11 +11,11 @@ describe('Address To Remove schema', () => {
   describe('invalid values', () => {
 
     const expectedErrors = [
-      new ValidationError('line1', 'Building and street is required'),
-      new ValidationError('town', 'Town or city is required'),
-      new ValidationError('county', 'County is required'),
-      new ValidationError('postcode', 'Postcode is required'),
-      new ValidationError('country', 'Country is required'),
+      new ValidationError('line1', 'Enter the building and street'),
+      new ValidationError('town', 'Enter the town or city'),
+      new ValidationError('county', 'Enter the county'),
+      new ValidationError('postcode', 'Enter the postcode'),
+      new ValidationError('country', 'Enter the country'),
     ];
 
     function generateTestData(value: any): Address {
