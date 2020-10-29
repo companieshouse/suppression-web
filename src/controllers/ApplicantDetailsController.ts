@@ -15,7 +15,7 @@ import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchem
 const template: string = 'applicant-details';
 const backNavigation: string = ROOT_URI;
 const continueNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
-const missingDateErrorMessage: string = 'Date of birth is required';
+const missingDateErrorMessage: string = 'Enter the applicant’s date of birth';
 
 export class ApplicantDetailsController {
 
