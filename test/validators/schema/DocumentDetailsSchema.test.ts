@@ -11,15 +11,15 @@ describe('Document Details schema', () => {
 
   describe('invalid values', () => {
 
-    const companyNameErrorMessage: string = 'Company name is required';
-    const companyNumberErrorMessage: string = 'Company number is required';
-    const descriptionErrorMessage: string = 'Document description is required';
+    const companyNameErrorMessage: string = 'Enter the company name';
+    const companyNumberErrorMessage: string = 'Enter the company number';
+    const descriptionErrorMessage: string = 'Enter the document name and description';
 
     const invalidDayErrorMessage: string = 'You must enter a day';
     const invalidMonthErrorMessage: string = 'You must enter a month';
     const invalidYearErrorMessage: string = 'You must enter a year';
 
-    const missingDateErrorMessage: string = 'Document date is required';
+    const missingDateErrorMessage: string = 'Enter the date the document was added to the register';
     const invalidDateErrorMessage: string = 'Enter a real date';
 
     const expectedValidationErrors = [
