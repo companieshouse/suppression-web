@@ -13,7 +13,7 @@ import { schema } from '../validators/schema/DocumentDetailsSchema';
 const template: string = 'document-details';
 const backNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
 const continueNavigation: string = SERVICE_ADDRESS_PAGE_URI;
-const missingDateErrorMessage: string = 'Document date is required';
+const missingDateErrorMessage: string = 'Enter the date the document was added to the register';
 
 export class DocumentDetailsController {
 
