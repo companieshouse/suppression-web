@@ -23,7 +23,7 @@
       value: { text: applicantDetails.fullName }
     },
     {
-      key: { text: 'Has the applicant used a different name for business purposes in the last 20 years?' },
+      key: { text: 'Has the applicant used a different name on the Companies House register in the last 20 years?' },
       value: { text: 'Yes' if applicantDetails.previousName else 'No' }
     },
     {
@@ -49,7 +49,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
-        Check your answers before submitting your application
+        Check your answers before you continue
       </h1>
 
       <h2 class="govuk-heading-m">
@@ -70,7 +70,7 @@
           classes: 'govuk-!-margin-bottom-9',
           rows: [
             {
-              key: { text: 'What home address would you like to remove?' },
+              key: { text: 'What is the home address you want to remove from the document?' },
               value: { html: addressToRemoveHtml }
             }
           ]
@@ -93,11 +93,11 @@
               value: { text: documentDetails.companyNumber }
             },
             {
-              key: { text: 'Document description' },
+              key: { text: 'Document name and description' },
               value: { text: documentDetails.description }
             },
             {
-              key: { text: 'Document date' },
+              key: { text: 'Date the document was added to the register' },
               value: { text: documentDetails.date | date }
             }
           ]
@@ -129,10 +129,6 @@
           classes: 'govuk-!-margin-bottom-9',
           rows: [
             {
-              key: { text: 'Email address' },
-              value: { text: applicantDetails.emailAddress }
-            },
-            {
               key: { text: 'Contact address' },
               value: { html: contactAddressHtml }
             }
@@ -141,17 +137,16 @@
       }}
 
       <h2 class="govuk-heading-m">
-        Submit your application
+        Confirm authorisation
       </h2>
-
       <p class="govuk-body">
-        By submitting this application you are confirming that, to the best of your knowledge, the details you have provided are correct.
+        By continuing, you confirm that you are authorised to submit this application and to the best of your knowledge, the details you've provided are correct.
       </p>
 
       <form method="post">
         {{
           govukButton({
-            text: 'Accept and submit',
+            text: 'Confirm and continue',
             attributes: {
               id: 'submit'
             }
