@@ -1,5 +1,6 @@
 export interface SuppressionData {
   applicationReference?: string;
+  createdBy: string;
   applicantDetails: ApplicantDetails;
   addressToRemove: Address;
   serviceAddress?: Address;
@@ -10,7 +11,6 @@ export interface SuppressionData {
 export interface ApplicantDetails {
   fullName: string;
   previousName?: string;
-  emailAddress: string;
   dateOfBirth: string;
 }
 

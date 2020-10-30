@@ -10,7 +10,6 @@ export function generateTestData(): SuppressionData {
     applicantDetails: {
       fullName: 'John Doe',
       previousName: 'Jane Doe',
-      emailAddress: 'test@example.com',
       dateOfBirth: '1980-05-01'
     } as ApplicantDetails,
     addressToRemove: {
@@ -42,6 +41,7 @@ export function generateTestData(): SuppressionData {
       postcode: 'NY',
       country: 'USA'
     } as Address,
-    applicationReference: 'TEST-TEST'
+    applicationReference: 'TEST-TEST',
+    createdBy: 'test@example.com'
   } as SuppressionData;
 }

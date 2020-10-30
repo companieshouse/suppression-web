@@ -15,7 +15,6 @@ describe('Applicant Details schema', () => {
       fullName: 'John Doe',
       hasPreviousName: YesNo.yes,
       previousName: 'John Poe',
-      emailAddress: 'test@example.com',
       day: '1',
       month: '1',
       year: '2020',
@@ -28,8 +27,6 @@ describe('Applicant Details schema', () => {
     const fullNameErrorMessage = 'Enter the applicant’s full name';
     const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name on the Companies house register in the last 20 years';
     const previousNameMissingMessage = 'Enter previous full name';
-    const emailMissingErrorMessage = 'Email address is required';
-    const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com';
 
     const invalidDayErrorMessage = 'You must enter a day';
     const invalidMonthErrorMessage = 'You must enter a month';
@@ -50,7 +47,6 @@ describe('Applicant Details schema', () => {
       return {
         fullName: value,
         hasPreviousName: value,
-        emailAddress: value,
         day: value,
         month: value,
         year: value,
@@ -61,50 +57,35 @@ describe('Applicant Details schema', () => {
     it('should reject empty object', () => {
       const validationResult = validator.validate({});
       assertValidationErrors(validationResult, expectedValidationErrors
-        .concat(new ValidationError('date', missingDateErrorMessage))
-        .concat(new ValidationError('emailAddress', emailMissingErrorMessage)));
+        .concat(new ValidationError('date', missingDateErrorMessage)));
     });
 
     it('should reject undefined values', () => {
       const testData = generateInvalidTestData(undefined);
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, expectedValidationErrors
-        .concat(new ValidationError('date', missingDateErrorMessage))
-        .concat(new ValidationError('emailAddress', emailMissingErrorMessage)));
+        .concat(new ValidationError('date', missingDateErrorMessage)));
     });
 
     it('should reject null values', () => {
       const testData = generateInvalidTestData(null);
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, expectedValidationErrors
-        .concat(new ValidationError('date', invalidDateErrorMessage))
-        .concat(new ValidationError('emailAddress', emailMissingErrorMessage)));
+        .concat(new ValidationError('date', invalidDateErrorMessage)));
     });
 
     it('should reject empty values', () => {
       const testData = generateInvalidTestData('');
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, expectedValidationErrors
-        .concat(new ValidationError('date', invalidDateErrorMessage))
-        .concat(new ValidationError('emailAddress', emailMissingErrorMessage)));
+        .concat(new ValidationError('date', invalidDateErrorMessage)));
     });
 
     it('should reject blank values', () => {
       const testData = generateInvalidTestData(' ');
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, expectedValidationErrors
-        .concat(new ValidationError('date', invalidDateErrorMessage))
-        .concat(new ValidationError('emailAddress', emailInvalidErrorMessage)));
-    });
-
-    it('should reject an invalid email address', () => {
-      const testData = generateValidTestData();
-      testData.emailAddress = 'test.com';
-
-      const validationResult = validator.validate(testData);
-      assertValidationErrors(validationResult, [
-        new ValidationError('emailAddress', emailInvalidErrorMessage)
-      ]);
+        .concat(new ValidationError('date', invalidDateErrorMessage)));
     });
 
     it('should reject previousName if undefined and yes is selected', () => {
