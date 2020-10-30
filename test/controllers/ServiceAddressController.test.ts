@@ -28,7 +28,7 @@ afterEach(() => {
 
 describe('ServiceAddressController', () => {
 
-  const pageTitle = 'Service address';
+  const pageTitle = 'What address do you want to replace your home address with\\?';
 
   describe('on GET', () => {
 
