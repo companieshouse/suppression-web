@@ -78,9 +78,6 @@ describe('ConfirmationController', () => {
     it('should return 200 and render the Confirmation page', async () => {
 
       const testData = generateTestData()
-      delete testData.applicantDetails.previousName;
-      delete testData.serviceAddress!.line2;
-
       const app = createApp();
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
@@ -96,7 +93,12 @@ describe('ConfirmationController', () => {
           expectToHaveTitle(response.text, pageTitle);
           expectToHaveTableRow(response.text, 'Company name', 'company-name-test');
           expectToHaveTableRow(response.text, 'Company number', 'NI000000');
-          expectToHaveTableRow(response.text, 'Document description', 'This is a document');
+          expectToHaveTableRow(response.text,
+            'Document name and description',
+            'This is a document');
+          expectToHaveTableRow(response.text,
+            'Date the document was added to the register',
+            '1 January 2020');
           expectToHaveTableRow(response.text, 'Payment received', '£32');
           expect(response.text).toContain(
             'We will send a confirmation email to ch-test@example.com which contains your reference number.'
