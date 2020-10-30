@@ -8,7 +8,7 @@
 {% from 'components/date-input.njk'                import dateInput %}
 
 {% block pageTitle %}
-  Applicant’s Details
+  {{ 'What are the applicant’s details?' | pageTitle(validationResult) }}
 {% endblock %}
 
 {% block backLink %}
@@ -25,14 +25,18 @@
     <div class="govuk-grid-column-two-thirds">
       {{
         govukErrorSummary ({
-          titleText: 'There is a problem with the details you gave us',
+          titleText: 'There is a problem',
           errorList: validationResult.errors
         }) if validationResult and validationResult.errors.length > 0
       }}
 
       <h1 class="govuk-heading-l">
-        What are your contact details?
+        What are the applicant's details?
       </h1>
+
+      <span class="govuk-hint">
+        Tell us the details of the person who wants to remove their home address from the Companies House public register.
+      </span>
 
       <form method="post">
         {% set previousNamesHtml %}

@@ -17,7 +17,7 @@ import {
   expectToHaveErrorSummaryContaining,
   expectToHaveInput,
   expectToHavePopulatedInput,
-  expectToHaveTitle
+  expectToHaveTitle, expectToHaveTitleWithError
 } from '../HtmlPatternAssertions';
 import { generateTestData } from '../TestData';
 
@@ -25,7 +25,7 @@ jest.mock('../../src/services/session/SessionService');
 
 describe('ApplicantDetailsController', () => {
 
-  const pageTitle = 'Applicant’s Details';
+  const pageTitle = 'What are the applicant’s details\\?';
   const app = createApp();
 
   describe('on GET', () => {
@@ -127,12 +127,12 @@ describe('ApplicantDetailsController', () => {
 
     jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => Promise.resolve());
 
-    const fullNameErrorMessage = 'Full name is required';
-    const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
-    const previousNameMissingMessage = 'Enter previous full names, used for business purposes';
+    const fullNameErrorMessage = 'Enter the applicant’s full name';
+    const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name on the Companies house register in the last 20 years';
+    const previousNameMissingMessage = 'Enter previous full name';
     const emailMissingErrorMessage = 'Email address is required';
     const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com';
-    const missingDateOfBirthErrorMessage: string = 'Date of birth is required';
+    const missingDateOfBirthErrorMessage: string = 'Enter the applicant’s date of birth';
     const missingYearErrorMessage: string = 'You must enter a year';
     const invalidDateErrorMessage: string = 'Enter a real date';
 
@@ -140,7 +140,7 @@ describe('ApplicantDetailsController', () => {
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [
           fullNameErrorMessage,
@@ -165,7 +165,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage]);
         expectToHaveErrorMessages(response.text, [fullNameErrorMessage]);
@@ -181,7 +181,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [hasPreviousNameMissingMessage]);
           expectToHaveErrorMessages(response.text, [hasPreviousNameMissingMessage]);
@@ -196,7 +196,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [previousNameMissingMessage]);
           expectToHaveErrorMessages(response.text, [previousNameMissingMessage]);
@@ -211,7 +211,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [emailMissingErrorMessage]);
           expectToHaveErrorMessages(response.text, [emailMissingErrorMessage]);
@@ -226,7 +226,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [emailInvalidErrorMessage]);
           expectToHaveErrorMessages(response.text, [emailInvalidErrorMessage]);
@@ -243,7 +243,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [missingDateOfBirthErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingDateOfBirthErrorMessage]);
@@ -258,7 +258,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [missingYearErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingYearErrorMessage]);
@@ -273,7 +273,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [invalidDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [invalidDateErrorMessage]);
