@@ -41,7 +41,6 @@ export function generateTestData(): SuppressionData {
       postcode: 'NY',
       country: 'USA'
     } as Address,
-    applicationReference: 'TEST-TEST',
-    createdBy: 'test@example.com'
+    applicationReference: 'TEST-TEST'
   } as SuppressionData;
 }

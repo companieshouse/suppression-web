@@ -1,6 +1,5 @@
 export interface SuppressionData {
   applicationReference?: string;
-  createdBy: string;
   applicantDetails: ApplicantDetails;
   addressToRemove: Address;
   serviceAddress?: Address;

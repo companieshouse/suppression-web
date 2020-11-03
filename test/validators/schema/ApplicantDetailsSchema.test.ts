@@ -176,7 +176,7 @@ describe('Applicant Details schema', () => {
 
   describe('valid values', () => {
 
-    it('should allow non-empty value for Full Name, no previous name and valid entries for Email Address and Date of Birth', () => {
+    it('should allow non-empty value for Full Name and valid values for Date of Birth, without a previous name ', () => {
       const testData = generateValidTestData();
       testData.hasPreviousName = YesNo.no;
       delete testData.previousName;
@@ -185,7 +185,7 @@ describe('Applicant Details schema', () => {
       assertValidationErrors(validationResult, []);
     });
 
-    it('should allow non-empty value for Full Name, with previous name and valid entries for Email Address and Date of Birth', () => {
+    it('should allow non-empty value for Full Name and valid values for Date of Birth, with a previous name', () => {
       const testData = generateValidTestData();
       const validationResult = validator.validate(testData);
       assertValidationErrors(validationResult, []);
