@@ -8,6 +8,14 @@
   Confirmation page
 {% endblock %}
 
+{% block bodyStart %}
+  <noscript>
+    <style>
+      #print-link {display:none;}
+    </style>
+  </noscript>
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -47,6 +55,10 @@
           ]
         })
       }}
+
+      <p class="govuk-!-display-none-print" id="print-link">
+        <a href="javascript:if(window.print)window.print()" class="govuk-link">Print a copy of this page</a>
+      </p>
 
       <h2 class="govuk-heading-m">
         What happens next
