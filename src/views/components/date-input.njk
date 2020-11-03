@@ -56,9 +56,9 @@
       id: 'date',
       fieldset: {
         legend: {
-          text: params.labelText,
+          text: params.label.text,
           isPageHeading: false,
-          classes: 'govuk-fieldset__legend'
+          classes: params.label.classes if params.label.text else 'govuk-fieldset__legend'
         }
       },
       hint: params.hint,
