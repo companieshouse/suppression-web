@@ -10,7 +10,6 @@ export function generateTestData(): SuppressionData {
     applicantDetails: {
       fullName: 'John Doe',
       previousName: 'Jane Doe',
-      emailAddress: 'test@example.com',
       dateOfBirth: '1980-05-01'
     } as ApplicantDetails,
     addressToRemove: {
