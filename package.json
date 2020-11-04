@@ -51,7 +51,7 @@
     "jest": "^26.6.2",
     "node-sass": "^5.0.0",
     "nodemon": "^2.0.6",
-    "redis-mock": "^0.53.0",
+    "redis-mock": "^0.54.0",
     "sonarqube-scanner": "^2.7.0",
     "supertest": "^6.0.0",
     "ts-jest": "^26.4.3",
