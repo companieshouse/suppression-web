@@ -93,7 +93,7 @@ export class DocumentDetailsController {
     const refreshToken: string = SessionService.getRefreshToken(req);
 
     try {
-      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken, refreshToken)
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken, refreshToken);
     } catch (err) {
       return next(new Error(`${DocumentDetailsController.name} - ${err}`));
     }
