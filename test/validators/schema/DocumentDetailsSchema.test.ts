@@ -2,8 +2,8 @@ import moment = require('moment');
 
 import { SchemaValidator } from '../../../src/utils/validation/SchemaValidator';
 import { ValidationError } from '../../../src/utils/validation/ValidationError';
-import { assertValidationErrors } from '../ValidationAssertions';
 import { schema } from '../../../src/validators/schema/DocumentDetailsSchema';
+import { assertValidationErrors } from '../ValidationAssertions';
 
 const validator = new SchemaValidator(schema);
 

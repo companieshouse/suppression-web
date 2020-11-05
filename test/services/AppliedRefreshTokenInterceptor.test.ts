@@ -182,7 +182,6 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.NO_CONTENT);
 
-
       const suppressionService = new SuppressionService(mockSuppressionHost);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).then(response => {
