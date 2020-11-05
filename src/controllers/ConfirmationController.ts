@@ -23,7 +23,8 @@ export class ConfirmationController {
       const applicationReference: string = session.submittedApplicationReference!;
 
       const accessToken: string = SessionService.getAccessToken(req);
-      const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
+      const refreshToken: string = SessionService.getRefreshToken(req);
+      const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken, refreshToken);
 
       const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');
       const paymentReceived = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
