@@ -46,8 +46,8 @@ export class RefreshTokenInterceptor {
 
       if (response && response.status === StatusCodes.UNAUTHORIZED && !originalRequestConfig._isRetry) {
 
-        loggerInstance().info(`${RefreshTokenInterceptor.name} - Suppression API request failed with: ${response.status}
-        - Refreshing access token`);
+        loggerInstance().info(`${RefreshTokenInterceptor.name} - Suppression API request failed with: ${response.status}`
+          + ' - Refreshing access token');
 
         originalRequestConfig._isRetry = true;
 

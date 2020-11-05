@@ -11,9 +11,7 @@ export class SuppressionService {
   private readonly refreshTokenInterceptor: RefreshTokenInterceptor;
 
   constructor(private readonly uri: string) {
-    this.axiosInstance = axios.create({
-      baseURL: uri
-    });
+    this.axiosInstance = axios.create();
     this.refreshTokenInterceptor = new RefreshTokenInterceptor(this.axiosInstance);
   }
 
@@ -24,7 +22,7 @@ export class SuppressionService {
 
     this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
-    const uri: string = `/suppressions`;
+    const uri: string = `${this.uri}/suppressions`;
 
     loggerInstance().info(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
@@ -46,7 +44,7 @@ export class SuppressionService {
 
     this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
-    const uri: string = `/suppressions/${applicationReference}`;
+    const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
     loggerInstance().info(`${SuppressionService.name} - Making a GET request to ${uri}`);
 
@@ -69,7 +67,7 @@ export class SuppressionService {
 
     this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
-    const uri: string = `/suppressions/${applicationReference}`;
+    const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
     loggerInstance().info(`${SuppressionService.name} - Making a PATCH request to ${uri}`);
 

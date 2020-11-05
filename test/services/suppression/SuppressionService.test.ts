@@ -233,7 +233,7 @@ describe('SuppressionService', () => {
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken);
 
-      expect(mockedAxios.patch).toHaveBeenCalledWith(`/suppressions/${mockGeneratedReference}`,
+      expect(mockedAxios.patch).toHaveBeenCalledWith(`${mockSuppressionUri}/suppressions/${mockGeneratedReference}`,
         mockPartialData as SuppressionData)
     });
 
