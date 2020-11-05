@@ -10,7 +10,6 @@ export interface SuppressionData {
 export interface ApplicantDetails {
   fullName: string;
   previousName?: string;
-  emailAddress: string;
   dateOfBirth: string;
 }
 
