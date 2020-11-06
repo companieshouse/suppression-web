@@ -115,7 +115,7 @@ describe('AddressToRemoveController', () => {
         });
     });
 
-    it('should prepopulate fields when relevent data is found in the session', async () => {
+    it('should prepopulate fields when relevant data is found in the session', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: '12345-12345'} as SuppressionSession

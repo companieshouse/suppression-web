@@ -14,6 +14,7 @@ import { ServiceAddressController } from '../controllers/ServiceAddressControlle
 import { StartPageController } from '../controllers/StartPageController';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { PaymentService } from '../services/payment/PaymentService';
+import { RefreshTokenService } from '../services/refresh-token/RefreshTokenService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 import {
   ACCESSIBILITY_STATEMENT_URI,
@@ -35,7 +36,9 @@ export const routes = Router();
 /**
  * Services
  */
-const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
+const refreshTokenService: RefreshTokenService = new RefreshTokenService(getConfigValue(`OAUTH2_TOKEN_URI`)!,
+  getConfigValue(`OAUTH2_CLIENT_ID`)!, getConfigValue(`OAUTH2_CLIENT_SECRET`)!);
+const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string, refreshTokenService);
 const paymentService: PaymentService = new PaymentService();
 
 /**

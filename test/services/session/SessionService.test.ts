@@ -166,14 +166,14 @@ describe('SessionService', () => {
     });
     mockRequest.session!.get = mockGetSignInInfo;
 
-    const result = SessionService.getAccessToken(mockRequest);
+    const result: string = SessionService.getAccessToken(mockRequest);
     expect(result).toEqual(testToken);
     expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
-  })
+  });
 
-  it('should retrieve the access token from the session', () => {
+  it('should retrieve the email address from the session', () => {
 
-    const testEmail = 'test@example.com';
+    const testEmail: string = 'test@example.com';
     const mockRequest: Request = mockRequestData;
 
     const mockGetSignInInfo: jest.Mock = jest.fn(() => {
@@ -188,9 +188,31 @@ describe('SessionService', () => {
     });
     mockRequest.session!.get = mockGetSignInInfo;
 
-    const result = SessionService.getUserEmail(mockRequest);
+    const result: string = SessionService.getUserEmail(mockRequest);
     expect(result).toEqual(testEmail);
     expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
-  })
+  });
+
+  it('should retrieve the refresh token from the session', () => {
+
+    const testToken: string = 'test-token';
+    const mockRequest: Request = mockRequestData;
+
+    const mockGetSignInInfo: jest.Mock = jest.fn(() => {
+      return {
+        access_token: {
+          refresh_token: testToken
+        },
+        user_profile: {
+          email: 'test@example.com'
+        }
+      }
+    });
+    mockRequest.session!.get = mockGetSignInInfo;
+
+    const result: string = SessionService.getRefreshToken(mockRequest);
+    expect(result).toEqual(testToken);
+    expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
+  });
 
 });

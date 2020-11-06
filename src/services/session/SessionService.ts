@@ -38,6 +38,11 @@ export default class SessionService {
     return signInInfo.access_token!.access_token!
   }
 
+  static getRefreshToken(req: Request): string {
+    const signInInfo = req.session!.get<ISignInInfo>(SessionKey.SignInInfo)!;
+    return signInInfo.access_token!.refresh_token!;
+  }
+
   static getUserEmail(req: Request): string {
     const signInInfo = req.session!.get<ISignInInfo>(SessionKey.SignInInfo)!;
     return signInInfo.user_profile!.email!

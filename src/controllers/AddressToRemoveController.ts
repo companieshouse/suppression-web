@@ -34,8 +34,9 @@ export class AddressToRemoveController {
       }
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken, refreshToken);
 
       res.render(template, {
         ...suppressionData.addressToRemove,
@@ -69,8 +70,9 @@ export class AddressToRemoveController {
         const partialSuppressionData: SuppressionData = {addressToRemove: req.body} as SuppressionData;
 
         const accessToken: string = SessionService.getAccessToken(req);
+        const refreshToken: string = SessionService.getRefreshToken(req);
 
-        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken);
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken, refreshToken);
 
         SessionService.appendNavigationPermissions(req, continueNavigation);
 

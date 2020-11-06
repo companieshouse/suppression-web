@@ -26,6 +26,10 @@ export default class SessionService {
     return 'mock-token';
   }
 
+  static getRefreshToken(req: Request): string {
+    return 'mock-refresh-token';
+  }
+
   static getUserEmail(req: Request): string {
     return 'ch-test@example.com';
   }

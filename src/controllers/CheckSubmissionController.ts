@@ -28,8 +28,9 @@ export class CheckSubmissionController {
       }
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken, refreshToken);
 
       const templateData = {
         applicantDetails: suppressionData.applicantDetails,
