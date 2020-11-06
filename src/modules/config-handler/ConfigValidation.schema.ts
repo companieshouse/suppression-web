@@ -16,7 +16,6 @@ export const configValidationSchema = Joi.object({
   PIWIK_URL: Joi.string().required(),
   PIWIK_SITE_ID: Joi.string().required(),
   PIWIK_LANDING_PAGE_START_GOAL_ID: Joi.string().required(),
-  OAUTH2_TOKEN_URI: Joi.string().required(),
   OAUTH2_CLIENT_ID: Joi.string().required(),
   OAUTH2_CLIENT_SECRET: Joi.string().required()
 }).options({
