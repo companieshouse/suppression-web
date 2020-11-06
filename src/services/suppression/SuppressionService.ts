@@ -17,8 +17,9 @@ export class SuppressionService {
 
   public async save(applicantDetails: ApplicantDetails, accessToken: string, refreshToken: string): Promise<string> {
 
-    this.checkArgumentOrThrow(applicantDetails, 'applicant details data is missing');
+    this.checkArgumentOrThrow(applicantDetails, 'Applicant details data is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(refreshToken, 'Refresh token is missing');
 
     this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
@@ -41,6 +42,7 @@ export class SuppressionService {
 
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(refreshToken, 'Refresh token is missing');
 
     this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
@@ -64,6 +66,7 @@ export class SuppressionService {
     this.checkArgumentOrThrow(partialSuppression, 'Partial suppression data is missing');
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(refreshToken, 'Refresh token is missing');
 
     this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 

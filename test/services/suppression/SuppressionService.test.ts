@@ -31,7 +31,7 @@ describe('SuppressionService', () => {
 
       for (const data of [undefined, null]) {
         await suppressionService.save(data as any, mockAccessToken, mockRefreshToken).catch((err) => {
-          expect(err).toEqual(Error('applicant details data is missing'))
+          expect(err).toEqual(Error('Applicant details data is missing'))
         })
       }
 
@@ -43,6 +43,16 @@ describe('SuppressionService', () => {
       for (const data of [undefined, null]) {
         await suppressionService.save({} as ApplicantDetails, data as any, mockRefreshToken).catch((err) => {
           expect(err).toEqual(Error('Access token is missing'))
+        });
+      }
+    });
+
+    it('should throw an error when refresh token not defined', async () => {
+      const suppressionService = new SuppressionService(mockSuppressionUri);
+
+      for (const data of [undefined, null]) {
+        await suppressionService.save({} as ApplicantDetails, mockAccessToken, data as any).catch((err) => {
+          expect(err).toEqual(Error('Refresh token is missing'))
         });
       }
     });
@@ -129,6 +139,16 @@ describe('SuppressionService', () => {
       }
     });
 
+    it('should throw an error when refresh token not defined', async () => {
+      const suppressionService = new SuppressionService(mockSuppressionUri);
+
+      for (const data of [undefined, null]) {
+        await suppressionService.get(mockGeneratedReference, mockAccessToken, data as any).catch((err) => {
+          expect(err).toEqual(Error('Refresh token is missing'))
+        });
+      }
+    });
+
     it('should retrieve full suppression', async () => {
 
       mockedAxios.get.mockReturnValue(Promise.resolve({
@@ -208,6 +228,16 @@ describe('SuppressionService', () => {
       for (const data of [undefined, null]) {
         await suppressionService.patch(mockPartialData, mockGeneratedReference, data as any, mockRefreshToken).catch((err) => {
           expect(err).toEqual(Error('Access token is missing'))
+        });
+      }
+    });
+
+    it('should throw an error when refresh token not defined', async () => {
+      const suppressionService = new SuppressionService(mockSuppressionUri);
+
+      for (const data of [undefined, null]) {
+        await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, data as any).catch((err) => {
+          expect(err).toEqual(Error('Refresh token is missing'))
         });
       }
     });

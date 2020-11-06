@@ -16,6 +16,7 @@ const mockAccessToken: string = 'token';
 const mockNewAccessToken: string = 'new-token';
 const mockRefreshToken: string = 'refresh-token';
 const mockGeneratedReference: string = '123123';
+const mockGrantType: string = 'refresh_token';
 const mockSuppressionHost: string = 'http://localhost';
 const mockSuppressionUri: string = '/suppressions';
 
@@ -69,7 +70,7 @@ describe('Applied refresh token interceptor', () => {
       const suppressionService = new SuppressionService(mockSuppressionHost);
 
       await suppressionService.save(mockSuppressionData, mockAccessToken, mockRefreshToken).then((response: string) => {
-        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, 'refresh_token', undefined, undefined);
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
         expect(response).toEqual(mockGeneratedReference);
       });
     });
@@ -92,7 +93,7 @@ describe('Applied refresh token interceptor', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionHost);
       await suppressionService.save(mockSuppressionData, mockAccessToken, mockRefreshToken).catch(err => {
-        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, 'refresh_token', undefined, undefined);
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
         expect(err).toEqual(new SuppressionUnauthorisedError('save suppression unauthorised'));
       });
     });
@@ -119,7 +120,7 @@ describe('Applied refresh token interceptor', () => {
 
       const suppressionService = new SuppressionService(mockSuppressionHost);
       await suppressionService.save(mockSuppressionData, mockAccessToken, mockRefreshToken).catch(err => {
-        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, 'refresh_token', undefined, undefined);
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
         expect(err).toEqual(new SuppressionUnauthorisedError('save suppression unauthorised'));
       });
     });
@@ -127,6 +128,8 @@ describe('Applied refresh token interceptor', () => {
   });
 
   describe('get suppression', () => {
+
+    const mockSuppressionData: SuppressionData = generateTestData();
 
     it('should retrieve full suppression when token has expired', async () => {
 
@@ -146,13 +149,65 @@ describe('Applied refresh token interceptor', () => {
         .get(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
             reqheaders: getRequestHeaders(mockNewAccessToken)
           }
-        ).reply(StatusCodes.OK, generateTestData());
+        ).reply(StatusCodes.OK, mockSuppressionData);
 
       const suppressionService = new SuppressionService(mockSuppressionHost);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).then((response: SuppressionData) => {
-        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, 'refresh_token', undefined, undefined);
-        expect(response).toEqual(generateTestData())
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
+        expect(response).toEqual(mockSuppressionData)
+      });
+    });
+
+    it('should return status 401 when expired token refresh fails with 401', async () => {
+
+      nock(mockSuppressionHost)
+        .get(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
+            reqheaders: getRequestHeaders(mockAccessToken)
+          }
+        ).reply(StatusCodes.UNAUTHORIZED);
+
+      const refreshTokenMock = jest.fn().mockReturnValue(Promise.resolve({
+        httpStatusCode: StatusCodes.UNAUTHORIZED
+      }));
+
+      accountApiClient.refreshToken.refresh = refreshTokenMock;
+
+      jest.spyOn(nodeSdk, 'createApiClient').mockImplementationOnce(() => accountApiClient);
+
+      const suppressionService = new SuppressionService(mockSuppressionHost);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
+        expect(err).toEqual(new SuppressionUnauthorisedError('get suppression unauthorised'));
+      });
+    });
+
+    it('should return status 401 when auth header is invalid second time around', async () => {
+
+      nock(mockSuppressionHost)
+        .get(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
+            reqheaders: getRequestHeaders(mockAccessToken)
+          }
+        ).reply(StatusCodes.UNAUTHORIZED);
+
+      const refreshTokenMock = jest.fn().mockReturnValue(Promise.resolve(refreshTokenResponse));
+
+      accountApiClient.refreshToken.refresh = refreshTokenMock;
+
+      jest.spyOn(nodeSdk, 'createApiClient').mockImplementationOnce(() => accountApiClient);
+
+      nock(mockSuppressionHost)
+        .get(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
+            reqheaders: getRequestHeaders(mockNewAccessToken)
+          }
+        ).reply(StatusCodes.UNAUTHORIZED);
+
+      const suppressionService = new SuppressionService(mockSuppressionHost);
+
+      await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
+        expect(err).toEqual(new SuppressionUnauthorisedError('get suppression unauthorised'));
       });
     });
 
@@ -185,8 +240,60 @@ describe('Applied refresh token interceptor', () => {
       const suppressionService = new SuppressionService(mockSuppressionHost);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).then(response => {
-        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, 'refresh_token', undefined, undefined);
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
         expect(response).toBeUndefined();
+      });
+    });
+
+    it('should return status 401 when expired token refresh fails with 401', async () => {
+
+      nock(mockSuppressionHost)
+        .patch(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
+            reqheaders: getRequestHeaders(mockAccessToken)
+          }
+        ).reply(StatusCodes.UNAUTHORIZED);
+
+      const refreshTokenMock = jest.fn().mockReturnValue(Promise.resolve({
+        httpStatusCode: StatusCodes.UNAUTHORIZED
+      }));
+
+      accountApiClient.refreshToken.refresh = refreshTokenMock;
+
+      jest.spyOn(nodeSdk, 'createApiClient').mockImplementationOnce(() => accountApiClient);
+
+      const suppressionService = new SuppressionService(mockSuppressionHost);
+
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch(err => {
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
+        expect(err).toEqual(new SuppressionUnauthorisedError('patch suppression unauthorised'));
+      });
+    });
+
+    it('should return status 401 when auth header is invalid second time around', async () => {
+
+      nock(mockSuppressionHost)
+        .patch(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
+            reqheaders: getRequestHeaders(mockAccessToken)
+          }
+        ).reply(StatusCodes.UNAUTHORIZED);
+
+      const refreshTokenMock = jest.fn().mockReturnValue(Promise.resolve(refreshTokenResponse));
+
+      accountApiClient.refreshToken.refresh = refreshTokenMock;
+
+      jest.spyOn(nodeSdk, 'createApiClient').mockImplementationOnce(() => accountApiClient);
+
+      nock(mockSuppressionHost)
+        .patch(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
+            reqheaders: getRequestHeaders(mockNewAccessToken)
+          }
+        ).reply(StatusCodes.UNAUTHORIZED);
+
+      const suppressionService = new SuppressionService(mockSuppressionHost);
+
+      await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch(err => {
+        expect(refreshTokenMock).toHaveBeenCalledWith(mockRefreshToken, mockGrantType, undefined, undefined);
+        expect(err).toEqual(new SuppressionUnauthorisedError('patch suppression unauthorised'));
       });
     });
 
