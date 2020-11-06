@@ -166,7 +166,7 @@ describe('SessionService', () => {
     });
     mockRequest.session!.get = mockGetSignInInfo;
 
-    const result = SessionService.getAccessToken(mockRequest);
+    const result: string = SessionService.getAccessToken(mockRequest);
     expect(result).toEqual(testToken);
     expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
   });
@@ -188,7 +188,7 @@ describe('SessionService', () => {
     });
     mockRequest.session!.get = mockGetSignInInfo;
 
-    const result = SessionService.getUserEmail(mockRequest);
+    const result: string = SessionService.getUserEmail(mockRequest);
     expect(result).toEqual(testEmail);
     expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
   });
@@ -210,7 +210,7 @@ describe('SessionService', () => {
     });
     mockRequest.session!.get = mockGetSignInInfo;
 
-    const result = SessionService.getRefreshToken(mockRequest);
+    const result: string = SessionService.getRefreshToken(mockRequest);
     expect(result).toEqual(testToken);
     expect(mockGetSignInInfo).toHaveBeenCalledWith(SessionKey.SignInInfo);
   });
