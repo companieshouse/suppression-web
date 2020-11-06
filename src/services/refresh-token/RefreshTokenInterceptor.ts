@@ -1,18 +1,16 @@
-import { createApiClient } from '@companieshouse/api-sdk-node';
-import ApiClient from '@companieshouse/api-sdk-node/dist/client';
-import { RefreshTokenData } from '@companieshouse/api-sdk-node/dist/services/refresh-token';
-import Resource from '@companieshouse/api-sdk-node/dist/services/resource';
 import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
-import { getConfigValue } from '../modules/config-handler/ConfigHandler';
-import { loggerInstance } from '../utils/Logger';
+import { loggerInstance } from '../../utils/Logger';
+import { RefreshTokenService } from './RefreshTokenService';
 
 export class RefreshTokenInterceptor {
 
   private readonly axiosInstance: AxiosInstance;
+  private readonly refreshTokenService: RefreshTokenService;
 
-  constructor(axiosInstance: AxiosInstance) {
+  constructor(axiosInstance: AxiosInstance, refreshTokenService: RefreshTokenService) {
     this.axiosInstance = axiosInstance;
+    this.refreshTokenService = refreshTokenService;
   }
 
   public initialise(accessToken: string, refreshToken: string): void {
@@ -51,13 +49,9 @@ export class RefreshTokenInterceptor {
 
         originalRequestConfig._isRetry = true;
 
-        const accountApiClient: ApiClient = createApiClient(undefined, accessToken);
-        const refreshTokenResponse: Resource<RefreshTokenData> = await accountApiClient.refreshToken.refresh(
-          refreshToken, 'refresh_token', getConfigValue('OAUTH2_CLIENT_ID')!,
-          getConfigValue('OAUTH2_CLIENT_SECRET')!);
-
-        if (refreshTokenResponse.resource) {
-          originalRequestConfig.headers = RefreshTokenInterceptor.getHeaders(refreshTokenResponse.resource.access_token);
+        const newAccessToken: string = await this.refreshTokenService.refresh(accessToken, refreshToken);
+        if (newAccessToken) {
+          originalRequestConfig.headers = RefreshTokenInterceptor.getHeaders(newAccessToken);
           loggerInstance().info(`${RefreshTokenInterceptor.name} - Access token successfully refreshed`);
           return this.axiosInstance(originalRequestConfig);
         }

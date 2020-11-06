@@ -2,7 +2,8 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { ApplicantDetails, SuppressionData } from '../../models/SuppressionDataModel';
 import { loggerInstance } from '../../utils/Logger';
-import { RefreshTokenInterceptor } from '../RefreshTokenInterceptor';
+import { RefreshTokenInterceptor } from '../refresh-token/RefreshTokenInterceptor';
+import { RefreshTokenService } from '../refresh-token/RefreshTokenService';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 
 export class SuppressionService {
@@ -10,9 +11,9 @@ export class SuppressionService {
   private readonly axiosInstance: AxiosInstance;
   private readonly refreshTokenInterceptor: RefreshTokenInterceptor;
 
-  constructor(private readonly uri: string) {
+  constructor(private readonly uri: string, private readonly refreshTokenService: RefreshTokenService) {
     this.axiosInstance = axios.create();
-    this.refreshTokenInterceptor = new RefreshTokenInterceptor(this.axiosInstance);
+    this.refreshTokenInterceptor = new RefreshTokenInterceptor(this.axiosInstance, refreshTokenService);
   }
 
   public async save(applicantDetails: ApplicantDetails, accessToken: string, refreshToken: string): Promise<string> {

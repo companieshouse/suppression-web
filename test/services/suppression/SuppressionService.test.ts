@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes';
 import { ApplicantDetails, SuppressionData } from '../../../src/models/SuppressionDataModel';
+import { RefreshTokenService } from '../../../src/services/refresh-token/RefreshTokenService';
 import {
   SuppressionUnauthorisedError,
   SuppressionUnprocessableEntityError
@@ -8,7 +9,8 @@ import {
 import { SuppressionService } from '../../../src/services/suppression/SuppressionService';
 import { generateTestData } from '../../TestData';
 jest.mock('axios');
-jest.mock('../../../src/services/RefreshTokenInterceptor');
+jest.mock('../../../src/services/refresh-token/RefreshTokenInterceptor');
+jest.mock('../../../src/services/refresh-token/RefreshTokenService');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 mockedAxios.create = jest.fn(() => mockedAxios);
@@ -23,11 +25,17 @@ describe('SuppressionService', () => {
   const mockRefreshToken: string = 'refresh-token';
   const mockGeneratedReference: string = '123123';
   const mockSuppressionUri: string = 'mockurl';
+  const mockRefreshClientId: string = '1';
+  const mockRefreshClientSecret: string = 'ABC';
+  const mockRefreshServiceUri: string = 'http://localhost/oauth2/token';
+
+  const refreshTokenService: RefreshTokenService =
+    new RefreshTokenService(mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret);
 
   describe('saving suppression', () => {
 
     it('should throw an error when suppression not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.save(data as any, mockAccessToken, mockRefreshToken).catch((err) => {
@@ -38,7 +46,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when Access token not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.save({} as ApplicantDetails, data as any, mockRefreshToken).catch((err) => {
@@ -48,7 +56,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when refresh token not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.save({} as ApplicantDetails, mockAccessToken, data as any).catch((err) => {
@@ -67,7 +75,7 @@ describe('SuppressionService', () => {
         data: mockGeneratedReference
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.save({} as ApplicantDetails, mockAccessToken, mockRefreshToken).then((response: string) => {
         expect(response).toEqual(mockGeneratedReference)
@@ -81,7 +89,7 @@ describe('SuppressionService', () => {
         status: StatusCodes.CONFLICT
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.save({} as ApplicantDetails, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new Error('save suppression failed with message: unknown error'));
@@ -95,7 +103,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.UNPROCESSABLE_ENTITY}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.save({} as ApplicantDetails, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('save suppression on invalid suppression data'));
@@ -108,7 +116,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.UNAUTHORIZED}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.save({} as ApplicantDetails, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnauthorisedError('save suppression unauthorised'));
@@ -120,7 +128,7 @@ describe('SuppressionService', () => {
   describe('get suppression', () => {
 
     it('should throw an error when application reference not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.get(data as any, mockAccessToken, mockRefreshToken).catch((err) => {
@@ -130,7 +138,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when Access token not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.get(mockGeneratedReference, data as any, mockRefreshToken).catch((err) => {
@@ -140,7 +148,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when refresh token not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.get(mockGeneratedReference, mockAccessToken, data as any).catch((err) => {
@@ -156,7 +164,7 @@ describe('SuppressionService', () => {
         data: generateTestData() as SuppressionData
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).then((response: SuppressionData) => {
         expect(response).toEqual(generateTestData())
@@ -171,7 +179,7 @@ describe('SuppressionService', () => {
         data: {applicantDetails: generateTestData().applicantDetails} as SuppressionData
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).then((response: SuppressionData) => {
         expect(response).toEqual({applicantDetails: generateTestData().applicantDetails})
@@ -185,7 +193,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.NOT_FOUND}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new Error('get suppression failed. Suppression not found'));
@@ -199,7 +207,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.UNAUTHORIZED}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('get suppression unauthorised'));
@@ -213,7 +221,7 @@ describe('SuppressionService', () => {
     const mockPartialData = {applicantDetails: generateTestData().applicantDetails};
 
     it('should throw an error when application reference not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.patch(mockPartialData, data as any, mockAccessToken, mockRefreshToken).catch((err) => {
@@ -223,7 +231,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when Access token not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.patch(mockPartialData, mockGeneratedReference, data as any, mockRefreshToken).catch((err) => {
@@ -233,7 +241,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when refresh token not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, data as any).catch((err) => {
@@ -243,7 +251,7 @@ describe('SuppressionService', () => {
     });
 
     it('should throw an error when partial data not defined', async () => {
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       for (const data of [undefined, null]) {
         await suppressionService.patch(data as any, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
@@ -259,7 +267,7 @@ describe('SuppressionService', () => {
         data: true
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken);
 
@@ -273,7 +281,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.NOT_FOUND}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new Error('patch suppression failed. Suppression not found'));
@@ -287,7 +295,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.UNPROCESSABLE_ENTITY}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('patch suppression on invalid suppression data'));
@@ -300,7 +308,7 @@ describe('SuppressionService', () => {
         response: {status: StatusCodes.UNAUTHORIZED}
       }));
 
-      const suppressionService = new SuppressionService(mockSuppressionUri);
+      const suppressionService = new SuppressionService(mockSuppressionUri, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(err).toEqual(new SuppressionUnprocessableEntityError('patch suppression unauthorised'));
