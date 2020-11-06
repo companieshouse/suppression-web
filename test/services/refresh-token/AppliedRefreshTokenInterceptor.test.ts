@@ -45,11 +45,13 @@ describe('Applied refresh token interceptor', () => {
     jest.clearAllMocks();
   });
 
+  const refreshTokenService: RefreshTokenService = new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret);
+
   describe('saving suppression', () => {
 
     const mockSuppressionData: ApplicantDetails = generateTestData().applicantDetails;
 
-    it('should refresh access token when expired and save suppression', async () => {
+    it('should refresh expired access token and save suppression', async () => {
 
       nock(mockApiHost)
         .post(mockSuppressionUri, JSON.stringify(mockSuppressionData), {
@@ -67,8 +69,7 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.CREATED, mockGeneratedReference, {location: '/suppressions/123123'});
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.save(mockSuppressionData, mockAccessToken, mockRefreshToken).then((response: string) => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -76,7 +77,7 @@ describe('Applied refresh token interceptor', () => {
       });
     });
 
-    it('should return status 400 when invalid token refresh fails with 400', async () => {
+    it('should return error when refresh token fails with status code 400 Bad Request', async () => {
 
       nock(mockApiHost)
         .post(mockSuppressionUri, JSON.stringify(mockSuppressionData), {
@@ -88,15 +89,14 @@ describe('Applied refresh token interceptor', () => {
         .post(`${mockRefreshServiceUri}${mockRefreshParams}`)
         .reply(StatusCodes.BAD_REQUEST);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
       await suppressionService.save(mockSuppressionData, mockAccessToken, mockRefreshToken).catch(err => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
         expect(err).toEqual(new SuppressionServiceError('save suppression failed with message: Request failed with status code 400'));
       });
     });
 
-    it('should return status 401 when auth header is invalid second time around', async () => {
+    it('should return error when access token is invalid second time around', async () => {
 
       nock(mockApiHost)
         .post(mockSuppressionUri, JSON.stringify(mockSuppressionData), {
@@ -114,8 +114,7 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.UNAUTHORIZED);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.save(mockSuppressionData, mockAccessToken, mockRefreshToken).catch(err => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -147,8 +146,7 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.OK, mockSuppressionData);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).then((response: SuppressionData) => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -156,7 +154,7 @@ describe('Applied refresh token interceptor', () => {
       });
     });
 
-    it('should return status 400 when invalid token refresh fails with 400', async () => {
+    it('should return error when refresh token fails with status code 400 Bad Request', async () => {
 
       nock(mockApiHost)
         .get(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
@@ -168,8 +166,7 @@ describe('Applied refresh token interceptor', () => {
         .post(`${mockRefreshServiceUri}${mockRefreshParams}`)
         .reply(StatusCodes.BAD_REQUEST);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -177,7 +174,7 @@ describe('Applied refresh token interceptor', () => {
       });
     });
 
-    it('should return status 401 when auth header is invalid second time around', async () => {
+    it('should return error when access token is invalid second time around', async () => {
 
       nock(mockApiHost)
         .get(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
@@ -195,8 +192,7 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.UNAUTHORIZED);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.get(mockGeneratedReference, mockAccessToken, mockRefreshToken).catch((err) => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -228,8 +224,7 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.NO_CONTENT);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).then(response => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -237,7 +232,7 @@ describe('Applied refresh token interceptor', () => {
       });
     });
 
-    it('should return status 400 when expired token refresh fails with 400', async () => {
+    it('should return error when refresh token fails with status code 400 Bad Request', async () => {
 
       nock(mockApiHost)
         .patch(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
@@ -249,8 +244,7 @@ describe('Applied refresh token interceptor', () => {
         .post(`${mockRefreshServiceUri}${mockRefreshParams}`)
         .reply(StatusCodes.BAD_REQUEST);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch(err => {
         expect(refreshTokenMock.isDone()).toBeTruthy();
@@ -258,7 +252,7 @@ describe('Applied refresh token interceptor', () => {
       });
     });
 
-    it('should return status 401 when auth header is invalid second time around', async () => {
+    it('should return error when access token is invalid second time around', async () => {
 
       nock(mockApiHost)
         .patch(`${mockSuppressionUri}/${mockGeneratedReference}`, undefined, {
@@ -276,8 +270,7 @@ describe('Applied refresh token interceptor', () => {
           }
         ).reply(StatusCodes.UNAUTHORIZED);
 
-      const suppressionService = new SuppressionService(mockApiHost,
-        new RefreshTokenService(mockApiHost + mockRefreshServiceUri, mockRefreshClientId, mockRefreshClientSecret));
+      const suppressionService: SuppressionService = new SuppressionService(mockApiHost, refreshTokenService);
 
       await suppressionService.patch(mockPartialData, mockGeneratedReference, mockAccessToken, mockRefreshToken).catch(err => {
         expect(refreshTokenMock.isDone()).toBeTruthy();

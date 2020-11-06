@@ -173,7 +173,7 @@ describe('SessionService', () => {
 
   it('should retrieve the email address from the session', () => {
 
-    const testEmail = 'test@example.com';
+    const testEmail: string = 'test@example.com';
     const mockRequest: Request = mockRequestData;
 
     const mockGetSignInInfo: jest.Mock = jest.fn(() => {
@@ -195,7 +195,7 @@ describe('SessionService', () => {
 
   it('should retrieve the refresh token from the session', () => {
 
-    const testToken = 'test-token';
+    const testToken: string = 'test-token';
     const mockRequest: Request = mockRequestData;
 
     const mockGetSignInInfo: jest.Mock = jest.fn(() => {
