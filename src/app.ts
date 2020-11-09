@@ -8,12 +8,14 @@ import * as path from 'path';
 
 import { AuthMiddleware } from './middleware/AuthMiddleware';
 import { defaultHandler } from './middleware/ErrorHandler';
+import { NavigationMiddleware } from './middleware/NavigationMiddleware';
 import {
   getConfigValue,
   loadEnvironmentVariables
 } from './modules/config-handler/ConfigHandler';
 import { configValidationSchema } from './modules/config-handler/ConfigValidation.schema';
 import { dateFilter } from './modules/nunjucks/DateFilter';
+import { pageTitleFilter } from './modules/nunjucks/PageTitleFilter';
 import * as Paths from './routes/paths';
 import { routes } from './routes/routes';
 
@@ -34,11 +36,20 @@ app.use(SessionMiddleware({
 
 app.use(AuthMiddleware());
 
+app.get('*', NavigationMiddleware());
+
 // set up app variables from the environment
 app.set('port', getConfigValue('PORT'));
 
 // where nunjucks templates should resolve to
 const viewPath = path.join(__dirname, 'views');
+
+// set up usage statistics
+app.locals.piwik = {
+  url: getConfigValue('PIWIK_URL'),
+  siteId: getConfigValue('PIWIK_SITE_ID'),
+  startGoalID: getConfigValue('PIWIK_LANDING_PAGE_START_GOAL_ID')
+};
 
 // set up the template engine
 const env = nunjucks.configure([
@@ -51,6 +62,7 @@ const env = nunjucks.configure([
 });
 
 env.addFilter('date', dateFilter);
+env.addFilter('pageTitle', pageTitleFilter);
 
 app.set('views', viewPath);
 app.set('view engine', 'njk');

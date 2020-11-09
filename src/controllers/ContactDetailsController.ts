@@ -11,6 +11,7 @@ import { schema as formSchema } from '../validators/schema/AddressToRemoveSchema
 
 const template: string = 'contact-details';
 const backNavigation: string = SERVICE_ADDRESS_PAGE_URI;
+const continueNavigation: string = CHECK_SUBMISSION_PAGE_URI;
 
 export class ContactDetailsController {
 
@@ -32,8 +33,9 @@ export class ContactDetailsController {
       }
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken, refreshToken);
 
       res.render(template, {
         ...suppressionData.contactAddress,
@@ -68,14 +70,17 @@ export class ContactDetailsController {
       const partialSuppressionData: SuppressionData = { contactAddress: req.body } as SuppressionData;
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
       try {
-        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken, refreshToken);
       } catch (err) {
         return next(new Error(`${ContactDetailsController.name} - ${err}`));
       }
 
-      res.redirect(CHECK_SUBMISSION_PAGE_URI);
+      SessionService.appendNavigationPermissions(req, continueNavigation);
+
+      res.redirect(continueNavigation);
     }
   };
 }

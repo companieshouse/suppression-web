@@ -54,25 +54,28 @@ describe('CheckSubmissionController', () => {
           expectToHaveBackButton(response.text, CONTACT_DETAILS_PAGE_URI);
           expectToHaveSummaryRow(response.text, 'Full name', 'John Doe');
           expectToHaveSummaryRow(response.text,
-            'Has the applicant used a different name for business purposes in the last 20 years\\?',
+            'Has the applicant used a different name on the Companies House register in the last 20 years\\?',
             'No');
           expect(response.text).not.toContain('Previous name');
           expectToHaveSummaryRow(response.text, 'Date of birth', '1 May 1980');
           expectToHaveSummaryRow(response.text,
-            'What home address would you like to remove\\?',
+            'What is the home address you want to remove from the document\\?',
             '1 Residential Avenue<br>Selly Oak<br>Birmingham<br>West Midlands<br>B29 4TD<br>United Kingdom');
           expectToHaveSummaryRow(response.text, 'Company name', 'company-name-test');
           expectToHaveSummaryRow(response.text, 'Company number', 'NI000000');
-          expectToHaveSummaryRow(response.text, 'Document description', 'This is a document');
-          expectToHaveSummaryRow(response.text, 'Document date', '1 January 2020');
+          expectToHaveSummaryRow(response.text,
+            'Document name and description',
+            'This is a document');
+          expectToHaveSummaryRow(response.text,
+            'Date the document was added to the register',
+            '1 January 2020');
           expectToHaveSummaryRow(response.text,
             'What address do you want to replace your home address with\\?',
             '1 Main Street<br>Cardiff<br>Cardiff<br>CF14 3UZ<br>United Kingdom');
-          expectToHaveSummaryRow(response.text, 'Email address', 'test@example.com');
           expectToHaveSummaryRow(response.text,
             'Contact address',
             '1st Avenue<br>New York<br>New York<br>NY<br>USA');
-          expectToHaveButton(response.text, 'Accept and submit');
+          expectToHaveButton(response.text, 'Confirm and continue');
         });
     });
 
@@ -118,9 +121,12 @@ describe('CheckSubmissionController', () => {
 
       const app = createApp();
 
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+
       await request(app)
         .post(CHECK_SUBMISSION_PAGE_URI)
         .send({}).expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toContain(PAYMENT_REVIEW_PAGE_URI);
         });

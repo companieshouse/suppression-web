@@ -1,25 +1,35 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { ApplicantDetails, SuppressionData } from '../../models/SuppressionDataModel';
+import { loggerInstance } from '../../utils/Logger';
+import { RefreshTokenInterceptor } from '../refresh-token/RefreshTokenInterceptor';
+import { RefreshTokenService } from '../refresh-token/RefreshTokenService';
 import { SuppressionServiceError, SuppressionUnauthorisedError, SuppressionUnprocessableEntityError } from './errors';
 
 export class SuppressionService {
 
-  constructor(private readonly uri: string) {
-    this.uri = uri;
+  private readonly axiosInstance: AxiosInstance;
+  private readonly refreshTokenInterceptor: RefreshTokenInterceptor;
+
+  constructor(private readonly uri: string, private readonly refreshTokenService: RefreshTokenService) {
+    this.axiosInstance = axios.create();
+    this.refreshTokenInterceptor = new RefreshTokenInterceptor(this.axiosInstance, refreshTokenService);
   }
 
-  public async save(applicantDetails: ApplicantDetails, accessToken: string): Promise<string> {
+  public async save(applicantDetails: ApplicantDetails, accessToken: string, refreshToken: string): Promise<string> {
 
-    this.checkArgumentOrThrow(applicantDetails, 'applicant details data is missing');
+    this.checkArgumentOrThrow(applicantDetails, 'Applicant details data is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(refreshToken, 'Refresh token is missing');
+
+    this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
     const uri: string = `${this.uri}/suppressions`;
 
-    console.log(`${SuppressionService.name} - Making a POST request to ${uri}`);
+    loggerInstance().info(`${SuppressionService.name} - Making a POST request to ${uri}`);
 
-    return await axios
-      .post(uri, applicantDetails, {headers: this.getHeaders(accessToken)})
+    return await this.axiosInstance
+      .post(uri, applicantDetails)
       .then((response: AxiosResponse<string>) => {
         if (response.status === StatusCodes.CREATED && response.headers.location) {
           return response.data.toString()
@@ -29,17 +39,20 @@ export class SuppressionService {
       .catch(this.handleResponseError('save'))
   }
 
-  public async get(applicationReference: string, accessToken: string): Promise<SuppressionData> {
+  public async get(applicationReference: string, accessToken: string, refreshToken: string): Promise<SuppressionData> {
 
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(refreshToken, 'Refresh token is missing');
+
+    this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
     const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
-    console.log(`${SuppressionService.name} - Making a GET request to ${uri}`);
+    loggerInstance().info(`${SuppressionService.name} - Making a GET request to ${uri}`);
 
-    return await axios
-      .get(uri, {headers: this.getHeaders(accessToken)})
+    return await this.axiosInstance
+      .get(uri)
       .then((response: AxiosResponse<SuppressionData>) => {
         if (response.status === StatusCodes.OK) {
           return response.data
@@ -49,18 +62,21 @@ export class SuppressionService {
       .catch(this.handleResponseError('get'))
   }
 
-  public async patch(partialSuppression: any, applicationReference: string, accessToken: string): Promise<void> {
+  public async patch(partialSuppression: any, applicationReference: string, accessToken: string, refreshToken: string): Promise<void> {
 
     this.checkArgumentOrThrow(partialSuppression, 'Partial suppression data is missing');
     this.checkArgumentOrThrow(applicationReference, 'Application reference is missing');
     this.checkArgumentOrThrow(accessToken, 'Access token is missing');
+    this.checkArgumentOrThrow(refreshToken, 'Refresh token is missing');
+
+    this.refreshTokenInterceptor.initialise(accessToken, refreshToken);
 
     const uri: string = `${this.uri}/suppressions/${applicationReference}`;
 
-    console.log(`${SuppressionService.name} - Making a PATCH request to ${uri}`);
+    loggerInstance().info(`${SuppressionService.name} - Making a PATCH request to ${uri}`);
 
-    return await axios
-      .patch(uri, partialSuppression as SuppressionData, {headers: this.getHeaders(accessToken)})
+    return await this.axiosInstance
+      .patch(uri, partialSuppression as SuppressionData)
       .then((response: AxiosResponse<void>) => {
         if (response.status === StatusCodes.NO_CONTENT) {
           return;
@@ -84,19 +100,11 @@ export class SuppressionService {
 
       throw new SuppressionServiceError(`${operation} suppression failed with message: ${err.message || 'unknown error'}`);
     };
-  };
+  }
 
   private checkArgumentOrThrow<T>(arg: T, errorMessage: string): void {
     if (arg == null) {
       throw new Error(errorMessage);
     }
-  }
-
-  private getHeaders(accessToken: string): AxiosRequestConfig['headers'] {
-    return {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + accessToken
-    };
   }
 }

@@ -12,7 +12,8 @@ import { schema } from '../validators/schema/DocumentDetailsSchema';
 
 const template: string = 'document-details';
 const backNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
-const missingDateErrorMessage: string = 'Document date is required';
+const continueNavigation: string = SERVICE_ADDRESS_PAGE_URI;
+const missingDateErrorMessage: string = 'Enter the date the document was added to the register';
 
 export class DocumentDetailsController {
 
@@ -35,8 +36,9 @@ export class DocumentDetailsController {
       }
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken, refreshToken);
       const documentDetails: DocumentDetails = suppressionData.documentDetails;
 
       if (documentDetails) {
@@ -88,14 +90,17 @@ export class DocumentDetailsController {
     const partialSuppressionData: SuppressionData = { documentDetails } as SuppressionData;
 
     const accessToken: string = SessionService.getAccessToken(req);
+    const refreshToken: string = SessionService.getRefreshToken(req);
 
     try {
-      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken)
+      await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken, refreshToken);
     } catch (err) {
       return next(new Error(`${DocumentDetailsController.name} - ${err}`));
     }
 
-    res.redirect(SERVICE_ADDRESS_PAGE_URI);
+    SessionService.appendNavigationPermissions(req, continueNavigation);
+
+    res.redirect(continueNavigation);
 
   };
 

@@ -32,14 +32,65 @@
       tag: {
         text: 'Beta'
       },
-      html: 'This is a new service – your <a class="govuk-link" href="#" target="_blank">feedback</a> will help us to improve it.'
+      html: 'This is a new service – your <a class="govuk-link" href="https://www.research.net/r/remove-home-add-feedback" target="_blank">feedback</a> will help us to improve it.'
     })
   }}
   {% block backLink %}{% endblock %}
+{% endblock %}
+
+{% block footer %}
+  {{
+    govukFooter({
+      meta: {
+        items: [
+          {
+            href: 'https://resources.companieshouse.gov.uk/serviceInformation.shtml',
+            text: 'Policies',
+            attributes: {
+              target: '_blank'
+            }
+          },
+          {
+            href: 'https://find-and-update.company-information.service.gov.uk/help/cookies',
+            text: 'Cookies'
+          },
+          {
+            href: 'https://find-and-update.company-information.service.gov.uk/help/contact-us',
+            text: 'Contact us'
+          },
+          {
+            href: paths.ACCESSIBILITY_STATEMENT_URI,
+            text: 'Accessibility statement',
+            attributes: {
+              target: '_blank'
+            }
+          },
+          {
+            href: 'https://developer.company-information.service.gov.uk/api/docs/',
+            text: 'Developers',
+            attributes: {
+              target: '_blank'
+            }
+          }
+        ]
+      }
+    })
+  }}
 {% endblock %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   <script src="//{{ cdn.host }}/javascripts/govuk-frontend/v3.6.0/govuk-frontend-3.6.0.min.js"></script>
   <script>window.GOVUKFrontend.initAll()</script>
+  <script src="//{{ cdn.host }}/javascripts/app/piwik-enable.js"></script>
+  <script type="application/javascript">
+    (function() {
+      bindPiwikListener('suppressions', '{{ piwik.url }}', {{ piwik.siteId }});
+    }());
+  </script>
+  <noscript>
+    <p>
+      <img src="{{ piwik.url }}/piwik.php?idsite={{ piwik.siteId }}" style="border:0;" alt="" />
+    </p>
+  </noscript>
 {% endblock %}

@@ -19,21 +19,18 @@ export class ConfirmationController {
 
     try {
 
-      const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
+      const session: SuppressionSession = SessionService.getSuppressionSession(req)!;
+      const applicationReference: string = session.submittedApplicationReference!;
 
-      if (!session || !session.applicationReference) {
-        return next(new Error(`${ConfirmationController.name} - session expected but none found`));
-      }
+      const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
+      const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken, refreshToken);
 
       const processingDelayEvent = getConfigValue('PROCESSING_DELAY_EVENT');
       const paymentReceived = parseInt(getConfigValue('DOCUMENT_AMENDMENT_FEE') as string, 10);
 
-      const accessToken: string = SessionService.getAccessToken(req);
-
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
-
       res.render(template, {
-        applicationReference: session.applicationReference,
+        applicationReference,
         userEmailAddress: SessionService.getUserEmail(req),
         documentDetails: suppressionData.documentDetails,
         processingDelayEvent,

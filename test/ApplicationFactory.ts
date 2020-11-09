@@ -1,5 +1,5 @@
-import bodyParser from 'body-parser';
 import { SessionMiddleware, SessionStore } from '@companieshouse/node-session-handler';
+import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import * as nunjucks from 'nunjucks';
@@ -7,12 +7,15 @@ import * as path from 'path';
 
 import { AuthMiddleware } from '../src/middleware/AuthMiddleware';
 import { defaultHandler } from '../src/middleware/ErrorHandler';
+import { NavigationMiddleware } from '../src/middleware/NavigationMiddleware';
 import { getConfigValue, loadEnvironmentVariables } from '../src/modules/config-handler/ConfigHandler';
 import { configValidationSchema } from '../src/modules/config-handler/ConfigValidation.schema';
 import { dateFilter } from '../src/modules/nunjucks/DateFilter'
+import { pageTitleFilter } from '../src/modules/nunjucks/PageTitleFilter';
+import * as Paths from '../src/routes/paths';
 import { routes } from '../src/routes/routes';
 
-export function createApp(authEnabled?: boolean) {
+export function createApp(authEnabled?: boolean, navEnabled?: boolean) {
 
   loadEnvironmentVariables({validationSchema: configValidationSchema});
   const app = express();
@@ -31,9 +34,12 @@ export function createApp(authEnabled?: boolean) {
   });
 
   env.addFilter('date', dateFilter);
+  env.addFilter('pageTitle', pageTitleFilter);
 
   app.set('views', viewPath);
   app.set('view engine', 'njk');
+
+  app.locals.paths = Paths;
 
   const redis = require('redis-mock');
   const sessionStore = new SessionStore(redis.createClient())
@@ -49,6 +55,10 @@ export function createApp(authEnabled?: boolean) {
 
   if (authEnabled) {
     app.use(AuthMiddleware());
+  }
+
+  if (navEnabled) {
+    app.get('*', NavigationMiddleware())
   }
 
   app.use(bodyParser.json());

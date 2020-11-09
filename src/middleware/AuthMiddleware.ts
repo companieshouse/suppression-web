@@ -1,15 +1,18 @@
 import { authMiddleware, AuthOptions } from '@companieshouse/web-security-node';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
-import { APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
+import { ACCESSIBILITY_STATEMENT_URI, APPLICANT_DETAILS_PAGE_URI, ROOT_URI } from '../routes/paths';
 import { newUriFactory } from '../utils/UriFactory';
+import { urlMatches } from '../utils/UriMatcher';
 
 export function AuthMiddleware(): RequestHandler {
 
   return (req: Request, res: Response, next: NextFunction): any => {
 
     const url: string = req.originalUrl;
-    if (url === ROOT_URI || url === ROOT_URI + '/') {
+    const exemptions: string[] = [ ROOT_URI, ACCESSIBILITY_STATEMENT_URI ];
+    const exempt: boolean = exemptions.some(exemption => urlMatches(exemption, url));
+    if (exempt) {
       return next();
     }
 

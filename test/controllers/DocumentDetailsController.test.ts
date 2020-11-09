@@ -15,15 +15,15 @@ import { createApp } from '../ApplicationFactory';
 import {
   expectToHaveBackButton,
   expectToHaveErrorMessages, expectToHaveErrorSummaryContaining, expectToHaveInput,
-  expectToHavePopulatedInput, expectToHaveTitle
+  expectToHavePopulatedInput, expectToHaveTitle, expectToHaveTitleWithError
 } from '../HtmlPatternAssertions'
 import { generateTestData } from '../TestData';
 
-const expectedTitle: string = 'Document details';
-const missingCompanyNameErrorMessage: string = 'Company name is required';
-const missingCompanyNumberErrorMessage: string = 'Company number is required';
-const missingDocumentDescErrorMessage: string = 'Document description is required';
-const missingDocumentDateErrorMessage: string = 'Document date is required';
+const expectedTitle: string = 'What are the document details\\?';
+const missingCompanyNameErrorMessage: string = 'Enter the company name';
+const missingCompanyNumberErrorMessage: string = 'Enter the company number';
+const missingDocumentDescErrorMessage: string = 'Enter the document name and description';
+const missingDocumentDateErrorMessage: string = 'Enter the date the document was added to the register';
 const missingYearErrorMessage: string = 'You must enter a year';
 const invalidDateErrorMessage: string = 'Enter a real date';
 
@@ -57,7 +57,7 @@ describe('DocumentDetailsController', () => {
           expectToHaveBackButton(response.text, ADDRESS_TO_REMOVE_PAGE_URI);
           expectToHaveInput(response.text, 'companyName', 'Company name');
           expectToHaveInput(response.text, 'companyNumber', 'Company number');
-          expectToHaveInput(response.text, 'description', 'Document description');
+          expectToHaveInput(response.text, 'description', 'Document name and description');
           expectToHaveInput(response.text, 'day', 'Day');
           expectToHaveInput(response.text, 'month', 'Month');
           expectToHaveInput(response.text, 'year', 'Year');
@@ -166,6 +166,10 @@ describe('DocumentDetailsController', () => {
 
   describe('on POST', () => {
 
+    beforeEach(() => {
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+    });
+
     it('should throw an error if application reference not in session', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: undefined as any } as SuppressionSession
@@ -176,7 +180,10 @@ describe('DocumentDetailsController', () => {
       await request(app)
         .post(DOCUMENT_DETAILS_PAGE_URI)
         .send(generateTestData().documentDetails)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if patch suppression service throws exception', async () => {
@@ -202,7 +209,10 @@ describe('DocumentDetailsController', () => {
       await request(app)
         .post(DOCUMENT_DETAILS_PAGE_URI)
         .send(documentDetails)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should redirect to the Service Address page when valid data was submitted', async () => {
@@ -224,6 +234,7 @@ describe('DocumentDetailsController', () => {
         .post(DOCUMENT_DETAILS_PAGE_URI)
         .send(documentDetails)
         .expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toEqual(SERVICE_ADDRESS_PAGE_URI)
         });
@@ -238,7 +249,8 @@ describe('DocumentDetailsController', () => {
         .send({})
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, expectedTitle);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingCompanyNameErrorMessage,
             missingCompanyNumberErrorMessage, missingDocumentDescErrorMessage, missingDocumentDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingCompanyNameErrorMessage,
@@ -261,7 +273,8 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, expectedTitle);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingDocumentDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingDocumentDateErrorMessage]);
         });
@@ -284,7 +297,8 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, expectedTitle);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [missingYearErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingYearErrorMessage]);
         });
@@ -308,7 +322,8 @@ describe('DocumentDetailsController', () => {
         .send(documentDetails)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, expectedTitle);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expectToHaveTitleWithError(response.text, expectedTitle);
           expectToHaveErrorSummaryContaining(response.text, [invalidDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [invalidDateErrorMessage]);
         });

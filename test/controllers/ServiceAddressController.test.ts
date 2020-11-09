@@ -28,7 +28,7 @@ afterEach(() => {
 
 describe('ServiceAddressController', () => {
 
-  const pageTitle = 'Service address';
+  const pageTitle = 'What address do you want to replace your home address with\\?';
 
   describe('on GET', () => {
 
@@ -161,6 +161,10 @@ describe('ServiceAddressController', () => {
 
   describe('on POST', () => {
 
+    beforeEach(() => {
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+    });
+
     it('should throw an error if the session doesn’t exist', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => undefined);
@@ -169,7 +173,10 @@ describe('ServiceAddressController', () => {
 
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if patch suppression service throws exception', async () => {
@@ -187,7 +194,10 @@ describe('ServiceAddressController', () => {
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should throw an error if application reference not in session', async () => {
@@ -201,7 +211,10 @@ describe('ServiceAddressController', () => {
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
         .send(testData)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should redirect to the Contact Address page if data is provided by the user', async () => {
@@ -216,6 +229,7 @@ describe('ServiceAddressController', () => {
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
         .send(testData).expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toContain(CONTACT_DETAILS_PAGE_URI);
         });
@@ -232,6 +246,7 @@ describe('ServiceAddressController', () => {
       await request(app)
         .post(SERVICE_ADDRESS_PAGE_URI)
         .send({}).expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toContain(CONTACT_DETAILS_PAGE_URI);
         });

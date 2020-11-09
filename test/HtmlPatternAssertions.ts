@@ -1,5 +1,5 @@
 export function expectToHaveLink(body: string, href: string, linkText: string): void {
-  const patternStr = `<a.* href="${href}">\\s*${linkText}\\s*<\/a>`;
+  const patternStr = `<a.* href="${href}"\( target="_blank"\|\)>\\s*${linkText}\\s*<\/a>`;
   const pattern = new RegExp(patternStr, 's');
   expect(body).toMatch(pattern);
 }
@@ -59,10 +59,8 @@ export function expectToHaveTitle(body: string, expectedTitle: string): void {
   expect(body).toMatch(pattern);
 }
 
-export function expectNotToHaveTitle(body: string, invalidTitle: string): void {
-  const patternStr = `<title>\\s*${invalidTitle}\\s*<\/title>`;
-  const pattern = new RegExp(patternStr, 's');
-  expect(body).not.toMatch(pattern);
+export function expectToHaveTitleWithError(body: string, expectedTitle: string): void {
+  expectToHaveTitle(body, `Error: ${expectedTitle}`);
 }
 
 export function expectToHaveButton(body: string, buttonText: string): void {

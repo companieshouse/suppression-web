@@ -8,6 +8,14 @@
   Confirmation page
 {% endblock %}
 
+{% block bodyStart %}
+  <noscript>
+    <style>
+      #print-link {display:none;}
+    </style>
+  </noscript>
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -33,8 +41,12 @@
               { text: documentDetails.companyName }
             ],
             [
-              { text: 'Document description' },
+              { text: 'Document name and description' },
               { text: documentDetails.description }
+            ],
+            [
+              { text: 'Date the document was added to the register' },
+              { text: documentDetails.date | date }
             ],
             [
               { text: 'Payment received' },
@@ -43,6 +55,10 @@
           ]
         })
       }}
+
+      <p class="govuk-!-display-none-print" id="print-link">
+        <a href="javascript:if(window.print)window.print()" class="govuk-link">Print a copy of this page</a>
+      </p>
 
       <h2 class="govuk-heading-m">
         What happens next
@@ -94,7 +110,7 @@
 
       <h2 class="govuk-heading-m">Feedback</h2>
       <p class="govuk-body">
-        This is a new service. Help us improve it by completing our <a href="https://www.research.net/r/remove-home-add-conf">quick survey</a>.
+        This is a new service. Help us improve it by completing our <a href="https://www.research.net/r/remove-home-add-conf" target="_blank">quick survey</a>.
       </p>
 
     </div>

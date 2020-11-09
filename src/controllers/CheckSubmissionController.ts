@@ -8,6 +8,7 @@ import { SuppressionService } from '../services/suppression/SuppressionService';
 
 const template: string = 'check-submission';
 const backNavigation: string = CONTACT_DETAILS_PAGE_URI;
+const continueNavigation: string = PAYMENT_REVIEW_PAGE_URI;
 
 export class CheckSubmissionController {
 
@@ -27,8 +28,9 @@ export class CheckSubmissionController {
       }
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
-      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken);
+      const suppressionData: SuppressionData = await this.suppressionService.get(session.applicationReference, accessToken, refreshToken);
 
       const templateData = {
         applicantDetails: suppressionData.applicantDetails,
@@ -49,7 +51,8 @@ export class CheckSubmissionController {
   }
 
   public confirm = async (req: Request, res: Response, next: NextFunction) => {
-    return res.redirect(PAYMENT_REVIEW_PAGE_URI);
+    SessionService.appendNavigationPermissions(req, continueNavigation);
+    return res.redirect(continueNavigation);
   };
 
   private addressToList(address: Address | undefined): string[] {

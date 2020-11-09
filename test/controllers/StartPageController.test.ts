@@ -20,11 +20,17 @@ describe('StartPageController', () => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, expectedTitle);
           expectToHaveLink(response.text,
+            'https:\/\/www.gov.uk\/government\/publications\/apply-to-remove-your-home-address-from-the-public-register-sr01',
+            'complete a paper application \\(SR01\\)');
+          expectToHaveLink(response.text,
             'https:\/\/www.gov.uk\/government\/publications\/restricting-the-disclosure-of-your-psc-information',
             'Restricting the disclosure of your information');
-         expectToHaveLink(response.text,
-          'https:\/\/beta.companieshouse.gov.uk\/',
-          'Companies House register');
+          expectToHaveLink(response.text,
+            'https:\/\/beta.companieshouse.gov.uk\/',
+            'Companies House register');
+          expectToHaveLink(response.text,
+            '\/suppress-my-details\/accessibility-statement',
+            'Accessibility statement');
         });
     });
   });

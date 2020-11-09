@@ -14,7 +14,8 @@ import { schema as formSchema } from '../validators/schema/ApplicantDetailsSchem
 
 const template: string = 'applicant-details';
 const backNavigation: string = ROOT_URI;
-const missingDateErrorMessage: string = 'Date of birth is required';
+const continueNavigation: string = ADDRESS_TO_REMOVE_PAGE_URI;
+const missingDateErrorMessage: string = 'Enter the applicant’s date of birth';
 
 export class ApplicantDetailsController {
 
@@ -33,8 +34,9 @@ export class ApplicantDetailsController {
       const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
 
       const accessToken: string = SessionService.getAccessToken(req);
+      const refreshToken: string = SessionService.getRefreshToken(req);
 
-      const templateData: ApplicantDetails = await this.getApplicantDetails(session?.applicationReference, accessToken)
+      const templateData: ApplicantDetails = await this.getApplicantDetails(session?.applicationReference, accessToken, refreshToken);
 
       res.render(template, {
         ...templateData,
@@ -75,28 +77,35 @@ export class ApplicantDetailsController {
 
     const session: SuppressionSession | undefined = SessionService.getSuppressionSession(req);
     const accessToken: string = SessionService.getAccessToken(req);
+    const refreshToken: string = SessionService.getRefreshToken(req);
 
     try {
       if (session?.applicationReference) {
-        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken);
+        await this.suppressionService.patch(partialSuppressionData, session.applicationReference, accessToken, refreshToken);
       } else {
-        const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken);
-        SessionService.setSuppressionSession(req, { applicationReference });
+        const applicationReference: string = await this.suppressionService.save(applicantDetails, accessToken, refreshToken);
+
+        const navigationPermissions: string[] = session?.navigationPermissions || [];
+
+        SessionService.setSuppressionSession(req, {
+          applicationReference,
+          navigationPermissions: [...navigationPermissions, continueNavigation]
+        });
       }
     } catch (error) {
       return next(new Error(`${ApplicantDetailsController.name} - ${error}`));
     }
 
-    res.redirect(ADDRESS_TO_REMOVE_PAGE_URI);
+    res.redirect(continueNavigation);
   };
 
-  private async getApplicantDetails(applicationReference: string | undefined, accessToken: string): Promise<any> {
+  private async getApplicantDetails(applicationReference: string | undefined, accessToken: string, refreshToken: string): Promise<any> {
 
     if (!applicationReference) {
       return {};
     }
 
-    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken);
+    const suppressionData: SuppressionData = await this.suppressionService.get(applicationReference, accessToken, refreshToken);
 
     const applicantDetails = suppressionData.applicantDetails;
 

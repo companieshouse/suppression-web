@@ -89,6 +89,10 @@ describe('PaymentReviewController', () => {
 
   describe('on POST', () => {
 
+    beforeEach(() => {
+      jest.spyOn(SessionService, 'appendNavigationPermissions');
+    });
+
     it('should throw an error if application reference not in session', async () => {
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return { applicationReference: undefined as any } as SuppressionSession
@@ -96,7 +100,10 @@ describe('PaymentReviewController', () => {
 
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)
-        .expect(StatusCodes.INTERNAL_SERVER_ERROR);
+        .expect(response => {
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
+          expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+        });
     });
 
     it('should return status code 302 and redirect to GOV Pay', async () => {
@@ -114,6 +121,7 @@ describe('PaymentReviewController', () => {
       await request(app)
         .post(PAYMENT_REVIEW_PAGE_URI)
         .expect(response => {
+          expect(SessionService.appendNavigationPermissions).toHaveBeenCalled();
           expect(response.status).toEqual(StatusCodes.MOVED_TEMPORARILY);
           expect(response.header.location).toEqual(mockRedirectUrl)
         });
@@ -127,6 +135,7 @@ describe('PaymentReviewController', () => {
         .post(PAYMENT_REVIEW_PAGE_URI)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+          expect(SessionService.appendNavigationPermissions).not.toHaveBeenCalled();
         });
     });
   });

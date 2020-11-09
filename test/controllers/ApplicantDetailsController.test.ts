@@ -17,7 +17,7 @@ import {
   expectToHaveErrorSummaryContaining,
   expectToHaveInput,
   expectToHavePopulatedInput,
-  expectToHaveTitle
+  expectToHaveTitle, expectToHaveTitleWithError
 } from '../HtmlPatternAssertions';
 import { generateTestData } from '../TestData';
 
@@ -25,7 +25,7 @@ jest.mock('../../src/services/session/SessionService');
 
 describe('ApplicantDetailsController', () => {
 
-  const pageTitle = 'Applicant’s Details';
+  const pageTitle = 'What are the applicant’s details\\?';
   const app = createApp();
 
   describe('on GET', () => {
@@ -72,7 +72,6 @@ describe('ApplicantDetailsController', () => {
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveInput(response.text, 'fullName', 'Full name');
         expect(response.text).toContain('Has the applicant used a different name on the Companies House register in the last 20 years?');
-        expectToHaveInput(response.text, 'emailAddress', 'Email address');
         expectToHaveInput(response.text, 'day', 'Day');
         expectToHaveInput(response.text, 'month', 'Month');
         expectToHaveInput(response.text, 'year', 'Year');
@@ -95,7 +94,6 @@ describe('ApplicantDetailsController', () => {
           expect(response.status).toEqual(StatusCodes.OK);
           expectToHaveTitle(response.text, pageTitle);
           expectToHavePopulatedInput(response.text, 'fullName', applicantDetails.fullName);
-          expectToHavePopulatedInput(response.text, 'emailAddress', applicantDetails.emailAddress);
           expectToHavePopulatedInput(response.text, 'previousName', applicantDetails.previousName!);
           expectToHavePopulatedInput(response.text, 'day', '01');
           expectToHavePopulatedInput(response.text, 'month', '05');
@@ -112,7 +110,6 @@ describe('ApplicantDetailsController', () => {
         fullName: 'John Doe',
         hasPreviousName: 'yes',
         previousName: 'test_name',
-        emailAddress: 'test@example.com',
         day: '01',
         month: '01',
         year: '2020'
@@ -127,31 +124,27 @@ describe('ApplicantDetailsController', () => {
 
     jest.spyOn(SuppressionService.prototype, 'patch').mockImplementation(() => Promise.resolve());
 
-    const fullNameErrorMessage = 'Full name is required';
-    const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name for business purposes in the last 20 years';
-    const previousNameMissingMessage = 'Enter previous full names, used for business purposes';
-    const emailMissingErrorMessage = 'Email address is required';
-    const emailInvalidErrorMessage = 'Enter an email address in the correct format, like name@example.com';
-    const missingDateOfBirthErrorMessage: string = 'Date of birth is required';
+    const fullNameErrorMessage = 'Enter the applicant’s full name';
+    const hasPreviousNameMissingMessage = 'Select yes if the applicant has used a different name on the Companies house register in the last 20 years';
+    const previousNameMissingMessage = 'Enter previous full name';
+    const missingDateOfBirthErrorMessage: string = 'Enter the applicant’s date of birth';
     const missingYearErrorMessage: string = 'You must enter a year';
     const invalidDateErrorMessage: string = 'Enter a real date';
 
-    it('should show four validation errors if no information is entered', async () => {
+    it('should show three validation errors if no information is entered', async () => {
 
       await request(app).post(APPLICANT_DETAILS_PAGE_URI).expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [
           fullNameErrorMessage,
           hasPreviousNameMissingMessage,
-          emailMissingErrorMessage,
           missingDateOfBirthErrorMessage
         ]);
         expectToHaveErrorMessages(response.text, [
           fullNameErrorMessage,
           hasPreviousNameMissingMessage,
-          emailMissingErrorMessage,
           missingDateOfBirthErrorMessage
         ]);
       });
@@ -165,7 +158,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
         expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-        expectToHaveTitle(response.text, pageTitle);
+        expectToHaveTitleWithError(response.text, pageTitle);
         expectToHaveBackButton(response.text, ROOT_URI);
         expectToHaveErrorSummaryContaining(response.text, [fullNameErrorMessage]);
         expectToHaveErrorMessages(response.text, [fullNameErrorMessage]);
@@ -181,7 +174,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [hasPreviousNameMissingMessage]);
           expectToHaveErrorMessages(response.text, [hasPreviousNameMissingMessage]);
@@ -196,40 +189,10 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [previousNameMissingMessage]);
           expectToHaveErrorMessages(response.text, [previousNameMissingMessage]);
-        });
-    });
-
-    it('should show a validation error if no email address is entered', async () => {
-      const testData = generateData();
-      delete testData.emailAddress;
-
-      await request(app).post(APPLICANT_DETAILS_PAGE_URI)
-        .send(testData)
-        .expect(response => {
-          expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
-          expectToHaveBackButton(response.text, ROOT_URI);
-          expectToHaveErrorSummaryContaining(response.text, [emailMissingErrorMessage]);
-          expectToHaveErrorMessages(response.text, [emailMissingErrorMessage]);
-        });
-    });
-
-    it('should show a validation error if the email address entered is invalid', async () => {
-      const testData = generateData();
-      testData.emailAddress = 'test.com';
-
-      await request(app).post(APPLICANT_DETAILS_PAGE_URI)
-        .send(testData)
-        .expect(response => {
-          expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
-          expectToHaveBackButton(response.text, ROOT_URI);
-          expectToHaveErrorSummaryContaining(response.text, [emailInvalidErrorMessage]);
-          expectToHaveErrorMessages(response.text, [emailInvalidErrorMessage]);
         });
     });
 
@@ -243,7 +206,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [missingDateOfBirthErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingDateOfBirthErrorMessage]);
@@ -258,7 +221,7 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [missingYearErrorMessage]);
           expectToHaveErrorMessages(response.text, [missingYearErrorMessage]);
@@ -273,14 +236,14 @@ describe('ApplicantDetailsController', () => {
         .send(testData)
         .expect(response => {
           expect(response.status).toEqual(StatusCodes.UNPROCESSABLE_ENTITY);
-          expectToHaveTitle(response.text, pageTitle);
+          expectToHaveTitleWithError(response.text, pageTitle);
           expectToHaveBackButton(response.text, ROOT_URI);
           expectToHaveErrorSummaryContaining(response.text, [invalidDateErrorMessage]);
           expectToHaveErrorMessages(response.text, [invalidDateErrorMessage]);
         });
     });
 
-    it('should redirect to the next page if the information provided by the user is valid (yes to previousNames)', async () => {
+    it('should redirect to the next page if the information provided by the user is valid with previous session (yes to previousNames)', async () => {
       const testData = generateData();
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
@@ -299,7 +262,7 @@ describe('ApplicantDetailsController', () => {
         });
     });
 
-    it('should redirect to the next page if the information provided by the user is valid (no to previousName)', async () => {
+    it('should redirect to the next page if the information provided by the user is valid with previous session (no to previousName)', async () => {
 
       jest.spyOn(SessionService, 'getSuppressionSession').mockImplementationOnce(() => {
         return {applicationReference: '12345-12345'} as SuppressionSession

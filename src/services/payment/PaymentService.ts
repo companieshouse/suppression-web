@@ -6,6 +6,7 @@ import { ApiResponse, ApiResult } from '@companieshouse/api-sdk-node/dist/servic
 import { PaymentStatus } from '../../models/PaymentStatus';
 import { getConfigValue } from '../../modules/config-handler/ConfigHandler';
 import { PAYMENT_CALLBACK_URI } from '../../routes/paths';
+import { loggerInstance } from '../../utils/Logger';
 
 export class PaymentService {
 
@@ -24,7 +25,7 @@ export class PaymentService {
 
     const apiClient: ApiClient = createApiClient(undefined, token, this.paymentApiUrl);
 
-    console.log(`${PaymentService.name} - Making a POST request to ${this.paymentApiUrl}/payments`);
+    loggerInstance().info(`${PaymentService.name} - Making a POST request to ${this.paymentApiUrl}/payments`);
 
     const paymentResourceUrl = `${this.suppressionApiUrl}/suppressions/${applicationReference}/payment`;
 
@@ -42,7 +43,7 @@ export class PaymentService {
       return Promise.reject(
         new Error(`Failed to initiate payment - status: ${errorResponse.httpStatusCode}, error: ${errorResponse.errors}`))
     }
-    console.log(`${PaymentService.name} - Created payment URL - ${response.value.resource!.links.journey}`);
+    loggerInstance().info(`${PaymentService.name} - Created payment URL - ${response.value.resource!.links.journey}`);
     return {
       redirectUrl: `${response.value.resource!.links.journey}?summary=false`,
       resourceUri: `${response.value.resource!.links.self}`
@@ -52,7 +53,7 @@ export class PaymentService {
   public async getPaymentStatus(paymentResource: string, token: string): Promise<PaymentStatus> {
     const apiClient: ApiClient = createApiClient(undefined, token, this.paymentApiUrl);
 
-    console.log(`${PaymentService.name} - Making a GET request to ${this.paymentApiUrl}/payments`);
+    loggerInstance().info(`${PaymentService.name} - Making a GET request to ${this.paymentApiUrl}/payments`);
 
     const response: ApiResult<ApiResponse<Payment>> = await apiClient.payment.getPayment(paymentResource);
 
@@ -63,7 +64,7 @@ export class PaymentService {
     }
 
     const paymentStatus = response.value.resource!.status as PaymentStatus;
-    console.log(`${PaymentService.name} - Retrieved payment status - ${paymentStatus}`);
+    loggerInstance().info(`${PaymentService.name} - Retrieved payment status - ${paymentStatus}`);
     return paymentStatus;
   }
 }

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { AccessibilityStatementController } from '../controllers/AccessibilityStatementController';
 import { AddressToRemoveController } from '../controllers/AddressToRemoveController';
 import { ApplicantDetailsController } from '../controllers/ApplicantDetailsController';
 import { CheckSubmissionController } from '../controllers/CheckSubmissionController';
@@ -13,8 +14,10 @@ import { ServiceAddressController } from '../controllers/ServiceAddressControlle
 import { StartPageController } from '../controllers/StartPageController';
 import { getConfigValue } from '../modules/config-handler/ConfigHandler';
 import { PaymentService } from '../services/payment/PaymentService';
+import { RefreshTokenService } from '../services/refresh-token/RefreshTokenService';
 import { SuppressionService } from '../services/suppression/SuppressionService';
 import {
+  ACCESSIBILITY_STATEMENT_URI,
   ADDRESS_TO_REMOVE_PAGE_URI,
   APPLICANT_DETAILS_PAGE_URI,
   CHECK_SUBMISSION_PAGE_URI,
@@ -33,7 +36,9 @@ export const routes = Router();
 /**
  * Services
  */
-const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string);
+const refreshTokenService: RefreshTokenService = new RefreshTokenService(getConfigValue(`OAUTH2_TOKEN_URI`)!,
+  getConfigValue(`OAUTH2_CLIENT_ID`)!, getConfigValue(`OAUTH2_CLIENT_SECRET`)!);
+const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string, refreshTokenService);
 const paymentService: PaymentService = new PaymentService();
 
 /**
@@ -49,6 +54,7 @@ const checkSubmissionController = new CheckSubmissionController(suppressionServi
 const paymentReviewController = new PaymentReviewController(suppressionService, paymentService);
 const paymentCallbackController = new PaymentCallbackController(suppressionService, paymentService);
 const confirmationController = new ConfirmationController(suppressionService);
+const accessibilityStatementController = new AccessibilityStatementController();
 
 const healthcheckController = new HealthcheckController();
 
@@ -82,5 +88,7 @@ routes.post(PAYMENT_REVIEW_PAGE_URI, paymentReviewController.continue);
 routes.get(PAYMENT_CALLBACK_URI, paymentCallbackController.checkPaymentStatus);
 
 routes.get(CONFIRMATION_PAGE_URI, confirmationController.renderView);
+
+routes.get(ACCESSIBILITY_STATEMENT_URI, accessibilityStatementController.renderView);
 
 routes.get(HEALTHCHECK_URI, healthcheckController.healthcheck);

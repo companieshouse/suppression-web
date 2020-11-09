@@ -7,7 +7,7 @@
 {% from 'govuk/components/back-link/macro.njk'     import govukBackLink %}
 
 {% block pageTitle %}
-  What are your contact details?
+  {{ 'What are your contact details?' | pageTitle(validationResult) }}
 {% endblock %}
 
 {% block backLink %}
@@ -25,7 +25,7 @@
     <div class="govuk-grid-column-two-thirds">
       {{
         govukErrorSummary ({
-          titleText: 'There is a problem with the details you gave us',
+          titleText: 'There is a problem',
           errorList: validationResult.errors
         }) if validationResult and validationResult.errors.length > 0
       }}
@@ -36,7 +36,9 @@
           What are your contact details?
         </h1>
 
-        <p class="govuk-body">We’ll use these to contact you about your application.</p>
+        <p class="govuk-body">
+          We’ll only use this address if we need to contact you by post about your application.
+        </p>
 
         {{
           govukInput({
