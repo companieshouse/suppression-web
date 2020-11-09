@@ -21,8 +21,8 @@ build:	package-install lint
 lint:
 	npm run lint
 
-.PHONY: audit
-audit:
+.PHONY: security-check
+security-check:
 	npm audit
 
 .PHONY: test
