@@ -23,7 +23,7 @@ lint:
 
 .PHONY: audit
 audit:
-        npm audit
+	npm audit
 
 .PHONY: test
 test: test-unit
