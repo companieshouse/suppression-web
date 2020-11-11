@@ -39,7 +39,7 @@ export const routes = Router();
 const refreshTokenService: RefreshTokenService = new RefreshTokenService(getConfigValue(`OAUTH2_TOKEN_URI`)!,
   getConfigValue(`OAUTH2_CLIENT_ID`)!, getConfigValue(`OAUTH2_CLIENT_SECRET`)!);
 const suppressionService: SuppressionService = new SuppressionService(getConfigValue('SUPPRESSIONS_API_URL') as string, refreshTokenService);
-const paymentService: PaymentService = new PaymentService();
+const paymentService: PaymentService = new PaymentService(refreshTokenService);
 
 /**
  * Controllers (route handlers).

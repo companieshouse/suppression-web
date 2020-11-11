@@ -53,9 +53,10 @@ export class PaymentReviewController {
       }
 
       const accessToken: string =  SessionService.getAccessToken(req);
+      const refreshToken: string =  SessionService.getRefreshToken(req);
       const paymentStateUUID: string = uuidv4();
 
-      const paymentUrls: PaymentResource = await this.paymentService.generatePaymentUrl(session.applicationReference, paymentStateUUID, accessToken);
+      const paymentUrls: PaymentResource = await this.paymentService.generatePaymentUrl(session.applicationReference, paymentStateUUID, accessToken, refreshToken);
 
       session.paymentDetails = {
         stateUUID: paymentStateUUID,
@@ -68,7 +69,7 @@ export class PaymentReviewController {
       res.redirect(paymentUrls.redirectUrl);
 
     } catch (error) {
-      return next(new Error(`${PaymentReviewController.name} - session expected but none found`));
+      return next(new Error(`${PaymentReviewController.name} - ${error}`));
     }
   };
 }

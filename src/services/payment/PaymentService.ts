@@ -7,21 +7,25 @@ import { PaymentStatus } from '../../models/PaymentStatus';
 import { getConfigValue } from '../../modules/config-handler/ConfigHandler';
 import { PAYMENT_CALLBACK_URI } from '../../routes/paths';
 import { loggerInstance } from '../../utils/Logger';
+import { RefreshTokenService } from '../refresh-token/RefreshTokenService';
 
 export class PaymentService {
 
   private readonly redirectUrl: string;
   private readonly paymentApiUrl: string;
   private readonly suppressionApiUrl: string;
+  private readonly refreshTokenService: RefreshTokenService;
+  private isRetry: boolean;
 
-  public constructor() {
+  public constructor(refreshTokenService: RefreshTokenService) {
     const serviceURL = getConfigValue('CHS_URL');
     this.redirectUrl = `${serviceURL}${PAYMENT_CALLBACK_URI}`;
-    this.paymentApiUrl = getConfigValue('PAYMENTS_API_URL') as string
-    this.suppressionApiUrl = getConfigValue('SUPPRESSIONS_API_URL') as string
+    this.paymentApiUrl = getConfigValue('PAYMENTS_API_URL') as string;
+    this.suppressionApiUrl = getConfigValue('SUPPRESSIONS_API_URL') as string;
+    this.refreshTokenService = refreshTokenService;
   }
 
-  public async generatePaymentUrl(applicationReference: string, paymentStateUUID: string, token: string): Promise<PaymentResource> {
+  public async generatePaymentUrl(applicationReference: string, paymentStateUUID: string, token: string, refreshToken: string): Promise<PaymentResource> {
 
     const apiClient: ApiClient = createApiClient(undefined, token, this.paymentApiUrl);
 
@@ -40,9 +44,22 @@ export class PaymentService {
 
     if (response.isFailure()) {
       const errorResponse = response.value;
+
+      if (errorResponse.httpStatusCode === 401 && !this.isRetry) {
+        this.isRetry = true;
+        loggerInstance().info(`${PaymentService.name} - Payment API generate payment url request failed with: ${errorResponse.httpStatusCode}`
+          + ' - Refreshing access token');
+        const newAccessToken: string = await this.refreshTokenService.refresh(token, 'refreshToken');
+        if (newAccessToken) {
+          loggerInstance().info(`${PaymentService.name} - Access token successfully refreshed`);
+          return this.generatePaymentUrl(applicationReference, paymentStateUUID, newAccessToken, refreshToken);
+        }
+      }
+
       return Promise.reject(
         new Error(`Failed to initiate payment - status: ${errorResponse.httpStatusCode}, error: ${errorResponse.errors}`))
     }
+
     loggerInstance().info(`${PaymentService.name} - Created payment URL - ${response.value.resource!.links.journey}`);
     return {
       redirectUrl: `${response.value.resource!.links.journey}?summary=false`,
@@ -50,7 +67,7 @@ export class PaymentService {
     };
   }
 
-  public async getPaymentStatus(paymentResource: string, token: string): Promise<PaymentStatus> {
+  public async getPaymentStatus(paymentResource: string, token: string, refreshToken: string): Promise<PaymentStatus> {
     const apiClient: ApiClient = createApiClient(undefined, token, this.paymentApiUrl);
 
     loggerInstance().info(`${PaymentService.name} - Making a GET request to ${this.paymentApiUrl}/payments`);
@@ -59,6 +76,18 @@ export class PaymentService {
 
     if (response.isFailure()) {
       const errorResponse = response.value;
+
+      if (errorResponse.httpStatusCode === 401 && !this.isRetry) {
+        this.isRetry = true;
+        loggerInstance().info(`${PaymentService.name} - Payment API get payment status request failed with: ${errorResponse.httpStatusCode}`
+          + ' - Refreshing access token');
+        const newAccessToken: string = await this.refreshTokenService.refresh(token, refreshToken);
+        if (newAccessToken) {
+          loggerInstance().info(`${PaymentService.name} - Access token successfully refreshed`);
+          return this.getPaymentStatus(paymentResource, newAccessToken, refreshToken);
+        }
+      }
+
       return Promise.reject(
         new Error(`Failed to verify payment status - status: ${errorResponse.httpStatusCode}, error: ${errorResponse.errors}`));
     }
