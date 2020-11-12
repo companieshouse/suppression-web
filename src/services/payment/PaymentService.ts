@@ -3,6 +3,7 @@ import ApiClient from '@companieshouse/api-sdk-node/dist/client';
 import { CreatePaymentRequest, Payment } from '@companieshouse/api-sdk-node/dist/services/payment';
 import { ApiResponse, ApiResult } from '@companieshouse/api-sdk-node/dist/services/resource';
 
+import { StatusCodes } from 'http-status-codes';
 import { PaymentStatus } from '../../models/PaymentStatus';
 import { getConfigValue } from '../../modules/config-handler/ConfigHandler';
 import { PAYMENT_CALLBACK_URI } from '../../routes/paths';
@@ -23,6 +24,7 @@ export class PaymentService {
     this.paymentApiUrl = getConfigValue('PAYMENTS_API_URL') as string;
     this.suppressionApiUrl = getConfigValue('SUPPRESSIONS_API_URL') as string;
     this.refreshTokenService = refreshTokenService;
+    this.isRetry = false;
   }
 
   public async generatePaymentUrl(applicationReference: string, paymentStateUUID: string, token: string, refreshToken: string): Promise<PaymentResource> {
@@ -45,7 +47,7 @@ export class PaymentService {
     if (response.isFailure()) {
       const errorResponse = response.value;
 
-      if (errorResponse.httpStatusCode === 401 && !this.isRetry) {
+      if (errorResponse.httpStatusCode === StatusCodes.UNAUTHORIZED && !this.isRetry) {
         this.isRetry = true;
         loggerInstance().info(`${PaymentService.name} - Payment API generate payment url request failed with: ${errorResponse.httpStatusCode}`
           + ' - Refreshing access token');
@@ -60,6 +62,7 @@ export class PaymentService {
         new Error(`Failed to initiate payment - status: ${errorResponse.httpStatusCode}, error: ${errorResponse.errors}`))
     }
 
+    this.isRetry = false;
     loggerInstance().info(`${PaymentService.name} - Created payment URL - ${response.value.resource!.links.journey}`);
     return {
       redirectUrl: `${response.value.resource!.links.journey}?summary=false`,
@@ -77,7 +80,7 @@ export class PaymentService {
     if (response.isFailure()) {
       const errorResponse = response.value;
 
-      if (errorResponse.httpStatusCode === 401 && !this.isRetry) {
+      if (errorResponse.httpStatusCode === StatusCodes.UNAUTHORIZED && !this.isRetry) {
         this.isRetry = true;
         loggerInstance().info(`${PaymentService.name} - Payment API get payment status request failed with: ${errorResponse.httpStatusCode}`
           + ' - Refreshing access token');
@@ -92,6 +95,7 @@ export class PaymentService {
         new Error(`Failed to verify payment status - status: ${errorResponse.httpStatusCode}, error: ${errorResponse.errors}`));
     }
 
+    this.isRetry = false;
     const paymentStatus = response.value.resource!.status as PaymentStatus;
     loggerInstance().info(`${PaymentService.name} - Retrieved payment status - ${paymentStatus}`);
     return paymentStatus;
