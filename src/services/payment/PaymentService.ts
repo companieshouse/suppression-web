@@ -49,7 +49,7 @@ export class PaymentService {
         this.isRetry = true;
         loggerInstance().info(`${PaymentService.name} - Payment API generate payment url request failed with: ${errorResponse.httpStatusCode}`
           + ' - Refreshing access token');
-        const newAccessToken: string = await this.refreshTokenService.refresh(token, 'refreshToken');
+        const newAccessToken: string = await this.refreshTokenService.refresh(token, refreshToken);
         if (newAccessToken) {
           loggerInstance().info(`${PaymentService.name} - Access token successfully refreshed`);
           return this.generatePaymentUrl(applicationReference, paymentStateUUID, newAccessToken, refreshToken);
