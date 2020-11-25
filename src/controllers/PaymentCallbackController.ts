@@ -46,7 +46,8 @@ export class PaymentCallbackController {
     if (status === PaymentStatus.PAID) {
       const paymentResourceUri: string = session.paymentDetails!.resourceUri;
       const accessToken: string =  SessionService.getAccessToken(req);
-      const verifiedStatus: PaymentStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken);
+      const refreshToken: string =  SessionService.getRefreshToken(req);
+      const verifiedStatus: PaymentStatus = await this.paymentService.getPaymentStatus(paymentResourceUri, accessToken, refreshToken);
       if (verifiedStatus === PaymentStatus.PAID) {
         SessionService.resetSuppressionSession(req);
         redirectURI = CONFIRMATION_PAGE_URI;
